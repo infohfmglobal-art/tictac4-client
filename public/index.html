@@ -1,42 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TicTac4 Online</title>
-
-  <!-- PWA / Icons -->
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
-  <link rel="icon" type="image/png" href="/icon-mono.png" />
-
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="/style.css" />
-
-  <!-- Inline fallback CSS -->
-  <style>
-    body { 
-      margin: 0;
-      background:#0b0b19;
-      color:#fff;
-      font-family: system-ui, sans-serif;
-    }
-    .container { 
-      max-width: 900px; 
-      margin: auto;
-      padding:16px;
-      text-align:center;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TicTac4 Online</title>
+<link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
-  <div class="container">
-    <h1>TicTac4</h1>
-    <div id="game-root"></div>
-    <div id="onlineStatus"></div>
-  </div>
+<h1>TicTac4 Online</h1>
 
- <!-- GAME SCRIPTS -->
-<script type="module" src="/js/main.js"></script>
-<script type="module" src="/multiplayer.js"></script>
+<div id="status">Loading game...</div>
+<div id="board"></div>
+
+<script type="module">
+    import "./board.js";
+    import "./game.js";
+    import "./ui.js";
+    import "./app.js";
+</script>
+
+</body>
+</html>
