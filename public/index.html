@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TicTac4 Online</title>
-<link rel="stylesheet" href="./style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TicTac4 Online</title>
+  <link rel="stylesheet" href="./style.css"/>
 </head>
+<body class="theme-gold">
+  <div class="container">
+    <h1>TicTac4 Online</h1>
 
-<body>
-<h1>TicTac4 Online</h1>
+    <div class="toolbar">
+      <label>
+        Skin:
+        <select id="themeSelect">
+          <option value="theme-gold" selected>Gold</option>
+          <option value="theme-ocean">Ocean</option>
+          <option value="theme-forest">Forest</option>
+        </select>
+      </label>
 
-<div id="status">Loading game...</div>
-<div id="board"></div>
+      <button id="resetBtn" class="btn">Reset</button>
+      <span id="status" class="status">Connecting…</span>
+    </div>
 
-<script type="module">
-    import "./board.js";
-    import "./game.js";
-    import "./ui.js";
-    import "./app.js";
-</script>
+    <div id="board" class="board"></div>
+  </div>
 
+  <!-- SFX -->
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_cbe53aa8f9.mp3?filename=click-124467.mp3"></audio>
+
+  <!-- App bootstrap -->
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
