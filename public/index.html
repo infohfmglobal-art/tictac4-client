@@ -2,35 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TicTac4 Online</title>
-  <link rel="stylesheet" href="./style.css"/>
+  <link rel="stylesheet" href="./style.css" />
 </head>
-<body class="theme-gold">
+<body>
   <div class="container">
     <h1>TicTac4 Online</h1>
 
-    <div class="toolbar">
-      <label>
-        Skin:
-        <select id="themeSelect">
-          <option value="theme-gold" selected>Gold</option>
-          <option value="theme-ocean">Ocean</option>
-          <option value="theme-forest">Forest</option>
+    <div class="topbar">
+      <span id="siteMode" class="badge">Site: <strong>Local</strong></span>
+      <span id="conn" class="badge badge-amber">Connecting…</span>
+      <label class="theme">
+        Theme:
+        <select id="themeSel">
+          <option value="gold">Gold</option>
+          <option value="blue">Blue</option>
+          <option value="green">Green</option>
         </select>
       </label>
-
-      <button id="resetBtn" class="btn">Reset</button>
-      <span id="status" class="status">Connecting…</span>
     </div>
 
+    <div id="score" class="score">Score — X: 0 | O: 0</div>
+    <div id="status" class="status">Your Turn…</div>
+
     <div id="board" class="board"></div>
+
+    <div class="controls">
+      <button id="nextRound" class="btn" disabled>Next Round</button>
+      <button id="resetAll" class="btn btn-danger">Reset All</button>
+      <button id="sfxToggle" class="btn">SFX: On</button>
+    </div>
   </div>
 
-  <!-- SFX -->
-  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_cbe53aa8f9.mp3?filename=click-124467.mp3"></audio>
+  <!-- Sounds -->
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_cbe53aaf8f.mp3?filename=click-124467.mp3"></audio>
+  <audio id="winSound"   src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_ba0a1f2f2b.mp3?filename=success-1-6297.mp3"></audio>
 
-  <!-- App bootstrap -->
+  <!-- App -->
   <script type="module" src="./app.js"></script>
 </body>
 </html>
