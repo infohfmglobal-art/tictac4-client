@@ -1,53 +1,129 @@
 :root {
-  --bg: #0b0b0f;
-  --text: #e8e8ea;
-  --accent: #ffd54a;
-  --accent-soft: rgba(255, 213, 74, 0.15);
+  --bg: #0b0b10;
+  --fg: #e8e8e8;
+  --accent: #ffcc33;      /* gold */
+  --accent-weak: rgba(255,204,51,0.25);
 }
 
-body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui, sans-serif; }
+.theme-blue {
+  --accent: #4da3ff;
+  --accent-weak: rgba(77,163,255,0.25);
+}
+
+.theme-green {
+  --accent: #30d158;
+  --accent-weak: rgba(48,209,88,0.25);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  height: 100%;
+  background: radial-gradient(circle at 50% 0%, #101018, #07070a 70%);
+  color: var(--fg);
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
 
 .container {
-  max-width: 880px; margin: 32px auto; padding: 0 16px; text-align: center;
+  max-width: 900px;
+  margin: 32px auto 80px;
+  padding: 0 16px;
+  text-align: center;
 }
 
-h1 { margin: 8px 0 18px; letter-spacing: .5px; font-weight: 700; }
+h1 { margin: 0 0 10px; letter-spacing: 0.5px; }
 
-.toolbar {
-  display:flex; gap:12px; align-items:center; justify-content:center;
-  flex-wrap: wrap; margin-bottom: 14px;
-}
-
-.status { opacity:.9; padding:6px 10px; border-radius:8px; background:var(--accent-soft); border:1px solid var(--accent); }
-
-.btn {
-  padding:8px 14px; border-radius:10px; background:transparent; color:var(--text);
-  border:2px solid var(--accent); cursor:pointer; font-weight:600;
-}
-.btn:hover { transform: translateY(-1px); }
-
-.board {
-  margin: 18px auto 0;
-  display: grid;
-  grid-template-columns: repeat(4, 80px);
+.topbar {
+  display: inline-flex;
   gap: 10px;
-  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.badge {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.badge-amber { background: var(--accent-weak); }
+
+.theme select {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid #444;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+.score {
+  margin-top: 6px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.status {
+  margin: 8px 0 16px;
+  opacity: 0.85;
+}
+
+/* Board */
+.board {
+  --cell: 80px;
+  width: calc(var(--cell) * 4);
+  margin: 0 auto 18px;
+  display: grid;
+  grid-template-columns: repeat(4, var(--cell));
+  grid-template-rows: repeat(4, var(--cell));
+  gap: 10px;
 }
 
 .cell {
-  width: 80px;
-  aspect-ratio: 1 / 1;
-  display:flex; align-items:center; justify-content:center;
+  display: grid;
+  place-items: center;
   border: 2px solid var(--accent);
-  border-radius: 10px;
-  font-size: 38px; font-weight: 800; user-select:none; cursor:pointer;
-  box-shadow: 0 0 0 2px rgba(0,0,0,.2) inset, 0 6px 14px rgba(0,0,0,.35);
-  transition: transform .06s ease;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(255,255,255,0.02);
+  transition: transform .06s ease, box-shadow .1s ease, background .2s ease;
+  user-select: none;
 }
-.cell:hover { transform: scale(1.03); }
-.cell.taken { cursor: default; opacity: .95; }
+.cell:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.35); }
+.cell.filled { cursor: not-allowed; opacity: .9; }
+.cell.win {
+  animation: glow 1.2s ease infinite alternate;
+  color: #111;
+  background: var(--accent);
+}
 
-/* Themes */
-.theme-gold { --accent:#ffd54a; --accent-soft: rgba(255,213,74,.12); }
-.theme-ocean { --accent:#4fc3f7; --accent-soft: rgba(79,195,247,.12); }
-.theme-forest { --accent:#66bb6a; --accent-soft: rgba(102,187,106,.12); }
+@keyframes glow {
+  from { box-shadow: 0 0 12px var(--accent); }
+  to   { box-shadow: 0 0 28px var(--accent); }
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.btn {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-danger { border-color: #ff6161; color: #ff9b9b; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .board { --cell: 68px; gap: 8px; }
+  .cell { font-size: 36px; }
+}
