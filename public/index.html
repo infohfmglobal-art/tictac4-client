@@ -1,45 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TicTac4 Online</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TicTac4 Online</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+
+<script>
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  window.deferredPrompt = e;
+});
+</script>
+
 </head>
 <body>
-  <div class="container">
-    <h1>TicTac4 Online</h1>
 
-    <div class="topbar">
-      <span id="siteMode" class="badge">Site: <strong>Local</strong></span>
-      <span id="conn" class="badge badge-amber">Connecting…</span>
-      <label class="theme">
-        Theme:
-        <select id="themeSel">
-          <option value="gold">Gold</option>
-          <option value="blue">Blue</option>
-          <option value="green">Green</option>
-        </select>
-      </label>
-    </div>
+<h1>TicTac4 Online</h1>
 
-    <div id="score" class="score">Score — X: 0 | O: 0</div>
-    <div id="status" class="status">Your Turn…</div>
+<div class="topbar">
+  <span class="badge">Site: Local</span>
+  <span class="badge green" id="statusTxt">Connected</span>
 
-    <div id="board" class="board"></div>
+  Theme:
+  <select id="themeSelect">
+    <option>Gold</option>
+    <option>Blue</option>
+    <option>Classic</option>
+  </select>
 
-    <div class="controls">
-      <button id="nextRound" class="btn" disabled>Next Round</button>
-      <button id="resetAll" class="btn btn-danger">Reset All</button>
-      <button id="sfxToggle" class="btn">SFX: On</button>
-    </div>
-  </div>
+  <button id="installBtn" class="btn small">Install App</button>
+</div>
 
-  <!-- Sounds -->
-  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_cbe53aaf8f.mp3?filename=click-124467.mp3"></audio>
-  <audio id="winSound"   src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_ba0a1f2f2b.mp3?filename=success-1-6297.mp3"></audio>
+<div id="score" class="score">Score — X: 0 | O: 0</div>
+<div id="msg" class="msg"></div>
 
-  <!-- App -->
-  <script type="module" src="./app.js"></script>
+<div id="board" class="board"></div>
+
+<div class="btngrp">
+  <button id="nextBtn" class="btn">Next Round</button>
+  <button id="resetBtn" class="btn red">Reset All</button>
+  <button id="sfxBtn" class="btn small">SFX: On</button>
+</div>
+
+<script type="module" src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
+
 </body>
 </html>
