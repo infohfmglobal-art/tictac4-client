@@ -1,26 +1,32 @@
-import { Game } from "./game.js";
-import { UI } from "./ui.js";
+import Game from "./game.js";
+import UI   from "./ui.js";
 
 let game, ui;
 
 function startGame() {
-    game = new Game();
-    ui = new UI(onCellClick);
-    ui.updateStatus("Your Turn...");
+  game = new Game(4);
+  ui   = new UI(onCellClick);
+  ui.renderBoard(4);
+  ui.updateStatus("Your Turn…");
 }
 
 function onCellClick(row, col) {
-    if (game.makeMove(row, col)) {
-        ui.updateBoard(game.board.cells);
+  if (!game) return;
+  const moved = game.makeMove(row, col);
+  if (!moved) return;
 
-        if (game.isGameOver) {
-            ui.updateStatus(`Game Over! Winner: ${game.winner}`);
-            return;
-        }
+  ui.playClick();
+  ui.updateBoard(game.board.cells);
 
-        ui.updateStatus(`Turn: ${game.currentPlayer}`);
-    }
+  if (game.isGameOver) {
+    ui.updateStatus(`Game Over! Winner: ${game.winner}`);
+  } else {
+    ui.updateStatus(`Turn: ${game.currentPlayer}`);
+  }
 }
 
-// Start Game
-startGame();
+// Reset
+document.addEventListener("DOMContentLoaded", () => {
+  startGame();
+  document.getElementById("resetBtn").addEventListener("click", startGame);
+});
