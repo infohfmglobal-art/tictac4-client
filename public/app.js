@@ -1,57 +1,53 @@
 import { Game } from "./game.js";
 import { UI } from "./ui.js";
 
-let game, ui;
+let game = new Game();
+let ui = new UI(handleClick);
 
-function start() {
-  game = new Game(4);
-  ui = new UI(onCellClick);
+let score = JSON.parse(localStorage.getItem("score") || `{"X":0,"O":0}`);
 
-  // wire buttons
-  document.getElementById("nextRound").onclick = () => {
-    game.nextRound();
-    ui.renderBoard(game.board.cells);
-    ui.setStatus("Your Turn…");
-    ui.enableNextRound(false);
-  };
-  document.getElementById("resetAll").onclick = () => {
-    game.resetAll();
-    ui.renderBoard(game.board.cells);
-    ui.setScore(game.score.X, game.score.O);
-    ui.setStatus("Scores cleared. New Round!");
-    ui.enableNextRound(false);
-  };
-
-  // initial render
-  ui.renderBoard(game.board.cells);
-  ui.setScore(game.score.X, game.score.O);
-  ui.setStatus("Your Turn…");
-
-  // Fake “Connected” indicator (since we’re local-only here)
-  const conn = document.getElementById("conn");
-  setTimeout(() => { conn.textContent = "Connected"; conn.classList.remove("badge-amber"); }, 700);
+function saveScore() {
+  localStorage.setItem("score", JSON.stringify(score));
+  document.getElementById("score").textContent = `Score — X: ${score.X} | O: ${score.O}`;
 }
+saveScore();
 
-function onCellClick(row, col) {
-  ui.clickSnd();
-  const res = game.makeMove(row, col);
-  if (!res.moved) return;
-
+function handleClick(r,c) {
+  if (!game.move(r,c)) return;
+  ui.playClick();
   ui.updateBoard(game.board.cells);
 
-  if (res.winLine) {
-    ui.highlightWin(res.winLine);
-    ui.setScore(game.score.X, game.score.O);
-    ui.setStatus(`Game Over — Winner: ${game.winner}`);
-    ui.enableNextRound(true);
-    return;
+  if (game.winner) {
+    score[game.winner]++;
+    saveScore();
+    ui.msg.textContent = `Winner: ${game.winner}!`;
+    ui.playWin();
+  } else {
+    ui.msg.textContent = `Turn: ${game.turn}`;
   }
-  if (res.draw) {
-    ui.setStatus("Draw! No more moves.");
-    ui.enableNextRound(true);
-    return;
-  }
-  ui.setStatus(`Turn: ${game.currentPlayer}`);
 }
 
-start();
+document.getElementById("nextBtn").onclick = () => {
+  game.reset();
+  ui.renderBoard();
+  ui.msg.textContent = "New Round!";
+};
+
+document.getElementById("resetBtn").onclick = () => {
+  score = {X:0,O:0};
+  saveScore();
+  game.reset();
+  ui.renderBoard();
+  ui.msg.textContent = "Scores reset!";
+};
+
+document.getElementById("sfxBtn").onclick = e => {
+  ui.sfxOn = !ui.sfxOn;
+  e.target.textContent = `SFX: ${ui.sfxOn ? "On" : "Off"}`;
+};
+
+document.getElementById("installBtn").onclick = async () => {
+  if (!window.deferredPrompt) return alert("Install not available yet!");
+  window.deferredPrompt.prompt();
+  window.deferredPrompt = null;
+};
