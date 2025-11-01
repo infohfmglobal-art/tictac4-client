@@ -8,5 +8,5 @@ document.addEventListener("DOMContentLoaded", () => {
       splash.style.transition = "0.6s";
       setTimeout(() => splash.remove(), 600);
     }
-  }, 1800);
+  }, 1500);
 });
