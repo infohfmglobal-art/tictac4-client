@@ -1,53 +1,61 @@
 import { Game } from "./game.js";
-import { UI } from "./ui.js";
 
-let game = new Game();
-let ui = new UI(handleClick);
+const game = new Game();
 
-let score = JSON.parse(localStorage.getItem("score") || `{"X":0,"O":0}`);
+const boardElement = document.getElementById("board");
+const scoreText = document.getElementById("score");
+const msgText = document.getElementById("msg");
+const nextBtn = document.getElementById("nextBtn");
+const resetBtn = document.getElementById("resetBtn");
+const sfxBtn = document.getElementById("sfxBtn");
 
-function saveScore() {
-  localStorage.setItem("score", JSON.stringify(score));
-  document.getElementById("score").textContent = `Score — X: ${score.X} | O: ${score.O}`;
+// --- Render Grid ---
+function renderBoard() {
+  boardElement.innerHTML = "";
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      cell.addEventListener("click", () => handleMove(r, c));
+      boardElement.appendChild(cell);
+    }
+  }
 }
-saveScore();
+renderBoard();
 
-function handleClick(r,c) {
-  if (!game.move(r,c)) return;
-  ui.playClick();
-  ui.updateBoard(game.board.cells);
+// --- Update UI ---
+function updateUI() {
+  const cells = boardElement.children;
+  for (let i = 0; i < cells.length; i++) {
+    const r = Math.floor(i / 3);
+    const c = i % 3;
+    cells[i].textContent = game.board.grid[r][c] || "";
+  }
+  msgText.textContent = game.winner ? `Winner: ${game.winner}` : "";
+  scoreText.textContent = `Score — X: ${game.scoreX} | O: ${game.scoreO}`;
+}
 
-  if (game.winner) {
-    score[game.winner]++;
-    saveScore();
-    ui.msg.textContent = `Winner: ${game.winner}!`;
-    ui.playWin();
-  } else {
-    ui.msg.textContent = `Turn: ${game.turn}`;
+// --- Handle move ---
+function handleMove(r, c) {
+  if (game.move(r, c)) {
+    updateUI();
   }
 }
 
-document.getElementById("nextBtn").onclick = () => {
+// --- Buttons ---
+nextBtn.onclick = () => {
   game.reset();
-  ui.renderBoard();
-  ui.msg.textContent = "New Round!";
+  updateUI();
 };
 
-document.getElementById("resetBtn").onclick = () => {
-  score = {X:0,O:0};
-  saveScore();
-  game.reset();
-  ui.renderBoard();
-  ui.msg.textContent = "Scores reset!";
+resetBtn.onclick = () => {
+  game.resetAll();
+  updateUI();
 };
 
-document.getElementById("sfxBtn").onclick = e => {
-  ui.sfxOn = !ui.sfxOn;
-  e.target.textContent = `SFX: ${ui.sfxOn ? "On" : "Off"}`;
-};
-
-document.getElementById("installBtn").onclick = async () => {
-  if (!window.deferredPrompt) return alert("Install not available yet!");
-  window.deferredPrompt.prompt();
-  window.deferredPrompt = null;
+sfxBtn.onclick = () => {
+  game.toggleSFX();
+  sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`;
 };
