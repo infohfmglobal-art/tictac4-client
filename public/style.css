@@ -1,71 +1,158 @@
-/* Base */
-* { box-sizing: border-box; }
+/* ===== FONT & BASE ===== */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Orbitron', sans-serif;
   background: #000;
-  color: #ffcc33;
+  color: #ffd86e;
   text-align: center;
-  padding: 20px 10px 60px;
+  padding-top: 20px;
+  transition: 0.3s ease;
 }
-h1 { margin: 0 0 8px; }
 
-/* Layout */
+h1 {
+  font-size: 38px;
+  margin-bottom: 10px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px gold;
+}
+
+/* ===== BOARD ===== */
 .board {
   --cell: 95px;
   width: calc(var(--cell) * 3);
-  margin: 18px auto;
+  margin: 25px auto;
   display: grid;
   grid-template-columns: repeat(3, var(--cell));
   grid-template-rows: repeat(3, var(--cell));
   gap: 10px;
 }
+
 .cell {
   width: var(--cell);
   height: var(--cell);
-  border: 3px solid #ffcc33;
-  font-size: 50px;
+  border: 3px solid #ffd86e;
+  font-size: 52px;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 12px;
   user-select: none;
-  transition: transform .06s ease;
-  background: rgba(255,255,255,0.02);
+  transition: 0.15s;
+  text-shadow: 0 0 10px gold;
 }
-.cell:active { transform: scale(0.95); }
 
+.cell:active {
+  transform: scale(0.92);
+}
+
+/* ===== BUTTONS ===== */
 .btn {
-  background: #ffcc33;
+  background: #ffd86e;
   color: #000;
-  padding: 10px 15px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: bold;
-  margin: 5px;
+  margin: 6px;
+  transition: 0.2s;
 }
-.btn.red { background: #ff4d4d; color: #fff; }
-.btn.small { padding: 6px 10px; font-size: 14px; }
-.badge { background: #777; color: #fff; padding: 4px 8px; border-radius: 6px; margin-right: 8px; }
-.badge.green { background: #129e28; }
-.score { margin-top: 8px; font-weight: bold; }
-.msg { min-height: 22px; margin: 8px 0 2px; }
-.btngrp { margin-top: 10px; }
 
-/* THEMES */
-.theme-gold { --accent: #ffcc33; --accentDark: #b38f00; --text: #ffcc33; }
-.theme-blue { --accent: #3ab0ff; --accentDark: #1173ad; --text: #d9efff; background:#071923; color: var(--text); }
-.theme-classic { --accent:#ffffff; --accentDark:#cccccc; --text:#ffffff; background:#111; color: var(--text); }
+.btn:hover {
+  filter: brightness(1.2);
+}
 
-body[class^="theme-"] .cell { border-color: var(--accent); }
-body[class^="theme-"] .btn { background: var(--accent); }
-body[class^="theme-"] .btn.red { background:#ff4d4d; }
-body[class^="theme-"] { color: var(--text); }
+.btn.red {
+  background: #ff4444;
+  color: #fff;
+}
 
-/* Mobile */
-@media (max-width: 420px) {
-  .board { --cell: 80px; gap: 8px; }
-  .cell { font-size: 44px; }
+.btn.small {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+/* ===== STATUS & SCORE ===== */
+.badge {
+  background: grey;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.badge.green {
+  background: green;
+}
+
+.score {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.msg {
+  margin: 8px 0;
+  height: 22px;
+  font-size: 18px;
+  text-shadow: 0 0 8px gold;
+}
+
+/* ===== THEMES ===== */
+
+/* ✅ RuneXO Theme (Gold + Purple Glow) */
+.theme-rune {
+  background: radial-gradient(circle, #0a0019, #000);
+  color: #c7b8ff;
+}
+
+.theme-rune .cell {
+  border-color: #b885ff;
+  color: #ffdd8a;
+  text-shadow: 0 0 12px #b885ff, 0 0 25px gold;
+}
+
+.theme-rune h1 {
+  color: #ffdd8a;
+  text-shadow: 0 0 15px #b885ff, 0 0 28px gold;
+}
+
+.theme-rune .btn {
+  background: #b885ff;
+  color: #fff;
+  box-shadow: 0 0 12px #b885ff;
+}
+
+/* ✅ Gold Classic */
+.theme-gold {
+  background: #000;
+  color: #ffd86e;
+}
+
+.theme-gold .cell {
+  border-color: #ffd86e;
+  color: #ffd86e;
+}
+
+/* ✅ Blue Neon */
+.theme-blue {
+  background: #000814;
+  color: #4cd3ff;
+}
+
+.theme-blue .cell {
+  border-color: #4cd3ff;
+  color: #4cd3ff;
+  text-shadow: 0 0 12px #4cd3ff;
+}
+
+/* ✅ Classic White */
+.theme-classic {
+  background: white;
+  color: black;
+}
+
+.theme-classic .cell {
+  border-color: black;
+  color: black;
 }
