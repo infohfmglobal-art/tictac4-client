@@ -9,8 +9,6 @@ const resetBtn = document.getElementById("resetBtn");
 const sfxBtn = document.getElementById("sfxBtn");
 const themeSelect = document.getElementById("themeSelect");
 
-let sfxOn = true;
-
 function renderBoard() {
   boardElement.innerHTML = "";
   for (let r = 0; r < 3; r++) {
@@ -39,22 +37,15 @@ function updateBoard() {
   }
 
   scoreText.textContent = `Score — X: ${game.scoreX} | O: ${game.scoreO}`;
-
-  if (game.winner) {
-    msgDiv.textContent = `Winner: ${game.winner}`;
-  } else {
-    msgDiv.textContent = "";
-  }
+  msgDiv.textContent = game.winner ? `Winner: ${game.winner}` : "";
 }
 
-// Theme Switcher
 themeSelect.addEventListener("change", () => {
   document.body.className = "";
   const theme = themeSelect.value.toLowerCase();
   document.body.classList.add(`theme-${theme}`);
 });
 
-// Buttons
 nextBtn.addEventListener("click", () => {
   game.nextRound();
   msgDiv.textContent = "";
@@ -69,8 +60,8 @@ resetBtn.addEventListener("click", () => {
 });
 
 sfxBtn.addEventListener("click", () => {
-  sfxOn = !sfxOn;
-  sfxBtn.textContent = `SFX: ${sfxOn ? "On" : "Off"}`;
+  game.toggleSfx();
+  sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`;
 });
 
 renderBoard();
