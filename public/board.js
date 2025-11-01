@@ -1,27 +1,59 @@
 export class Board {
   constructor(size = 3) {
     this.size = size;
-    this.cells = Array.from({ length: size }, () => Array(size).fill(""));
+    this.grid = Array.from({ length: size }, () => Array(size).fill(""));
   }
 
+  isEmpty(r, c) { return this.grid[r][c] === ""; }
+
   makeMove(r, c, sym) {
-    if (this.cells[r][c] !== "") return false;
-    this.cells[r][c] = sym;
+    if (!this.isEmpty(r, c)) return false;
+    this.grid[r][c] = sym;
+    return true;
+  }
+
+  isFull() {
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        if (this.grid[r][c] === "") return false;
+      }
+    }
     return true;
   }
 
   checkWinner() {
-    const s = this.size;
-    const c = this.cells;
+    const n = this.size;
+    const g = this.grid;
 
-    for (let i = 0; i < s; i++) {
-      if (c[i][0] && c[i].every(v => v === c[i][0])) return c[i][0];
-      if (c[0][i] && c.map(r => r[i]).every(v => v === c[0][i])) return c[0][i];
+    // Rows & Cols
+    for (let i = 0; i < n; i++) {
+      if (g[i][0] && g[i].every(v => v === g[i][0])) return g[i][0];
+      const col0 = g[0][i];
+      if (col0) {
+        let ok = true;
+        for (let r = 1; r < n; r++) if (g[r][i] !== col0) { ok = false; break; }
+        if (ok) return col0;
+      }
     }
 
-    if (c[0][0] && c.every((r,i)=>r[i]===c[0][0])) return c[0][0];
-    if (c[0][s-1] && c.every((r,i)=>r[s-1-i]===c[0][s-1])) return c[0][s-1];
-
+    // Diagonal
+    const d0 = g[0][0];
+    if (d0) {
+      let ok = true;
+      for (let i = 1; i < n; i++) if (g[i][i] !== d0) { ok = false; break; }
+      if (ok) return d0;
+    }
+    // Anti-diagonal
+    const d1 = g[0][n - 1];
+    if (d1) {
+      let ok = true;
+      for (let i = 1; i < n; i++) if (g[i][n - 1 - i] !== d1) { ok = false; break; }
+      if (ok) return d1;
+    }
     return null;
+  }
+
+  resetGrid() {
+    for (let r = 0; r < this.size; r++) this.grid[r].fill("");
   }
 }
