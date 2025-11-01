@@ -180,3 +180,51 @@ h1 {
   from { box-shadow: 0 0 8px gold; transform: scale(1); }
   to { box-shadow: 0 0 25px purple; transform: scale(1.08); }
 }
+/* Rune Theme 🔮 */
+.theme-rune {
+  background: #000003;
+  color: #e0b3ff;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.theme-rune .cell {
+  border: 2px solid #b24cff;
+  color: #ff8cff;
+  text-shadow: 0 0 10px #ff8cff, 0 0 20px #b24cff;
+  animation: runeGlow 2s ease-in-out infinite alternate;
+}
+
+.theme-rune .btn {
+  background: #7b2cbf;
+  color: white;
+  box-shadow: 0 0 10px #b24cff;
+}
+
+@keyframes runeGlow {
+  from {
+    box-shadow: 0 0 5px #b24cff, 0 0 10px #7b2cbf;
+  }
+  to {
+    box-shadow: 0 0 15px #ff8cff, 0 0 30px #b24cff;
+  }
+}
+
+/* Rune Title Glow */
+.game-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #ff8cff;
+  animation: titlePulse 2.5s infinite alternate;
+  text-shadow: 0 0 12px #ff8cff, 0 0 25px #b24cff;
+}
+
+@keyframes titlePulse {
+  from {
+    text-shadow: 0 0 8px #ff8cff, 0 0 18px #b24cff;
+  }
+  to {
+    text-shadow: 0 0 18px #ff8cff, 0 0 35px #b24cff;
+  }
+}
