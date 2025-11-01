@@ -1,0 +1,57 @@
+/* SPLASH SCREEN */
+
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeOut 1.8s ease forwards;
+}
+
+.splash-logo {
+  width: 120px;
+  height: 120px;
+  animation: dragonPulse 1.5s infinite alternate ease-in-out;
+  filter: drop-shadow(0 0 15px #b24cff);
+}
+
+.splash-title {
+  font-family: "Orbitron", sans-serif;
+  font-size: 42px;
+  margin-top: 15px;
+  color: #eebdff;
+  text-shadow: 0 0 15px #b24cff, 0 0 30px #b24cff;
+}
+
+/* Rune intro glow animation */
+@keyframes dragonPulse {
+  from {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px #b24cff);
+  }
+  to {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 30px #ff8cff);
+  }
+}
+
+/* Fade out splash */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
