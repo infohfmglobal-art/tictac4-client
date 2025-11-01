@@ -33,11 +33,7 @@ function updateUI() {
     cells[i].textContent = game.board.grid[r][c] || "";
   }
 
-  if (game.winner) {
-    msg.textContent = `Winner: ${game.winner}!`;
-  } else {
-    msg.textContent = `Turn: ${game.turn}`;
-  }
+  msg.textContent = game.winner ? `Winner: ${game.winner}!` : `Turn: ${game.turn}`;
 }
 
 function updateScore() {
@@ -47,9 +43,7 @@ function updateScore() {
 function handleMove(r, c) {
   if (game.move(r, c)) {
     updateUI();
-    if (game.winner && sfxEnabled) {
-      if (game.winner === "X" || game.winner === "O") winSound.play();
-    }
+    if (game.winner && sfxEnabled) winSound.play();
   }
 }
 
