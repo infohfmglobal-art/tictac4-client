@@ -2,8 +2,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const splash = document.getElementById("splash-screen");
 
-  // Remove splash after animation completes
   setTimeout(() => {
-    if (splash) splash.remove();
-  }, 2500);
+    if (splash) {
+      splash.style.opacity = "0";
+      splash.style.transition = "0.6s";
+      setTimeout(() => splash.remove(), 600);
+    }
+  }, 1800);
 });
