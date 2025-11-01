@@ -93,14 +93,14 @@
   }
 }
 
-/* Fade out splash */
+/* Fade out splash smoothly */
+#splash-screen {
+  animation: fadeOut 1.6s forwards;
+}
+
 @keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 0.15;
-  }
+  0% { opacity: 1; }
+  80% { opacity: 0.15; }
   100% {
     opacity: 0;
     visibility: hidden;
