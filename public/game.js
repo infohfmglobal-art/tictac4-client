@@ -1,40 +1,66 @@
-const clickSound = new Audio('/sound/click.mp3');
-const winSound = new Audio('/sound/win.mp3');
-const loseSound = new Audio('/sound/lose.mp3');
-
-import { Board } from "./board.js";
 export class Game {
   constructor() {
-    this.board = new Board(3);
+    this.board = {
+      cells: Array.from({ length: 3 }, () => Array(3).fill(""))
+    };
+
+    this.score = { X: 0, O: 0 };
     this.turn = "X";
-    this.winner = null;
+    this.winner = "";
+    this.sfxOn = true;
   }
 
   move(r, c) {
-    if (this.winner) return false;
-    if (!this.board.makeMove(r, c, this.turn)) return false;
+    if (this.board.cells[r][c] || this.winner) return false;
 
-    // 🔊 Play click sound when a move is placed
-    clickSound.play();
+    this.board.cells[r][c] = this.turn;
+    this.checkWinner();
 
-    this.winner = this.board.checkWinner();
-    if (this.winner) {
-      // 🔊 Play winner / loser sound
-      if (this.winner === this.turn) {
-        winSound.play();   // Player wins
-      } else {
-        loseSound.play();  // Player loses
-      }
-      return true;
+    if (!this.winner) {
+      this.turn = this.turn === "X" ? "O" : "X";
     }
 
-    this.turn = this.turn === "X" ? "O" : "X";
     return true;
   }
 
-  reset() {
-    this.board = new Board(3);
+  checkWinner() {
+    const b = this.board.cells;
+
+    const lines = [
+      // Rows
+      [b[0][0], b[0][1], b[0][2]],
+      [b[1][0], b[1][1], b[1][2]],
+      [b[2][0], b[2][1], b[2][2]],
+      // Columns
+      [b[0][0], b[1][0], b[2][0]],
+      [b[0][1], b[1][1], b[2][1]],
+      [b[0][2], b[1][2], b[2][2]],
+      // Diagonals
+      [b[0][0], b[1][1], b[2][2]],
+      [b[0][2], b[1][1], b[2][0]]
+    ];
+
+    for (let line of lines) {
+      if (line[0] && line[0] === line[1] && line[1] === line[2]) {
+        this.winner = line[0];
+        this.score[this.winner]++;
+        return;
+      }
+    }
+  }
+
+  nextRound() {
+    this.board.cells = Array.from({ length: 3 }, () => Array(3).fill(""));
+    this.winner = "";
     this.turn = "X";
-    this.winner = null;
+  }
+
+  resetAll() {
+    this.score = { X: 0, O: 0 };
+    this.nextRound();
+  }
+
+  toggleSfx() {
+    this.sfxOn = !this.sfxOn;
   }
 }
