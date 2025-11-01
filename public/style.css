@@ -156,3 +156,27 @@ h1 {
   border-color: black;
   color: black;
 }
+/* ===== TITLE GLOW ANIMATION ===== */
+.game-title {
+  font-size: 42px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  animation: runeGlow 3s infinite ease-in-out;
+}
+
+@keyframes runeGlow {
+  0% { text-shadow: 0 0 8px #b885ff; color: #ffdd99; }
+  50% { text-shadow: 0 0 18px gold, 0 0 28px #b885ff; color: #fff3d1; }
+  100% { text-shadow: 0 0 8px #b885ff; color: #ffdd99; }
+}
+
+/* ===== WINNING CELL PULSE ===== */
+.win-cell {
+  animation: winPulse 1s infinite alternate;
+}
+
+@keyframes winPulse {
+  from { box-shadow: 0 0 8px gold; transform: scale(1); }
+  to { box-shadow: 0 0 25px purple; transform: scale(1.08); }
+}
