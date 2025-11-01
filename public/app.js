@@ -33,10 +33,10 @@ function updateBoard() {
   for (let i = 0; i < cells.length; i++) {
     const r = Math.floor(i / 3);
     const c = i % 3;
-    cells[i].innerText = game.board.grid[r][c] || "";
+    cells[i].innerText = game.board.cells[r][c] || "";
   }
 
-  scoreText.textContent = `Score — X: ${game.scoreX} | O: ${game.scoreO}`;
+  scoreText.textContent = `Score — X: ${game.score.X} | O: ${game.score.O}`;
   msgDiv.textContent = game.winner ? `Winner: ${game.winner}` : "";
 }
 
