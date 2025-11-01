@@ -2,53 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TicTac4 Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RuneXO</title>
 
+  <!-- Rune Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- PWA manifest & CSS -->
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 
+  <!-- PWA install -->
   <script>
-    // PWA install capture
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
     });
   </script>
 </head>
-<body class="theme-gold">
-  <h1>TicTac4 Online</h1>
 
-  <div class="topbar">
-    <span class="badge">Site: Local</span>
-    <span class="badge green" id="statusTxt">Connected</span>
+<body class="theme-rune">
 
-    Theme:
-    <select id="themeSelect">
-      <option>Gold</option>
-      <option>Blue</option>
-      <option>Classic</option>
-    </select>
+<h1>RuneXO</h1>
 
-    <button id="installBtn" class="btn small">Install App</button>
-  </div>
+<div class="topbar">
+  <span class="badge">Site: Local</span>
+  <span class="badge green" id="statusTxt">Connected</span>
 
-  <div id="score" class="score">Score — X: 0 | O: 0</div>
-  <div id="msg" class="msg"></div>
+  Theme:
+  <select id="themeSelect">
+    <option>Rune</option>
+    <option>Gold</option>
+    <option>Blue</option>
+    <option>Classic</option>
+  </select>
 
-  <div id="board" class="board"></div>
+  <button id="installBtn" class="btn small">Install App</button>
+</div>
 
-  <div class="btngrp">
-    <button id="nextBtn" class="btn">Next Round</button>
-    <button id="resetBtn" class="btn red">Reset All</button>
-    <button id="sfxBtn" class="btn small">SFX: On</button>
-  </div>
+<div id="score" class="score">Score — X: 0 | O: 0</div>
+<div id="msg" class="msg"></div>
 
-  <script type="module" src="app.js"></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js");
-    }
-  </script>
+<div id="board" class="board"></div>
+
+<div class="btngrp">
+  <button id="nextBtn" class="btn">Next Round</button>
+  <button id="resetBtn" class="btn red">Reset All</button>
+  <button id="sfxBtn" class="btn small">SFX: On</button>
+</div>
+
+<script type="module" src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
+
 </body>
 </html>
