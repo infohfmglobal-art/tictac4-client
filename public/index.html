@@ -1,39 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RuneXO</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RuneXO</title>
 
-  <!-- Rune Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<!-- Rune Font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
-  <!-- PWA manifest & CSS -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
+<!-- PWA manifest & CSS -->
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="splash.css">
 
-  <!-- PWA install -->
-  <script>
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      window.deferredPrompt = e;
-    });
-  </script>
+<script>
+  // PWA install
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    window.deferredPrompt = e;
+  });
+</script>
+
 </head>
-<body class="theme-rune">
 
-<!-- Splash Screen -->
+<!-- ✅ SPLASH SCREEN -->
 <div id="splash-screen">
   <img src="logo-dragon.png" class="splash-logo" />
   <div class="splash-title">RUNEXO</div>
 </div>
 
+<body class="theme-rune">
+
+<!-- Game Title -->
 <h1 class="game-title">RuneXO</h1>
 
 <div class="topbar">
   <span class="badge">Site: Local</span>
   <span class="badge green" id="statusTxt">Connected</span>
-
+  
   Theme:
   <select id="themeSelect">
     <option>Rune</option>
@@ -45,7 +49,7 @@
   <button id="installBtn" class="btn small">Install App</button>
 </div>
 
-<div id="score" class="score">Score — X: 0 | O: 0</div>
+<div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
 <div id="msg" class="msg"></div>
 
 <div id="board" class="board"></div>
@@ -56,7 +60,11 @@
   <button id="sfxBtn" class="btn small">SFX: On</button>
 </div>
 
+<!-- Game Scripts -->
 <script type="module" src="app.js"></script>
+<script type="module" src="splash.js"></script>
+
+<!-- Service Worker -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js");
