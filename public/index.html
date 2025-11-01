@@ -1,56 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TicTac4 Online</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TicTac4 Online</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 
-<script>
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  window.deferredPrompt = e;
-});
-</script>
-
+  <script>
+    // PWA install capture
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
 </head>
-<body>
+<body class="theme-gold">
+  <h1>TicTac4 Online</h1>
 
-<h1>TicTac4 Online</h1>
+  <div class="topbar">
+    <span class="badge">Site: Local</span>
+    <span class="badge green" id="statusTxt">Connected</span>
 
-<div class="topbar">
-  <span class="badge">Site: Local</span>
-  <span class="badge green" id="statusTxt">Connected</span>
+    Theme:
+    <select id="themeSelect">
+      <option>Gold</option>
+      <option>Blue</option>
+      <option>Classic</option>
+    </select>
 
-  Theme:
-  <select id="themeSelect">
-    <option>Gold</option>
-    <option>Blue</option>
-    <option>Classic</option>
-  </select>
+    <button id="installBtn" class="btn small">Install App</button>
+  </div>
 
-  <button id="installBtn" class="btn small">Install App</button>
-</div>
+  <div id="score" class="score">Score — X: 0 | O: 0</div>
+  <div id="msg" class="msg"></div>
 
-<div id="score" class="score">Score — X: 0 | O: 0</div>
-<div id="msg" class="msg"></div>
+  <div id="board" class="board"></div>
 
-<div id="board" class="board"></div>
+  <div class="btngrp">
+    <button id="nextBtn" class="btn">Next Round</button>
+    <button id="resetBtn" class="btn red">Reset All</button>
+    <button id="sfxBtn" class="btn small">SFX: On</button>
+  </div>
 
-<div class="btngrp">
-  <button id="nextBtn" class="btn">Next Round</button>
-  <button id="resetBtn" class="btn red">Reset All</button>
-  <button id="sfxBtn" class="btn small">SFX: On</button>
-</div>
-
-<script type="module" src="app.js"></script>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js");
-}
-</script>
-
+  <script type="module" src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  </script>
 </body>
 </html>
