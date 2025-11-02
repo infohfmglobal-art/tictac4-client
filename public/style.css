@@ -1,351 +1,120 @@
-/* ===== FONT & BASE ===== */
+/* ===== BASE ===== */
+:root {
+  --cell: 95px;
+}
+* { box-sizing: border-box; }
 body {
   font-family: 'Orbitron', sans-serif;
   background: #06000f;
   color: #ffd86e;
   text-align: center;
-  padding-top: 20px;
+  padding: 20px 12px 60px;
   transition: 0.3s ease;
+  min-height: 100vh;
 }
-
-/* ===== TITLE ===== */
-h1 {
-  font-size: 42px;
+h1.game-title {
+  font-size: 46px;
   letter-spacing: 3px;
   text-shadow: 0 0 15px gold, 0 0 35px purple;
-  margin-bottom: 12px;
+  margin: 8px 0 16px;
+}
+.hidden { display: none !important; }
+.mt { margin-top: 14px; }
+
+/* ===== SCREENS ===== */
+.screen { max-width: 980px; margin: 0 auto; }
+.home-grid {
+  margin: 18px auto 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 720px;
+}
+.card {
+  border: 2px solid #ffcc44;
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255,255,255,0.04);
+  box-shadow: 0 0 12px rgba(255, 204, 68, 0.25);
+}
+select {
+  width: 100%;
+  background: #000;
+  color: gold;
+  border: 2px solid gold;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 /* ===== BOARD ===== */
 .board {
-  --cell: 95px;
   width: calc(var(--cell) * 3);
-  margin: 25px auto;
+  margin: 20px auto;
   display: grid;
   grid-template-columns: repeat(3, var(--cell));
   gap: 10px;
 }
-
 .cell {
   width: var(--cell);
   height: var(--cell);
   border: 3px solid #ffbe5b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 12px;
-  user-select: none;
-  font-size: 52px;
-  font-weight: bold;
-  transition: 0.15s;
-  box-shadow: 0 0 10px rgba(255, 200, 100, 0.4);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 12px; user-select: none;
+  font-size: 52px; font-weight: 700; transition: 0.15s;
+  box-shadow: 0 0 10px rgba(255, 200, 100, 0.35);
+  background: radial-gradient(circle, #0a0614, #000);
 }
+.cell.disabled { pointer-events: none; opacity: 0.7; }
 
-/* ===== DRAGON & PHOENIX ===== */
-.dragon {
-  background: radial-gradient(circle, #210000, #000);
-  color: #ff4d00;
-  text-shadow: 0 0 12px #ff9000, 0 0 25px #ff4d00;
-  animation: dragonPulse 1.2s infinite alternate;
-}
+/* Skins default colors (will be themed) */
+.dragon { color: #ffb84d; text-shadow: 0 0 12px #ffb84d, 0 0 25px #ffb84d; }
+.phoenix { color: #4dffff; text-shadow: 0 0 12px #4dffff, 0 0 25px #4dffff; }
 
-.phoenix {
-  background: radial-gradient(circle, #001521, #000);
-  color: #52d9ff;
-  text-shadow: 0 0 12px #52d9ff, 0 0 25px #00c3ff;
-  animation: phoenixPulse 1.2s infinite alternate;
-}
-
-@keyframes dragonPulse {
-  from { transform: scale(1); box-shadow: 0 0 10px #ff4d00; }
-  to   { transform: scale(1.12); box-shadow: 0 0 22px #ff8000; }
-}
-
-@keyframes phoenixPulse {
-  from { transform: scale(1); box-shadow: 0 0 10px #00eaff; }
-  to   { transform: scale(1.12); box-shadow: 0 0 22px #52d9ff; }
-}
-
-/* ===== WIN ANIMATION ===== */
-.win-cell {
-  animation: crownPulse 0.9s infinite ease-in-out;
-}
+/* Win highlight */
+.win-cell { animation: crownPulse 0.9s infinite ease-in-out; }
 @keyframes crownPulse {
   0% { box-shadow: 0 0 12px gold; }
   50% { box-shadow: 0 0 28px purple; }
   100% { box-shadow: 0 0 12px gold; }
 }
 
-/* ===== NEON GLASS GAMING BUTTONS ===== */
+/* ===== BUTTONS ===== */
+.btngrp { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
 .btn {
-  position: relative;
-  background: rgba(255, 238, 0, 0.15); /* light gold glass */
-  color: #ffdd73;
-  font-weight: 700;
-  padding: 10px 22px;
-  border-radius: 14px;
-  cursor: pointer;
-  border: 2px solid #ffcc44;
-  backdrop-filter: blur(6px);
-  transition: all 0.25s ease-in-out;
-  text-shadow: 0 0 8px #ffcc44;
-  box-shadow: 
-    0 0 10px #ffcc44,
-    inset 0 0 10px rgba(255, 200, 0, 0.4);
+  position: relative; background: rgba(255, 238, 0, 0.15);
+  color: #ffdd73; font-weight: 700; padding: 10px 22px; border-radius: 14px;
+  cursor: pointer; border: 2px solid #ffcc44; backdrop-filter: blur(6px);
+  transition: all 0.25s ease-in-out; text-shadow: 0 0 8px #ffcc44;
+  box-shadow: 0 0 10px #ffcc44, inset 0 0 10px rgba(255, 200, 0, 0.4);
 }
+.btn:hover { background: rgba(255,238,0,0.30); transform: scale(1.05); }
+.btn:active { transform: scale(0.96); }
+.btn.red { background: rgba(255, 0, 60, 0.18); color:#fff; border-color:#ff2e63; }
+.btn.red:hover { background: rgba(255, 0, 60, 0.35); }
+.btn.small { padding: 6px 14px; font-size: 14px; }
 
-/* Hover Glow */
-.btn:hover {
-  background: rgba(255, 238, 0, 0.30);
-  transform: scale(1.07);
-  box-shadow:
-    0 0 15px #ffdd55,
-    0 0 35px #ffdd55,
-    inset 0 0 18px rgba(255, 200, 0, 0.7);
-}
+/* ===== TOP BAR / SCORE ===== */
+.badge { border: 2px solid #ffcc44; border-radius: 9px; padding: 4px 8px; margin: 0 4px; }
+.score { margin-top: 8px; font-size: 20px; font-weight: 700; }
+.msg { margin: 8px 0; height: 24px; font-size: 18px; text-shadow: 0 0 8px gold; }
 
-/* Press Effect */
-.btn:active {
-  transform: scale(0.94);
-}
+/* ===== THEMES ===== */
+.theme-rune .dragon { color:#ff6bff; text-shadow:0 0 12px #ff6bff, 0 0 28px #b885ff; }
+.theme-rune .phoenix { color:#8cedff; text-shadow:0 0 12px #8cedff, 0 0 28px #6cfbff; }
 
-/* Red Danger Button */
-.btn.red {
-  background: rgba(255, 0, 60, 0.18);
-  color: #fff;
-  border: 2px solid #ff2e63;
-  text-shadow: 0 0 8px #ff2e63;
-  box-shadow:
-    0 0 12px #ff2e63,
-    inset 0 0 10px rgba(255, 0, 60, 0.4);
-}
-.btn.red:hover {
-  background: rgba(255, 0, 60, 0.35);
-  box-shadow:
-    0 0 20px #ff2e63,
-    0 0 40px #ff2e63,
-    inset 0 0 20px rgba(255, 0, 60, 0.7);
-}
+.theme-blue .dragon { color:#4cd3ff; text-shadow:0 0 12px #4cd3ff, 0 0 30px #009dff; }
+.theme-blue .phoenix { color:#00ffe5; text-shadow:0 0 12px #00ffe5, 0 0 30px #00d9ff; }
 
-/* Small Buttons (SFX etc) */
-.btn.small {
-  padding: 6px 14px;
-  font-size: 14px;
-}
+.theme-classic .dragon, .theme-classic .phoenix { color:#000; text-shadow:none; }
+.theme-gold .dragon, .theme-gold .phoenix { color:#ffd86e; text-shadow:0 0 12px gold, 0 0 25px gold; }
 
-#sfxBtn {
-  font-weight: bold;
-}
+/* ===== LEADERBOARD ===== */
+.leader { max-width: 540px; margin: 10px auto; text-align: left; }
+.leader li { padding: 6px 10px; border-bottom: 1px dashed rgba(255,216,110,.3); font-size: 14px; }
 
-/* ===== SCORE & MSG ===== */
-.score {
-  margin-top: 10px;
-  font-size: 20px;
-  font-weight: bold;
-}
-.msg {
-  margin: 10px 0;
-  height: 22px;
-  font-size: 18px;
-  text-shadow: 0 0 8px gold;
-}
-
-/* ===== PAGE / THEME SELECT ===== */
-select {
-  background: black;
-  color: gold;
-  border: 2px solid gold;
-  padding: 5px;
-  border-radius: 6px;
-}
-/* ==== THEME SYMBOL COLORS ==== */
-
-/* Default Gold Theme */
-.dragon { color: #ffb84d; text-shadow: 0 0 12px #ffb84d, 0 0 25px #ffb84d; }
-.phoenix { color: #4dffff; text-shadow: 0 0 12px #4dffff, 0 0 25px #4dffff; }
-
-/* ✅ Rune Theme — Purple + Gold */
-.theme-rune .dragon {
-  color: #ff6bff;
-  text-shadow: 0 0 12px #ff6bff, 0 0 28px #b885ff;
-}
-.theme-rune .phoenix {
-  color: #8cedff;
-  text-shadow: 0 0 12px #8cedff, 0 0 28px #6cfbff;
-}
-
-/* ✅ Blue Neon Theme — Electric Blue & Cyan */
-.theme-blue .dragon {
-  color: #4cd3ff;
-  text-shadow: 0 0 12px #4cd3ff, 0 0 30px #009dff;
-}
-.theme-blue .phoenix {
-  color: #00ffe5;
-  text-shadow: 0 0 12px #00ffe5, 0 0 30px #00d9ff;
-}
-
-/* ✅ Classic Theme — Black & White */
-.theme-classic .dragon,
-.theme-classic .phoenix {
-  color: #000;
-  text-shadow: none;
-}
-
-/* ✅ Gold Theme (backup override) */
-.theme-gold .dragon,
-.theme-gold .phoenix {
-  color: #ffd86e;
-  text-shadow: 0 0 12px gold, 0 0 25px gold;
-}
-/* 🎇 Crown Burst for Winner */
-.win-burst {
-  position: relative;
-}
-.win-burst::after {
-  content: "👑";
-  position: absolute;
-  top: -18px;
-  font-size: 26px;
-  animation: crownPop 1s ease-out forwards;
-}
-
-@keyframes crownPop {
-  0% { transform: scale(0) rotate(0deg); opacity: 0; }
-  60% { transform: scale(1.8) rotate(25deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-
-/* 🟣 Rune sparkle on winning cells */
-.win-cell {
-  animation: winPulse 1.3s infinite alternate;
-}
-
-@keyframes winPulse {
-  0% { box-shadow: 0 0 10px gold; transform: scale(1); }
-  100% { box-shadow: 0 0 35px purple; transform: scale(1.12); }
-}/* 🔮 Floating Rune Particle Canvas */
-#runeParticles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0; /* behind board */
-}
-.win-cell {
-  animation: glowPulse 1.4s infinite ease-in-out;
-}
-
-@keyframes glowPulse {
-  0% { box-shadow: 0 0 10px gold; }
-  50% { box-shadow: 0 0 25px hotpink; }
-  100% { box-shadow: 0 0 10px gold; }
-}
-.rune-burst {
-  position: fixed;
-  animation: runePop 0.9s ease-out forwards;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-}
-
-@keyframes runePop {
-  0% { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
- 60% { transform: translate(-50%, -50%) scale(1.2) rotate(20deg); opacity: 1; }
-100% { transform: translate(-50%, -120%) scale(0.2) rotate(-20deg); opacity: 0; }
-}
-/* Winner Burst Animation */
-.rune-burst {
-  position: fixed;
-  animation: float-up 0.8s ease-out forwards;
-  pointer-events: none;
-}
-
-@keyframes float-up {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-40px) scale(1.4); opacity: 0; }
-}
-/* ✅ GRID BOARD */
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 120px);
-  grid-template-rows: repeat(3, 120px);
-  gap: 6px;
-  justify-content: center;
-  margin: 30px auto;
-}
-
-/* ✅ CELLS */
-.cell {
-  width: 120px;
-  height: 120px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid #f4b400;
-  border-radius: 12px;
-  font-size: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.cell:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* ✅ Winner highlight */
-.win-cell {
-  background: rgba(255, 215, 0, 0.4) !important;
-  border-color: #ffeb3b !important;
-  animation: pulse 0.9s infinite alternate;
-}
-
-/* Pulse animation */
-@keyframes pulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.1); }
-}
-/* --- GAME BOARD GRID --- */
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 120px);
-  grid-template-rows: repeat(3, 120px);
-  gap: 10px;
-  justify-content: center;
-  margin: 40px auto;
-  position: relative;
-  z-index: 10;
-}
-
-/* --- CELLS --- */
-.cell {
-  width: 120px;
-  height: 120px;
-  background: rgba(255,255,255,0.07);
-  border: 2px solid #ffbb00;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 70px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.cell:hover {
-  background: rgba(255,255,255,0.18);
-}
-
-/* Winner glow */
-.win-cell {
-  animation: cellGlow 0.8s infinite alternate;
-  background: rgba(255,255,0,0.25) !important;
-  border-color: #ffe44c !important;
-}
-
-@keyframes cellGlow {
-  from { transform: scale(1); }
-  to   { transform: scale(1.1); }
+/* Small screens */
+@media (max-width: 480px) {
+  :root { --cell: 80px; }
+  h1.game-title { font-size: 34px; }
+  .home-grid { grid-template-columns: 1fr; }
 }
