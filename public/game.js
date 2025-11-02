@@ -1,77 +1,86 @@
-import { Board } from "./board.js";
-
-const clickSound = new Audio("/sound/click.mp3");
-const winSound   = new Audio("/sound/win.mp3");
-const loseSound  = new Audio("/sound/lose.mp3"); // used on draw beep
-
+// Core game state + logic (no DOM)
 export class Game {
-  constructor() {
-    this.board = new Board(3);
-    this.turn = "X";
-    this.winner = null;
-
-    this.scoreX = 0;
-    this.scoreO = 0;
-    this.scoreD = 0; // ✅ Draw counter
-
+  constructor(skin = "runes") {
+    this.grid = Array.from({ length: 3 }, () => Array(3).fill(""));
+    this.currentPlayer = "X";
+    this.winner = null; // "X" | "O" | "Draw" | null
+    this.scoreX = 0; this.scoreO = 0; this.scoreD = 0;
     this.sfxOn = true;
-    this.winningCells = []; // ✅ store winning cells for animation
+    this.skin = skin;
+    this.winningCells = [];
+    this.roundMoves = 0;
+    this.roundStart = performance.now();
   }
 
-  play(sound) {
-    if (!this.sfxOn) return;
-    try { sound.currentTime = 0; sound.play(); } catch (_) {}
+  isEmpty(r, c) { return this.grid[r][c] === ""; }
+  getEmptyCells() {
+    const out = [];
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) if (this.isEmpty(r,c)) out.push({r,c});
+    return out;
   }
 
-  move(r, c) {
+  makeMove(r, c, sym = this.currentPlayer) {
     if (this.winner) return false;
-    if (!this.board.makeMove(r, c, this.turn)) return false;
-
-    this.play(clickSound);
-
-    const result = this.board.checkWinner();
-
+    if (!this.isEmpty(r, c)) return false;
+    this.grid[r][c] = sym;
+    this.roundMoves++;
+    const result = this.checkWinner();
     if (result) {
-      if (result !== "Draw") {
-        this.winner = result;
-        this.winningCells = this.board.getWinningCells(); // ✅ new win cell memory
-        if (result === "X") this.scoreX++;
-        else this.scoreO++;
-
-        this.play(winSound);
+      if (result === "Draw") {
+        this.winner = "Draw"; this.scoreD++;
       } else {
-        // ✅ Proper draw
-        this.winner = "Draw";
-        this.scoreD++;
-        this.play(loseSound);
+        this.winner = result;
+        if (result === "X") this.scoreX++; else this.scoreO++;
       }
     } else {
-      this.turn = this.turn === "X" ? "O" : "X";
+      this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
     }
-
     return true;
   }
 
+  checkWinner() {
+    const g = this.grid, n = 3;
+    // rows
+    for (let r = 0; r < n; r++) {
+      if (g[r][0] && g[r][0] === g[r][1] && g[r][1] === g[r][2]) {
+        this.winningCells = [[r,0],[r,1],[r,2]];
+        return g[r][0];
+      }
+    }
+    // cols
+    for (let c = 0; c < n; c++) {
+      if (g[0][c] && g[0][c] === g[1][c] && g[1][c] === g[2][c]) {
+        this.winningCells = [[0,c],[1,c],[2,c]];
+        return g[0][c];
+      }
+    }
+    // diag
+    if (g[0][0] && g[0][0] === g[1][1] && g[1][1] === g[2][2]) {
+      this.winningCells = [[0,0],[1,1],[2,2]];
+      return g[0][0];
+    }
+    if (g[0][2] && g[0][2] === g[1][1] && g[1][1] === g[2][0]) {
+      this.winningCells = [[0,2],[1,1],[2,0]];
+      return g[0][2];
+    }
+    // draw?
+    if (this.getEmptyCells().length === 0) return "Draw";
+    return null;
+  }
+
+  getWinningCells() { return this.winningCells; }
+
   nextRound() {
-    this.board.resetGrid();
-    this.turn = "X";
+    this.grid.forEach(row => row.fill(""));
+    this.currentPlayer = "X";
     this.winner = null;
-    this.winningCells = []; // ✅ clear win cells
+    this.winningCells = [];
+    this.roundMoves = 0;
+    this.roundStart = performance.now();
   }
 
   resetAll() {
     this.nextRound();
-    this.scoreX = 0;
-    this.scoreO = 0;
-    this.scoreD = 0; // ✅ reset draws too
-  }
-
-  toggleSfx() { 
-    this.sfxOn = !this.sfxOn; 
-  }
-
-  // ✅ Expose winning cells for UI animation
-  getWinningCells() {
-    return this.winningCells;
+    this.scoreX = 0; this.scoreO = 0; this.scoreD = 0;
   }
 }
