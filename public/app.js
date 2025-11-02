@@ -57,16 +57,48 @@ function updateBoard() {
     const r = Math.floor(i / 3);
     const c = i % 3;
     const val = game.board.grid[r][c];
-    updateSymbol(cells[i], val);
+
+    // Apply rune symbols
+    if (val === "X") {
+      cells[i].innerHTML = "🐉";
+      cells[i].classList.add("dragon");
+      cells[i].classList.remove("phoenix");
+    } else if (val === "O") {
+      cells[i].innerHTML = "🕊️";
+      cells[i].classList.add("phoenix");
+      cells[i].classList.remove("dragon");
+    } else {
+      cells[i].innerHTML = "";
+      cells[i].classList.remove("dragon", "phoenix");
+    }
   }
 
-  scoreText.textContent = `Score — X: ${game.scoreX} | O: ${game.scoreO}`;
-  msgDiv.textContent = game.winner
-    ? (game.winner === "Draw" ? "Draw!" : `Winner: ${game.winner}`)
-    : `Turn: ${game.turn}`;
-}
+  // ✅ WINNER TEXT & CROWN ANIMATION
+  const winnerText = document.getElementById("winnerText");
+  const msgDiv = document.getElementById("msg");
 
-// Theme switch
+  if (game.winner && game.winner !== "Draw") {
+    winnerText.textContent = game.winner === "X" ? "Dragon Wins!" : "Phoenix Wins!";
+    msgDiv.classList.add("show-winner");
+
+    // Highlight winning cells
+    const winCells = game.getWinningCells?.() || [];
+    for (const [r, c] of winCells) {
+      const idx = r * 3 + c;
+      cells[idx].classList.add("win-cell");
+    }
+  } 
+  else if (game.winner === "Draw") {
+    winnerText.textContent = "Draw!";
+    msgDiv.classList.add("show-winner");
+  } 
+  else {
+    msgDiv.classList.remove("show-winner");
+    winnerText.textContent = `Turn: ${game.turn === "X" ? "Dragon" : "Phoenix"}`;
+  }
+
+  scoreText.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
+}
 themeSelect.addEventListener("change", () => {
   document.body.className = "";
   const theme = themeSelect.value.toLowerCase();
