@@ -20,15 +20,33 @@ function renderBoard() {
       cell.classList.add("cell");
       cell.dataset.r = r;
       cell.dataset.c = c;
-      cell.addEventListener("click", () => handleMove(r, c));
+
+      cell.addEventListener("click", () => handleMove(r, c, cell));
       boardElement.appendChild(cell);
     }
   }
 }
 
+// 🟣 Dragon & Phoenix Display Logic
+function updateSymbol(cell, val) {
+  cell.classList.remove("dragon", "phoenix");
+
+  if (val === "X") {
+    cell.classList.add("dragon");
+    cell.textContent = "🐉";
+  } else if (val === "O") {
+    cell.classList.add("phoenix");
+    cell.textContent = "🕊️";
+  } else {
+    cell.textContent = "";
+  }
+}
+
 // Click handler
-function handleMove(r, c) {
+function handleMove(r, c, cell) {
   if (!game.move(r, c)) return;
+  const val = game.board.grid[r][c];
+  updateSymbol(cell, val);
   updateBoard();
 }
 
@@ -38,8 +56,10 @@ function updateBoard() {
   for (let i = 0; i < cells.length; i++) {
     const r = Math.floor(i / 3);
     const c = i % 3;
-    cells[i].innerText = game.board.grid[r][c] || "";
+    const val = game.board.grid[r][c];
+    updateSymbol(cells[i], val);
   }
+
   scoreText.textContent = `Score — X: ${game.scoreX} | O: ${game.scoreO}`;
   msgDiv.textContent = game.winner
     ? (game.winner === "Draw" ? "Draw!" : `Winner: ${game.winner}`)
