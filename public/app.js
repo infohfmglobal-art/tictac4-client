@@ -1,4 +1,5 @@
 import { Game } from "./game.js";
+
 const game = new Game();
 
 // Elements
@@ -10,8 +11,9 @@ const resetBtn     = document.getElementById("resetBtn");
 const sfxBtn       = document.getElementById("sfxBtn");
 const themeSelect  = document.getElementById("themeSelect");
 const installBtn   = document.getElementById("installBtn");
+const winnerText   = document.getElementById("winnerText");
 
-// Build board DOM once per round
+// Build board
 function renderBoard() {
   boardElement.innerHTML = "";
   for (let r = 0; r < 3; r++) {
@@ -21,44 +23,27 @@ function renderBoard() {
       cell.dataset.r = r;
       cell.dataset.c = c;
 
-      cell.addEventListener("click", () => handleMove(r, c, cell));
+      cell.addEventListener("click", () => handleMove(r, c));
       boardElement.appendChild(cell);
     }
   }
 }
 
-// 🟣 Dragon & Phoenix Display Logic
-function updateSymbol(cell, val) {
-  cell.classList.remove("dragon", "phoenix");
-
-  if (val === "X") {
-    cell.classList.add("dragon");
-    cell.textContent = "🐉";
-  } else if (val === "O") {
-    cell.classList.add("phoenix");
-    cell.textContent = "🕊️";
-  } else {
-    cell.textContent = "";
-  }
-}
-
-// Click handler
-function handleMove(r, c, cell) {
+function handleMove(r, c) {
   if (!game.move(r, c)) return;
-  const val = game.board.grid[r][c];
-  updateSymbol(cell, val);
   updateBoard();
 }
 
-// Refresh UI text/icons
+// Update UI
 function updateBoard() {
   const cells = boardElement.children;
+
+  // Paint symbols
   for (let i = 0; i < cells.length; i++) {
     const r = Math.floor(i / 3);
     const c = i % 3;
     const val = game.board.grid[r][c];
 
-    // Apply rune symbols
     if (val === "X") {
       cells[i].innerHTML = "🐉";
       cells[i].classList.add("dragon");
@@ -73,57 +58,54 @@ function updateBoard() {
     }
   }
 
-  // ✅ WINNER TEXT & CROWN ANIMATION
-  const winnerText = document.getElementById("winnerText");
-  const msgDiv = document.getElementById("msg");
-
+  // Winner/draw UI
   if (game.winner && game.winner !== "Draw") {
     winnerText.textContent = game.winner === "X" ? "Dragon Wins!" : "Phoenix Wins!";
     msgDiv.classList.add("show-winner");
 
     // Highlight winning cells
-    const winCells = game.getWinningCells?.() || [];
+    const winCells = game.getWinningCells();
     for (const [r, c] of winCells) {
       const idx = r * 3 + c;
       cells[idx].classList.add("win-cell");
     }
-  } 
-  else if (game.winner === "Draw") {
+  } else if (game.winner === "Draw") {
     winnerText.textContent = "Draw!";
     msgDiv.classList.add("show-winner");
-  } 
-  else {
+  } else {
     msgDiv.classList.remove("show-winner");
     winnerText.textContent = `Turn: ${game.turn === "X" ? "Dragon" : "Phoenix"}`;
   }
 
+  // Score display
   scoreText.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
+
+// Theme switcher
 themeSelect.addEventListener("change", () => {
   document.body.className = "";
-  const theme = themeSelect.value.toLowerCase();
-  document.body.classList.add(`theme-${theme}`);
+  document.body.classList.add(`theme-${themeSelect.value.toLowerCase()}`);
 });
 
 // Buttons
 nextBtn.addEventListener("click", () => {
   game.nextRound();
-  msgDiv.textContent = "";
   renderBoard();
   updateBoard();
 });
+
 resetBtn.addEventListener("click", () => {
   game.resetAll();
-  msgDiv.textContent = "";
   renderBoard();
   updateBoard();
 });
+
 sfxBtn.addEventListener("click", () => {
   game.toggleSfx();
   sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`;
 });
 
-// PWA install
+// Install button
 installBtn.addEventListener("click", async () => {
   const prompt = window.deferredPrompt;
   if (!prompt) return;
@@ -132,5 +114,6 @@ installBtn.addEventListener("click", async () => {
   window.deferredPrompt = null;
 });
 
+// Start game
 renderBoard();
 updateBoard();
