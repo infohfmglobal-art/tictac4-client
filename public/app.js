@@ -1,4 +1,5 @@
 import { Game } from "./game.js";
+import { winBurstEffect } from "./runes.js"; // ✨ Win FX
 
 const game = new Game();
 
@@ -29,6 +30,7 @@ function renderBoard() {
   }
 }
 
+// Handle each move
 function handleMove(r, c) {
   if (!game.move(r, c)) return;
   updateBoard();
@@ -38,7 +40,6 @@ function handleMove(r, c) {
 function updateBoard() {
   const cells = boardElement.children;
 
-  // Paint symbols
   for (let i = 0; i < cells.length; i++) {
     const r = Math.floor(i / 3);
     const c = i % 3;
@@ -58,10 +59,13 @@ function updateBoard() {
     }
   }
 
-  // Winner/draw UI
+  // Winner / Draw UI
   if (game.winner && game.winner !== "Draw") {
     winnerText.textContent = game.winner === "X" ? "Dragon Wins!" : "Phoenix Wins!";
     msgDiv.classList.add("show-winner");
+
+    // Burst FX
+    winBurstEffect();
 
     // Highlight winning cells
     const winCells = game.getWinningCells();
@@ -69,6 +73,7 @@ function updateBoard() {
       const idx = r * 3 + c;
       cells[idx].classList.add("win-cell");
     }
+
   } else if (game.winner === "Draw") {
     winnerText.textContent = "Draw!";
     msgDiv.classList.add("show-winner");
@@ -77,11 +82,12 @@ function updateBoard() {
     winnerText.textContent = `Turn: ${game.turn === "X" ? "Dragon" : "Phoenix"}`;
   }
 
-  // Score display
-  scoreText.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
+  // Score text
+  scoreText.textContent =
+    `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
-// Theme switcher
+// Theme switch
 themeSelect.addEventListener("change", () => {
   document.body.className = "";
   document.body.classList.add(`theme-${themeSelect.value.toLowerCase()}`);
@@ -105,7 +111,7 @@ sfxBtn.addEventListener("click", () => {
   sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`;
 });
 
-// Install button
+// Install button (PWA)
 installBtn.addEventListener("click", async () => {
   const prompt = window.deferredPrompt;
   if (!prompt) return;
