@@ -1,64 +1,54 @@
-// ===== RUNE PARTICLE SYSTEM (Premium FX) =====
+// Rune Burst Effects (only on win)
+
 const canvas = document.getElementById("runeParticles");
 const ctx = canvas.getContext("2d");
 
 let particles = [];
-const symbols = ["🐉", "🕊️", "⭐", "⚡", "✨"];
-const colors = ["#ff00ff", "#00eaff", "#ffd54f", "#ff6b6b", "#ffffff"];
+const symbols = ["🐉", "🕊️", "⭐"];
+const colors = ["#ff00ff", "#00eaff", "#ffd54f", "#ffffff"];
 
-function resize() {
+function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resize();
-window.onresize = resize;
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-function newParticle() {
+function createParticle(x, y, type) {
   return {
-    x: Math.random() * canvas.width,
-    y: canvas.height + 20,
-    speed: 0.2 + Math.random() * 0.7,
-    size: 18 + Math.random() * 12,
-    symbol: symbols[Math.floor(Math.random() * symbols.length)],
-    color: colors[Math.floor(Math.random() * colors.length)],
-    opacity: 0.4 + Math.random() * 0.4,
-    drift: (Math.random() - 0.5) * 0.5
+    x,
+    y,
+    size: 18 + Math.random() * 20,
+    speedX: (Math.random() - 0.5) * 4,
+    speedY: -Math.random() * 4 - 2,
+    opacity: 1,
+    symbol: type
   };
 }
 
-// Ambient particle spawn
-setInterval(() => {
-  if (particles.length < 120) particles.push(newParticle());
-}, 80);
+export function triggerRuneBurst(winnerSymbol) {
+  let centerX = window.innerWidth / 2;
+  let centerY = window.innerHeight / 2;
 
-// WIN BURST EFFECT
-export function winBurstEffect() {
-  for (let i = 0; i < 35; i++) {
-    const p = newParticle();
-    p.x = canvas.width / 2;
-    p.y = canvas.height / 2;
-    p.speed = 2 + Math.random() * 3;
-    p.size = 22 + Math.random() * 20;
-    particles.push(p);
+  for (let i = 0; i < 40; i++) {
+    particles.push(createParticle(centerX, centerY, winnerSymbol === "X" ? "🐉" : "🕊️"));
+    if (i % 5 === 0) particles.push(createParticle(centerX, centerY, "⭐"));
   }
 }
 
-// Animation loop
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  particles.forEach((p, i) => {
-    ctx.globalAlpha = p.opacity;
-    ctx.font = `${p.size}px serif`;
-    ctx.fillStyle = p.color;
+  particles = particles.filter(p => p.opacity > 0);
+
+  particles.forEach(p => {
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.opacity -= 0.015;
+
+    ctx.globalAlpha = Math.max(p.opacity, 0);
+    ctx.font = `${p.size}px Segoe UI Emoji`;
     ctx.fillText(p.symbol, p.x, p.y);
-
-    p.y -= p.speed;
-    p.x += p.drift;
-
-    if (p.y < -30 || p.opacity <= 0) {
-      particles.splice(i, 1);
-    }
   });
 
   requestAnimationFrame(animate);
