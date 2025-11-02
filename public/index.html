@@ -67,6 +67,9 @@
 <script type="module" src="app.js"></script>
 <script type="module" src="splash.js"></script>
 <script type="module" src="runes.js"></script>
+
+<!-- Service Worker -->
+<script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js");
 }
