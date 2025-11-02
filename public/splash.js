@@ -1,6 +1,5 @@
-// Tiny splash fade
+// splash.js
 const splash = document.getElementById("splash-screen");
-if (splash) {
-  setTimeout(() => splash.classList.add("hide"), 600);
-  setTimeout(() => splash.remove(), 1400);
-}
+window.addEventListener("load", ()=> {
+  setTimeout(()=> splash?.classList.add("hide"), 700);
+});
