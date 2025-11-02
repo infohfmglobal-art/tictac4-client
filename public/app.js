@@ -1,9 +1,9 @@
 import { Game } from "./game.js";
-import { winBurstEffect } from "./runes.js"; // ✨ Win FX
+import { triggerRuneBurst } from "./runes.js"; // ✅ correct FX import
 
 const game = new Game();
 
-// Elements
+// UI Elements
 const boardElement = document.getElementById("board");
 const scoreText    = document.getElementById("score");
 const msgDiv       = document.getElementById("msg");
@@ -30,7 +30,7 @@ function renderBoard() {
   }
 }
 
-// Handle each move
+// Handle Move
 function handleMove(r, c) {
   if (!game.move(r, c)) return;
   updateBoard();
@@ -59,15 +59,15 @@ function updateBoard() {
     }
   }
 
-  // Winner / Draw UI
+  // Winner UI
   if (game.winner && game.winner !== "Draw") {
     winnerText.textContent = game.winner === "X" ? "Dragon Wins!" : "Phoenix Wins!";
     msgDiv.classList.add("show-winner");
 
-    // Burst FX
-    winBurstEffect();
+    // ✨ Burst FX
+    triggerRuneBurst(game.winner);
 
-    // Highlight winning cells
+    // Highlight win cells
     const winCells = game.getWinningCells();
     for (const [r, c] of winCells) {
       const idx = r * 3 + c;
@@ -77,17 +77,18 @@ function updateBoard() {
   } else if (game.winner === "Draw") {
     winnerText.textContent = "Draw!";
     msgDiv.classList.add("show-winner");
+
   } else {
     msgDiv.classList.remove("show-winner");
-    winnerText.textContent = `Turn: ${game.turn === "X" ? "Dragon" : "Phoenix"}`;
+    winnerText.textContent =
+      `Turn: ${game.turn === "X" ? "Dragon" : "Phoenix"}`;
   }
 
-  // Score text
   scoreText.textContent =
     `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
-// Theme switch
+// Theme change
 themeSelect.addEventListener("change", () => {
   document.body.className = "";
   document.body.classList.add(`theme-${themeSelect.value.toLowerCase()}`);
@@ -111,7 +112,7 @@ sfxBtn.addEventListener("click", () => {
   sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`;
 });
 
-// Install button (PWA)
+// Install PWA
 installBtn.addEventListener("click", async () => {
   const prompt = window.deferredPrompt;
   if (!prompt) return;
@@ -120,6 +121,6 @@ installBtn.addEventListener("click", async () => {
   window.deferredPrompt = null;
 });
 
-// Start game
+// Start
 renderBoard();
 updateBoard();
