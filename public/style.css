@@ -198,3 +198,30 @@ select {
   color: #ffd86e;
   text-shadow: 0 0 12px gold, 0 0 25px gold;
 }
+/* 🎇 Crown Burst for Winner */
+.win-burst {
+  position: relative;
+}
+.win-burst::after {
+  content: "👑";
+  position: absolute;
+  top: -18px;
+  font-size: 26px;
+  animation: crownPop 1s ease-out forwards;
+}
+
+@keyframes crownPop {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  60% { transform: scale(1.8) rotate(25deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* 🟣 Rune sparkle on winning cells */
+.win-cell {
+  animation: winPulse 1.3s infinite alternate;
+}
+
+@keyframes winPulse {
+  0% { box-shadow: 0 0 10px gold; transform: scale(1); }
+  100% { box-shadow: 0 0 35px purple; transform: scale(1.12); }
+}
