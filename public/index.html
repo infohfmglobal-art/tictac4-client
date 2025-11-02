@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="splash.css">
 
 <script>
-  // PWA install
+  // PWA install handler
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     window.deferredPrompt = e;
@@ -23,16 +23,15 @@
 
 </head>
 
-<!-- ✅ SPLASH SCREEN -->
+<!-- ✅ Splash Screen -->
 <div id="splash-screen">
   <img src="logo-dragon.png" class="splash-logo" />
   <div class="splash-title">RUNEXO</div>
 </div>
 
 <body class="theme-rune">
-<canvas id="runeParticles"></canvas>
 
-  <!-- Game Title -->
+<!-- ✅ Game Title -->
 <h1 class="game-title">RuneXO</h1>
 
 <div class="topbar">
@@ -50,25 +49,31 @@
   <button id="installBtn" class="btn small">Install App</button>
 </div>
 
+<!-- ✅ Score Banner -->
 <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
+
+<!-- ✅ Winner display -->
 <div id="msg" class="msg winner-banner">
   <span class="crown-burst">👑</span>
   <span id="winnerText"></span>
 </div>
+
+<!-- ✅ Game Board -->
 <div id="board" class="board"></div>
 
+<!-- ✅ Buttons -->
 <div class="btngrp">
   <button id="nextBtn" class="btn">Next Round</button>
   <button id="resetBtn" class="btn red">Reset All</button>
   <button id="sfxBtn" class="btn small">SFX: On</button>
 </div>
 
-<!-- Game Scripts -->
+<!-- ✅ Game Scripts -->
 <script type="module" src="app.js"></script>
 <script type="module" src="splash.js"></script>
 <script type="module" src="runes.js"></script>
 
-<!-- Service Worker -->
+<!-- ✅ Service Worker -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js");
