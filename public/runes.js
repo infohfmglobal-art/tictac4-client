@@ -18,3 +18,4 @@ export function winBurstEffect(winner) {
     setTimeout(() => el.remove(), 700);
   }
 }
+export { triggerRuneBurst };
