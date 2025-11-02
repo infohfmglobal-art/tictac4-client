@@ -14,13 +14,11 @@
 <link rel="stylesheet" href="splash.css">
 
 <script>
-  // PWA install
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     window.deferredPrompt = e;
   });
 </script>
-
 </head>
 
 <body class="theme-rune">
@@ -31,7 +29,10 @@
   <div class="splash-title">RUNEXO</div>
 </div>
 
-<!-- ✅ Game UI -->
+<!-- Background Canvas -->
+<canvas id="runeParticles"></canvas>
+
+<!-- Game Title -->
 <h1 class="game-title">RuneXO</h1>
 
 <div class="topbar">
@@ -56,7 +57,6 @@
   <span id="winnerText"></span>
 </div>
 
-<!-- ✅ BOARD -->
 <div id="board" class="board"></div>
 
 <div class="btngrp">
@@ -65,12 +65,11 @@
   <button id="sfxBtn" class="btn small">SFX: On</button>
 </div>
 
-<!-- ✅ Scripts -->
+<!-- Scripts -->
 <script type="module" src="app.js"></script>
 <script type="module" src="splash.js"></script>
 <script type="module" src="runes.js"></script>
 
-<!-- ✅ Service Worker -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js");
