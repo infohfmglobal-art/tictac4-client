@@ -113,3 +113,42 @@ select {
   padding: 5px;
   border-radius: 6px;
 }
+/* ==== THEME SYMBOL COLORS ==== */
+
+/* Default Gold Theme */
+.dragon { color: #ffb84d; text-shadow: 0 0 12px #ffb84d, 0 0 25px #ffb84d; }
+.phoenix { color: #4dffff; text-shadow: 0 0 12px #4dffff, 0 0 25px #4dffff; }
+
+/* ✅ Rune Theme — Purple + Gold */
+.theme-rune .dragon {
+  color: #ff6bff;
+  text-shadow: 0 0 12px #ff6bff, 0 0 28px #b885ff;
+}
+.theme-rune .phoenix {
+  color: #8cedff;
+  text-shadow: 0 0 12px #8cedff, 0 0 28px #6cfbff;
+}
+
+/* ✅ Blue Neon Theme — Electric Blue & Cyan */
+.theme-blue .dragon {
+  color: #4cd3ff;
+  text-shadow: 0 0 12px #4cd3ff, 0 0 30px #009dff;
+}
+.theme-blue .phoenix {
+  color: #00ffe5;
+  text-shadow: 0 0 12px #00ffe5, 0 0 30px #00d9ff;
+}
+
+/* ✅ Classic Theme — Black & White */
+.theme-classic .dragon,
+.theme-classic .phoenix {
+  color: #000;
+  text-shadow: none;
+}
+
+/* ✅ Gold Theme (backup override) */
+.theme-gold .dragon,
+.theme-gold .phoenix {
+  color: #ffd86e;
+  text-shadow: 0 0 12px gold, 0 0 25px gold;
+}
