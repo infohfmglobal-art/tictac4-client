@@ -14,31 +14,30 @@
 <link rel="stylesheet" href="splash.css">
 
 <script>
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    window.deferredPrompt = e;
-  });
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  window.deferredPrompt = e;
+});
 </script>
 </head>
 
-<body class="theme-rune">
-
-<!-- ✅ SPLASH SCREEN -->
+<!-- ✅ SPLASH SCREEN (outside body) -->
 <div id="splash-screen">
   <img src="logo-dragon.png" class="splash-logo" />
   <div class="splash-title">RUNEXO</div>
 </div>
 
+<body class="theme-rune">
+
 <!-- Background Canvas -->
 <canvas id="runeParticles"></canvas>
 
-<!-- Game Title -->
 <h1 class="game-title">RuneXO</h1>
 
 <div class="topbar">
   <span class="badge">Site: Local</span>
   <span class="badge green" id="statusTxt">Connected</span>
-  
+
   Theme:
   <select id="themeSelect">
     <option>Rune</option>
