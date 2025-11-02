@@ -1,12 +1,6 @@
-// Splash Screen Control
-document.addEventListener("DOMContentLoaded", () => {
-  const splash = document.getElementById("splash-screen");
-
-  setTimeout(() => {
-    if (splash) {
-      splash.style.opacity = "0";
-      splash.style.transition = "0.6s";
-      setTimeout(() => splash.remove(), 600);
-    }
-  }, 1500);
-});
+// Tiny splash fade
+const splash = document.getElementById("splash-screen");
+if (splash) {
+  setTimeout(() => splash.classList.add("hide"), 600);
+  setTimeout(() => splash.remove(), 1400);
+}
