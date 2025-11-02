@@ -234,3 +234,12 @@ select {
   pointer-events: none;
   z-index: 0; /* behind board */
 }
+.win-cell {
+  animation: glowPulse 1.4s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 10px gold; }
+  50% { box-shadow: 0 0 25px hotpink; }
+  100% { box-shadow: 0 0 10px gold; }
+}
