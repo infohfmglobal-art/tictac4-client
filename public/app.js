@@ -4,217 +4,179 @@ import { triggerRuneBurst, confettiBurst, screenShake } from "./runes.js";
 
 const game = new Game();
 
-/* ---------- Grab elements (all optional-safe) ---------- */
-const $ = (id)=>document.getElementById(id);
-const boardEl   = $("board");
-const scoreEl   = $("score");
-const msgEl     = $("msg");
-const winnerTxt = $("winnerText");
-const nextBtn   = $("nextBtn");
-const resetBtn  = $("resetBtn");
-const homeBtn   = $("homeBtn");
-const sfxBtn    = $("sfxBtn");
-const musicBtn  = $("musicBtn");
-const installBtn= $("installBtn");
-const installBtn2= $("installBtn2");
+// DOM
+const boardEl = document.getElementById("board");
+const scoreEl = document.getElementById("score");
+const msgEl = document.getElementById("msg");
+const winnerTxt = document.getElementById("winnerText");
+const pX = document.getElementById("pX");
+const pO = document.getElementById("pO");
 
-const modeBar   = $("modeBar");
-const modeBadge = $("modeBadge");
-const diffBadge = $("diffBadge");
-const skinBadge = $("skinBadge");
-const pX        = $("pX");
-const pO        = $("pO");
+const nextBtn = document.getElementById("nextBtn");
+const resetBtn = document.getElementById("resetBtn");
+const homeBtn = document.getElementById("homeBtn");
+const sfxBtn = document.getElementById("sfxBtn");
+const musicBtn = document.getElementById("musicBtn");
+const installBtn = document.getElementById("installBtn");
+const installBtn2 = document.getElementById("installBtn2");
 
-// Home screen controls (if present)
-const homeScreen= $("homeScreen");
-const startBtn  = $("startBtn");
-const gameMode  = $("gameMode");
-const difficulty= $("difficulty");
-const skinSel   = $("skin");
-const themeSel  = $("themeSelect");
-const leaderList= $("leaderList");
+const homeScreen = document.getElementById("homeScreen");
+const startBtn = document.getElementById("startBtn");
+const gameMode = document.getElementById("gameMode");
+const difficulty = document.getElementById("difficulty");
+const skinSel = document.getElementById("skin");
+const themeSel = document.getElementById("themeSelect");
+const leaderList = document.getElementById("leaderList");
 
-/* ---------- Audio ---------- */
+const modeBadge = document.getElementById("modeBadge");
+const diffBadge = document.getElementById("diffBadge");
+const skinBadge = document.getElementById("skinBadge");
+
+// AUDIO
 const clickSfx = new Audio("sound/click.mp3");
-const winSfx   = new Audio("sound/win.mp3");
-const music    = new Audio("sound/bg.mp3");
+const winSfx = new Audio("sound/win.mp3");
+const music = new Audio("sound/bg.mp3");
 music.loop = true;
 let musicWanted = false;
 
-/* ---------- Build board ---------- */
-function renderBoard(){
-  if (!boardEl) return;
+// BOARD BUILD
+function renderBoard() {
   boardEl.innerHTML = "";
   for (let r=0;r<3;r++){
     for (let c=0;c<3;c++){
-      const cell = document.createElement("div");
-      cell.className = "cell";
-      cell.dataset.r=r; cell.dataset.c=c;
-      cell.addEventListener("click", ()=>handleMove(r,c));
+      const cell=document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.r=r;cell.dataset.c=c;
+      cell.addEventListener("click",()=>handleMove(r,c));
       boardEl.appendChild(cell);
     }
   }
 }
 renderBoard();
 
-/* ---------- Handle move ---------- */
+// HANDLE MOVE
 function handleMove(r,c){
-  // start music after first tap
+
   if (musicWanted && music.paused) music.play().catch(()=>{});
 
-  // player move
-  const ok = game.move(r,c);
-  if (!ok) return;
+  const result = game.move(r,c,true);
+  if (!result) return;
 
-  haptic(15);
-  if (game.sfxOn){ clickSfx.currentTime=0; clickSfx.play().catch(()=>{}); }
+  vibrate(20);
+  if (game.sfxOn) clickSfx.currentTime=0, clickSfx.play().catch(()=>{});
   updateBoard();
 
-  if (game.winner || game.board.full()) return;
-
-  // CPU turn with a small delay
-  if (game.mode==="Player vs CPU" && game.turn==="O"){
+  if (result === "cpuPending") {
     setTimeout(()=>{
-      const didCpu = game.performCpuMove();
-      if (didCpu){
-        haptic(15);
-        if (game.sfxOn){ clickSfx.currentTime=0; clickSfx.play().catch(()=>{}); }
-        updateBoard();
-      }
-    }, 600);
+      game.performCpuMove();
+      vibrate(15);
+      if (game.sfxOn) clickSfx.currentTime=0, clickSfx.play().catch(()=>{});
+      updateBoard();
+    }, 550);
   }
 }
 
-/* ---------- Update UI ---------- */
+// UPDATE UI
 function updateBoard(){
-  const cells = boardEl ? boardEl.children : [];
-  for (let i=0;i<cells.length;i++){
+  const cells = boardEl.children;
+  for(let i=0;i<cells.length;i++){
     const r=Math.floor(i/3), c=i%3;
     const val = game.board.grid[r][c];
     const cell = cells[i];
-    cell.className = "cell";
-    if (!val){ cell.textContent=""; continue; }
+    cell.className="cell";
+
+    if (!val){cell.textContent="";continue;}
 
     if (game.skin.startsWith("Classic")){
-      cell.textContent = val;
-      cell.classList.add(val==="X" ? "classicX" : "classicO");
-    } else if (game.skin === "Fruit"){
-      cell.textContent = (val==="X") ? "🍎" : "🍊";
-      cell.classList.add(val==="X" ? "fruitX" : "fruitO");
+      cell.textContent=val;
+      cell.classList.add(val==="X"?"classicX":"classicO");
+    } else if (game.skin==="Fruit"){
+      cell.textContent=(val==="X")?"🍎":"🍊";
+      cell.classList.add(val==="X"?"fruitX":"fruitO");
     } else {
-      cell.textContent = (val==="X") ? "🐉" : "🕊️";
-      cell.classList.add(val==="X" ? "dragon" : "phoenix");
+      cell.textContent=(val==="X")?"🐉":"🕊️";
+      cell.classList.add(val==="X"?"dragon":"phoenix");
     }
   }
 
-  // avatars/turn
-  pX?.classList.toggle("active", game.turn==="X");
-  pO?.classList.toggle("active", game.turn==="O");
+  pX.classList.toggle("active", game.turn==="X");
+  pO.classList.toggle("active", game.turn==="O");
 
-  // winner/draw
-  if (game.winner && game.winner!=="Draw"){
-    if (winnerTxt) winnerTxt.textContent = (game.winner==="X") ? "Dragon Wins!" : "Phoenix Wins!";
-    msgEl?.classList.add("show-winner");
-
-    // highlight win cells
-    for (const [r,c] of game.getWinningCells()){
-      const idx = r*3+c;
-      cells[idx]?.classList.add("win-cell");
+  if (game.winner){
+    if (game.winner==="Draw"){
+      winnerTxt.textContent="Draw!";
+    } else {
+      winnerTxt.textContent=(game.winner==="X")?"Dragon Wins!":"Phoenix Wins!";
+      triggerRuneBurst(game.winner);
+      confettiBurst();
+      screenShake();
+      vibrate([30,40,80]);
+      if (game.sfxOn) winSfx.currentTime=0, winSfx.play().catch(()=>{});
     }
 
-    triggerRuneBurst(game.winner);
-    confettiBurst();
-    screenShake();
-    haptic([40,40,80]);
-    if (game.sfxOn){ winSfx.currentTime=0; winSfx.play().catch(()=>{}); }
-
-    // leaderboard (PvC + player is X)
-    if (game.mode==="Player vs CPU" && game.winner==="X") {
-      const elapsed = ((performance.now()-game.roundStart)/1000).toFixed(2);
-      const moves = 9 - game.board.emptyCells().length;
-      addLeaderboard({ time: elapsed, moves, diff: game.difficulty.toLowerCase(), skin: game.skin.toLowerCase() });
+    if (game.mode==="Player vs CPU" && game.winner==="X"){
+      const t=((performance.now()-game.roundStart)/1000).toFixed(2);
+      const mv=9-game.board.emptyCells().length;
+      addLeaderboard({time:t, moves:mv, diff:game.difficulty.toLowerCase(), skin:game.skin.toLowerCase()});
     }
-  } else if (game.winner === "Draw"){
-    if (winnerTxt) winnerTxt.textContent = "Draw!";
-    msgEl?.classList.add("show-winner");
-  } else {
-    msgEl?.classList.remove("show-winner");
-    if (winnerTxt) winnerTxt.textContent = "";
   }
 
-  if (scoreEl) scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
+  scoreEl.textContent=`Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
-/* ---------- Buttons ---------- */
-nextBtn?.addEventListener("click", ()=>{ game.nextRound(); renderBoard(); updateBoard(); game.roundStart=performance.now(); });
-resetBtn?.addEventListener("click", ()=>{ game.scoreX=game.scoreO=game.scoreD=0; game.resetAll(); renderBoard(); updateBoard(); });
-Btn?.addEventListener("click", ()=>show(true));
-sfxBtn?.addEventListener("click", ()=>{ game.toggleSfx(); sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`; });
-musicBtn?.addEventListener("click", ()=>{ musicWanted=!musicWanted; musicBtn.textContent=`Music: ${musicWanted?"On":"Off"}`; if (musicWanted) music.play().catch(()=>{}); else music.pause(); });
+// BUTTONS
+nextBtn.onclick=()=>{game.nextRound();renderBoard();updateBoard();}
+resetBtn.onclick=()=>{game.scoreX=game.scoreO=game.scoreD=0;game.resetAll();renderBoard();updateBoard();}
+homeBtn.onclick=()=>showHome(true);
+sfxBtn.onclick=()=>{game.toggleSfx();sfxBtn.textContent=`SFX: ${game.sfxOn?"On":"Off"}`;}
+musicBtn.onclick=()=>{musicWanted=!musicWanted;musicBtn.textContent=`Music: ${musicWanted?"On":"Off"}`;musicWanted?music.play().catch(()=>{}):music.pause();}
 
-[installBtn,installBtn2].forEach(btn=>{
-  btn?.addEventListener("click", async ()=>{
-    const prompt = window.deferredPrompt; if (!prompt) return;
-    prompt.prompt(); await prompt.userChoice; window.deferredPrompt=null;
-  });
-});
+startBtn.onclick=()=>{
+  game.mode=gameMode.value;
+  game.difficulty=difficulty.value;
+  game.skin=skinSel.value;
+  document.body.className=`theme-${themeSel.value.toLowerCase()}`;
+  modeBadge.textContent=`Mode: ${game.mode==="Player vs CPU"?"PvC":"PvP"}`;
+  diffBadge.textContent=`Difficulty: ${game.difficulty}`;
+  skinBadge.textContent=`Skin: ${game.skin}`;
+  game.resetAll();renderBoard();updateBoard();
+  showHome(false);
+}
 
-/* ---------- Home screen toggle ---------- */
+// HOME VISIBILITY
 function showHome(show){
-  if (!homeScreen) return;
-
-  // Toggle home screen
-  homeScreen.classList.toggle("hidden", !show);
-
-  // Board grid visibility
-  boardEl.style.display = show ? "none" : "grid";
-
-  // Bottom buttons
-  document.querySelector(".btngrp")?.classList.toggle("hidden", show);
-
-  // Mode / Diff / Skin bar
-  modeBar?.classList.toggle("hidden", show);
-
-  // Avatars row
-  document.querySelector(".avatars")?.classList.toggle("hidden", show);
+  homeScreen.classList.toggle("hidden",!show);
+  boardEl.style.display=show?"none":"grid";
+  document.querySelector(".btngrp").style.display=show?"none":"flex";
+  document.querySelector(".avatars").style.display=show?"none":"flex";
 }
-startBtn?.addEventListener("click", ()=>{
-  if (gameMode) game.mode = gameMode.value;
-  if (difficulty) game.difficulty = difficulty.value;
-  if (skinSel) game.skin = skinSel.value;
-  if (themeSel) document.body.className = `theme-${themeSel.value.toLowerCase()}`;
-  modeBadge && (modeBadge.textContent = `Mode: ${game.mode==="Player vs CPU"?"PvC":"PvP"}`);
-  diffBadge && (diffBadge.textContent = `Difficulty: ${game.difficulty}`);
-  skinBadge && (skinBadge.textContent = `Skin: ${game.skin}`);
-  if (musicWanted) music.play().catch(()=>{});
-  game.resetAll(); renderBoard(); updateBoard(); showHome(false);
-});
 
-// initial state
-showHome(Boolean(homeScreen)); // show home if present
+// INIT
+showHome(true);
 loadLeaderboard();
-updateBoard();
 
-/* ---------- Haptics ---------- */
-function haptic(pattern){ if ("vibrate" in navigator) navigator.vibrate(pattern); }
+// HAPTIC
+function vibrate(p){
+  if ("vibrate" in navigator) navigator.vibrate(p);
+}
 
-/* ---------- Leaderboard (localStorage) ---------- */
-function addLeaderboard(entry){
-  const key="rxo_leader";
-  const list = JSON.parse(localStorage.getItem(key) || "[]");
-  list.push(entry);
-  list.sort((a,b)=> (parseFloat(a.time)-parseFloat(b.time)) || (a.moves-b.moves));
-  localStorage.setItem(key, JSON.stringify(list.slice(0,10)));
+// LEADERBOARD
+function addLeaderboard(e){
+  const k="rxo_leader";
+  const list=JSON.parse(localStorage.getItem(k)||"[]");
+  list.push(e);
+  list.sort((a,b)=>(a.time-b.time)||(a.moves-b.moves));
+  localStorage.setItem(k,JSON.stringify(list.slice(0,10)));
   loadLeaderboard();
 }
+
 function loadLeaderboard(){
-  if (!leaderList) return;
-  const key="rxo_leader";
-  const list = JSON.parse(localStorage.getItem(key) || "[]");
-  leaderList.innerHTML = "";
+  const k="rxo_leader";
+  const list=JSON.parse(localStorage.getItem(k)||"[]");
+  leaderList.innerHTML="";
   list.forEach((e,i)=>{
-    const li = document.createElement("li");
-    li.textContent = `${i+1}. ${e.time}s · ${e.moves} moves · ${e.diff} · ${e.skin}`;
+    const li=document.createElement("li");
+    li.textContent=`${i+1}. ${e.time}s · ${e.moves} moves · ${e.diff} · ${e.skin}`;
     leaderList.appendChild(li);
   });
 }
