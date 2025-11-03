@@ -1,34 +1,35 @@
-// runes.js
-export function triggerRuneBurst(winner) {
-  const container = document.body;
-  for (let i=0;i<20;i++){
-    const el=document.createElement("div");
-    el.className="rune-burst";
-    el.textContent = winner==="X" ? "🐉" : "🕊️";
-    el.style.left = (50 + (Math.random()*30-15)) + "%";
-    el.style.top  = (50 + (Math.random()*12-6)) + "%";
-    el.style.fontSize = (24 + Math.random()*20) + "px";
-    container.appendChild(el);
-    setTimeout(()=>el.remove(), 900);
+// runes.js – lightweight, safe effects
+export function triggerRuneBurst(winner){
+  // small crown pulse – safe no-op if missing CSS
+  const el = document.getElementById("msg");
+  if (!el) return;
+  el.classList.add("show-winner");
+  setTimeout(()=>el.classList.remove("show-winner"), 900);
+}
+
+export function confettiBurst(){
+  // tiny inline confetti: add 12 dots then fade
+  const root = document.body;
+  for (let i=0;i<12;i++){
+    const d = document.createElement("i");
+    d.style.position="fixed";
+    d.style.left = (50 + (Math.random()*40-20)) + "vw";
+    d.style.top  = (10 + Math.random()*10) + "vh";
+    d.style.width=d.style.height="8px";
+    d.style.background="gold";
+    d.style.borderRadius="50%";
+    d.style.opacity="1";
+    d.style.transition="transform 1s ease, opacity 1s ease";
+    root.appendChild(d);
+    setTimeout(()=>{ d.style.transform=`translate(${(Math.random()*2-1)*200}px, 400px)`; d.style.opacity="0"; },10);
+    setTimeout(()=>d.remove(),1100);
   }
 }
 
-export function confettiBurst() {
-  const colors = ["#ffdd57","#7ce3ff","#ff7ab6","#b388ff","#7dff9e"];
-  for (let i=0;i<40;i++){
-    const s = document.createElement("div");
-    s.className = "confetti";
-    s.style.left = (10 + Math.random()*80) + "%";
-    s.style.top = (45 + Math.random()*10) + "%";
-    s.style.width = s.style.height = (6 + Math.random()*6) + "px";
-    s.style.background = colors[(Math.random()*colors.length)|0];
-    s.style.transform = `rotate(${Math.random()*360}deg)`;
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(), 900);
-  }
-}
-
-export function screenShake() {
-  document.body.classList.add("shake");
-  setTimeout(()=>document.body.classList.remove("shake"), 400);
+export function screenShake(){
+  const el = document.documentElement;
+  el.style.transition="transform 0.15s";
+  el.style.transform="translateX(6px)";
+  setTimeout(()=>{ el.style.transform="translateX(-6px)"; },75);
+  setTimeout(()=>{ el.style.transform=""; el.style.transition=""; },150);
 }
