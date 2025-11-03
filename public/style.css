@@ -126,3 +126,35 @@ select{ background:black; color:gold; border:2px solid gold; padding:6px 8px; bo
     padding: 3px 6px;
   }
 }
+/* ✅ Mobile scaling fix */
+@media (max-width: 480px) {
+  .menu-box {
+    width: 92%;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    min-width: 110px;
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  #board {
+    width: 92vw;
+    height: 92vw;
+  }
+
+  .cell {
+    font-size: 2.4rem;
+  }
+
+  .avatars {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  h1.game-title {
+    font-size: 1.7rem;
+  }
+}
