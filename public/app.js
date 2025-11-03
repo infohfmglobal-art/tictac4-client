@@ -57,15 +57,44 @@ renderBoard();
 
 // ===== Handle move =====
 function handleMove(r,c){
-  // ensure music after first gesture (autoplay rules)
+  // ✅ Start music after touch gesture (autoplay policy)
   if (musicWanted && music.paused) music.play().catch(()=>{});
 
+  // ✅ Player move
   if (!game.move(r,c)) return;
+
   haptic(15);
-  if (game.sfxOn) clickSfx.currentTime=0, clickSfx.play().catch(()=>{});
+  if (game.sfxOn) {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(()=>{});
+  }
   updateBoard();
 
-  // if game finished by CPU immediately, also haptic & sfx are fired inside updateBoard
+  // ✅ If game ended after player move, stop
+  if (game.winner || game.board.full()) return;
+
+  // ✅ CPU turn (PvC mode only)
+  if (game.mode === "Player vs CPU" && game.turn === "O") {
+    
+    setTimeout(() => {
+      const emptyBefore = game.board.emptyCells().length;
+
+      // CPU picks move by difficulty logic
+      const [r2, c2] = game.cpuMove();
+      game.move(r2, c2);
+
+      const emptyAfter = game.board.emptyCells().length;
+
+      // Sound if CPU moved
+      if (emptyBefore !== emptyAfter && game.sfxOn) {
+        clickSfx.currentTime = 0;
+        clickSfx.play().catch(()=>{});
+      }
+
+      haptic(20);
+      updateBoard();
+    }, 450); // CPU reacts after 0.45s ✅
+  }
 }
 
 // ===== Update UI =====
