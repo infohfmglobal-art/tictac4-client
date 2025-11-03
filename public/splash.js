@@ -1,5 +1,1 @@
-// splash.js
-const splash = document.getElementById("splash-screen");
-window.addEventListener("load", ()=> {
-  setTimeout(()=> splash?.classList.add("hide"), 700);
-});
+// splash.js – placeholder so splash fades via CSS timing
