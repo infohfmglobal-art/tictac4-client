@@ -72,57 +72,69 @@
   </div>
 
   <!-- Home screen (in-page, toggled) -->
-  <div id="homeScreen" class="home hidden">
-    <h2>RuneXO</h2>
+  <!-- Home / Start Screen -->
+<div id="homeScreen" class="home">
+  <h2 class="brand">RuneXO</h2>
 
-    <div class="home-grid">
-      <div class="home-card">
-        <label>Game Mode</label>
-        <select id="gameMode">
-          <option>Player vs CPU</option>
-          <option>Player vs Player</option>
-        </select>
-      </div>
+  <div class="home-grid">
+    <div class="home-card">
+      <label>Game Mode</label>
+      <select id="gameMode">
+        <option>Player vs CPU</option>
+        <option>Player vs Player</option>
+      </select>
+    </div>
 
-      <div class="home-card">
-        <label>Difficulty</label>
-        <select id="difficulty">
-          <option>Easy</option>
-          <option>Normal</option>
-          <option>Hard</option>
-        </select>
-      </div>
+    <div class="home-card">
+      <label>Difficulty</label>
+      <select id="difficulty">
+        <option>Easy</option>
+        <option>Normal</option>
+        <option>Hard</option>
+      </select>
+    </div>
 
-      <div class="home-card">
-        <label>Skin</label>
-        <select id="skin">
-          <option>Runes</option>
-          <option>Classic X / O</option>
-          <option>Fruit</option>
-        </select>
-      </div>
+    <div class="home-card">
+      <label>Skin</label>
+      <select id="skin">
+        <option>Runes</option>
+        <option>Classic X / O</option>
+        <option>Fruit</option>
+      </select>
+    </div>
 
-      <div class="home-card">
-        <label>Theme</label>
-        <select id="themeSelect">
-          <option>Rune</option>
-          <option>Gold</option>
-          <option>Blue</option>
-          <option>Classic</option>
-        </select>
+    <div class="home-card">
+      <label>Theme</label>
+      <select id="themeSelect">
+        <option>Rune</option>
+        <option>Blue</option>
+        <option>Gold</option>
+        <option>Classic</option>
+      </select>
+    </div>
+
+    <div class="home-card span-2">
+      <div class="name-row">
+        <div>
+          <label>Player X name</label>
+          <input id="nameX" type="text" placeholder="e.g., Ayaz" maxlength="14">
+        </div>
+        <div>
+          <label>Player O / CPU name</label>
+          <input id="nameO" type="text" placeholder="CPU" maxlength="14">
+        </div>
       </div>
     </div>
 
-    <div class="btngrp">
-      <button id="startBtn" class="btn">Start Game</button>
-      <button id="installBtn2" class="btn small">Install App</button>
-    </div>
-
-    <div class="leader">
-      <h3>Leaderboard (Top 10 fastest wins vs CPU)</h3>
-      <ol id="leaderList"></ol>
+    <div class="home-actions span-2">
+      <button id="startBtn" class="btn big">Start Game</button>
+      <button id="installBtn2" class="btn big">Install App</button>
     </div>
   </div>
+
+  <h3 class="lb-title">Leaderboard (Top 10 fastest wins vs CPU)</h3>
+  <ol id="leaderList" class="leader"></ol>
+</div>
 
   <!-- Scripts -->
   <script type="module" src="app.js"></script>
