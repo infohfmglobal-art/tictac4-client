@@ -122,29 +122,47 @@ h1.game-title {
 }
 .btn.small { padding:6px 14px; font-size:14px; }
 
-/* ===== HOME SCREEN ===== */
+/* ===== HOME SCREEN (polished mobile UI) ===== */
 #homeScreen {
-  width:90%;
-  max-width:400px;
-  margin:auto;
-  padding-top:40px;
-}
-.home-card {
-  background:rgba(255,238,0,.08);
-  padding:12px;
-  border-radius:12px;
-  border:1px solid #ffcc44;
-  margin-bottom:15px;
-}
-.home-card select {
-  width:100%;
-  padding:10px;
-  background:black;
-  color:gold;
-  border:2px solid gold;
-  border-radius:8px;
+  width: 95%;
+  max-width: 420px;
+  margin: auto;
+  padding-top: 20px;
+  text-align: center;
 }
 
+.home-card {
+  background: rgba(255, 200, 0, 0.12);
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #ffdd55;
+  margin-bottom: 20px;
+  box-shadow: 0 0 12px rgba(255,200,0,0.18);
+}
+
+.home-card label {
+  display: block;
+  color: #ffd86b;
+  font-size: 18px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 6px rgba(255,200,0,0.6);
+}
+
+.home-card select {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  color: gold;
+  border: 2px solid #ffcc44;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.btn.bar {
+  width: 48%;
+  margin: 4px 1%;
+}
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width:480px){
   h1.game-title { font-size:32px; }
