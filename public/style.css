@@ -176,11 +176,107 @@ body {
 }
 
 /* Home container center */
+/* ===== HOME SCREEN ===== */
 #homeScreen {
-  max-width: 360px;
-  width: 92%;
-  margin: auto;
+  max-width: 400px;
+  width: 90%;
+  margin: 0 auto;
+  padding-top: 40px;
   text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 20px;
+}
+
+/* Dropdown card wrapper */
+.home-card {
+  width: 100%;
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 14px;
+  border-radius: 12px;
+}
+
+/* Dropdown titles */
+.home-card label {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* Dropdown styling */
+.home-card select {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  background: black;
+  color: gold;
+  border: 2px solid gold;
+  border-radius: 8px;
+}
+
+/* Buttons row */
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+.home-buttons button {
+  flex: 1;
+}
+}
+
+/* Home dropdown containers */
+.home-box {
+  border: 2px solid var(--glow-color);
+  padding: 16px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Dropdown styling */
+.home-box select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #000;
+  color: var(--glow-color);
+  font-size: 16px;
+  border: 2px solid var(--glow-color);
+}
+
+/* Buttons center */
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* Start & Install buttons */
+.home-buttons button {
+  padding: 12px 18px;
+  font-size: 18px;
+}
+
+/* Mobile layout fix */
+@media (max-width: 500px) {
+  #homeScreen {
+    max-width: 100%;
+    width: 90%;
+  }
+
+  .home-buttons {
+    flex-direction: column;
+  }
+
+  .home-buttons button {
+    width: 100%;
+  }
 }
 
 /* Buttons responsive */
