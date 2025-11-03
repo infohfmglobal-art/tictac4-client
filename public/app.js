@@ -56,60 +56,48 @@ function renderBoard() {
 renderBoard();
 
 // ===== Handle move =====
-function handleMove(r,c){
-  // ✅ Start music after touch gesture (autoplay policy)
-  if (musicWanted && music.paused) music.play().catch(()=>{});
+function handleMove(r, c) {
 
-  // ✅ Player move
- function handleMove(r, c){
-  // Start music after first gesture (autoplay rules)
-  if (musicWanted && music.paused) music.play().catch(()=>{});
+  // Start music after first gesture (mobile autoplay rule)
+  if (musicWanted && music.paused) {
+    music.play().catch(()=>{});
+  }
 
   // Player move
-  const result = game.move(r, c, true);
-  if (!result) return;
+  const moved = game.move(r, c);
+  if (!moved) return;
 
+  // Player feedback
   haptic(15);
-  if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+  if (game.sfxOn) {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(()=>{});
+  }
   updateBoard();
 
-  // If CPU must move next
-  if (result === "cpuPending") {
-      setTimeout(()=>{
-          game.performCpuMove();
+  // If game finished after player move, stop here
+  if (game.winner || game.board.full()) return;
 
-          // haptic + sound for CPU move
-          haptic(15);
-          if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
-
-          updateBoard();
-      }, 600); // delay CPU by 600ms
-  }
-}
+  // CPU turn (PvC)
   if (game.mode === "Player vs CPU" && game.turn === "O") {
-    
     setTimeout(() => {
-      const emptyBefore = game.board.emptyCells().length;
 
-      // CPU picks move by difficulty logic
-      const [r2, c2] = game.cpuMove();
-      game.move(r2, c2);
+      // CPU chooses a move based on difficulty
+      const [cr, cc] = game.cpuMove();
+      game.move(cr, cc);
 
-      const emptyAfter = game.board.emptyCells().length;
-
-      // Sound if CPU moved
-      if (emptyBefore !== emptyAfter && game.sfxOn) {
+      // CPU feedback
+      haptic(15);
+      if (game.sfxOn) {
         clickSfx.currentTime = 0;
         clickSfx.play().catch(()=>{});
       }
 
-      haptic(20);
       updateBoard();
-    }, 450); // CPU reacts after 0.45s ✅
+
+    }, 600); // CPU delay for realism
   }
 }
-
-// ===== Update UI =====
 function updateBoard(){
   const cells = boardEl.children;
 
