@@ -77,6 +77,8 @@
   <h2 class="brand">RuneXO</h2>
 
   <div class="home-grid">
+
+    <!-- Game Mode -->
     <div class="home-card">
       <label>Game Mode</label>
       <select id="gameMode">
@@ -84,6 +86,48 @@
         <option>Player vs Player</option>
       </select>
     </div>
+
+    <!-- Difficulty -->
+    <div class="home-card">
+      <label>Difficulty</label>
+      <select id="difficulty">
+        <option>Easy</option>
+        <option>Normal</option>
+        <option>Hard</option>
+      </select>
+    </div>
+
+    <!-- Skin -->
+    <div class="home-card">
+      <label>Skin</label>
+      <select id="skin">
+        <option>Runes</option>
+        <option>Classic X / O</option>
+        <option>Fruit</option>
+      </select>
+    </div>
+
+    <!-- Theme -->
+    <div class="home-card">
+      <label>Theme</label>
+      <select id="themeSelect">
+        <option>Rune</option>
+        <option>Blue</option>
+        <option>Purple</option>
+        <option>Fire</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="home-actions">
+    <button id="startBtn" class="btn big">Start Game</button>
+    <button id="installBtn2" class="btn ghost">Install App</button>
+  </div>
+
+  <h3 class="leader-title">Leaderboard (Top 10 fastest wins vs CPU)</h3>
+  <ul id="leaderList" class="leaderbox"></ul>
+</div>
 
     <div class="home-card">
       <label>Difficulty</label>
