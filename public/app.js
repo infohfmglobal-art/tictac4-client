@@ -61,19 +61,31 @@ function handleMove(r,c){
   if (musicWanted && music.paused) music.play().catch(()=>{});
 
   // ✅ Player move
-  if (!game.move(r,c)) return;
+ function handleMove(r, c){
+  // Start music after first gesture (autoplay rules)
+  if (musicWanted && music.paused) music.play().catch(()=>{});
+
+  // Player move
+  const result = game.move(r, c, true);
+  if (!result) return;
 
   haptic(15);
-  if (game.sfxOn) {
-    clickSfx.currentTime = 0;
-    clickSfx.play().catch(()=>{});
-  }
+  if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
   updateBoard();
 
-  // ✅ If game ended after player move, stop
-  if (game.winner || game.board.full()) return;
+  // If CPU must move next
+  if (result === "cpuPending") {
+      setTimeout(()=>{
+          game.performCpuMove();
 
-  // ✅ CPU turn (PvC mode only)
+          // haptic + sound for CPU move
+          haptic(15);
+          if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+
+          updateBoard();
+      }, 600); // delay CPU by 600ms
+  }
+}
   if (game.mode === "Player vs CPU" && game.turn === "O") {
     
     setTimeout(() => {
