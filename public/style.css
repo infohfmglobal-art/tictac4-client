@@ -87,3 +87,42 @@ select{ background:black; color:gold; border:2px solid gold; padding:6px 8px; bo
   animation: flyUp .8s ease-out forwards;
 }
 @keyframes flyUp { from{ transform: translateY(0); opacity:.95; } to{ transform: translateY(-120px); opacity:0; } }
+/* ===== MOBILE RESPONSIVE FIX ===== */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 32px;
+    margin-top: 6px;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-card {
+    padding: 10px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  .board {
+    --cell: 80px;
+    gap: 8px;
+  }
+
+  .avatars img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .avatar span {
+    font-size: 12px;
+  }
+
+  .modebar .badge {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+}
