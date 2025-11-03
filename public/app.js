@@ -148,7 +148,7 @@ function updateBoard(){
 /* ---------- Buttons ---------- */
 nextBtn?.addEventListener("click", ()=>{ game.nextRound(); renderBoard(); updateBoard(); game.roundStart=performance.now(); });
 resetBtn?.addEventListener("click", ()=>{ game.scoreX=game.scoreO=game.scoreD=0; game.resetAll(); renderBoard(); updateBoard(); });
-homeBtn?.addEventListener("click", ()=>showHome(true));
+Btn?.addEventListener("click", ()=>show(true));
 sfxBtn?.addEventListener("click", ()=>{ game.toggleSfx(); sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`; });
 musicBtn?.addEventListener("click", ()=>{ musicWanted=!musicWanted; musicBtn.textContent=`Music: ${musicWanted?"On":"Off"}`; if (musicWanted) music.play().catch(()=>{}); else music.pause(); });
 
@@ -159,13 +159,23 @@ musicBtn?.addEventListener("click", ()=>{ musicWanted=!musicWanted; musicBtn.tex
   });
 });
 
-/* ---------- Home screen (optional) ---------- */
+/* ---------- Home screen toggle ---------- */
 function showHome(show){
   if (!homeScreen) return;
+
+  // Toggle home screen
   homeScreen.classList.toggle("hidden", !show);
-  if (boardEl) boardEl.style.display = show ? "none":"grid";
+
+  // Board grid visibility
+  boardEl.style.display = show ? "none" : "grid";
+
+  // Bottom buttons
   document.querySelector(".btngrp")?.classList.toggle("hidden", show);
+
+  // Mode / Diff / Skin bar
   modeBar?.classList.toggle("hidden", show);
+
+  // Avatars row
   document.querySelector(".avatars")?.classList.toggle("hidden", show);
 }
 startBtn?.addEventListener("click", ()=>{
