@@ -1,208 +1,87 @@
-/* ===== BASE ===== */
-body {
-  font-family: 'Orbitron', sans-serif;
-  background: #06000f;
-  color: #ffd86e;
-  text-align: center;
-  margin: 0;
-  padding: 0;
+:root{
+  --gold:#ffd86e; --bg:#06000f; --glow:rgba(255,216,110,0.35);
+  --cell:95px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--gold);
+  text-align:center; padding:16px; transition:.3s ease;
 }
 
-/* Title */
-h1.game-title {
-  font-size: 42px;
-  margin-top: 10px;
-  text-shadow: 0 0 15px gold, 0 0 35px purple;
-}
+h1{font-size:48px; letter-spacing:3px; margin:12px 0 6px;
+  text-shadow:0 0 15px gold,0 0 35px purple;}
 
-/* ===== MODE BAR ===== */
-.modebar {
-  margin: 8px 0;
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
+.topbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 8px}
+.badge{border:2px solid #ffcc44; padding:6px 10px; border-radius:12px; box-shadow:0 0 8px #ffcc44; background:rgba(255,238,0,.12)}
 
-.badge {
-  border: 2px solid #ffcc44;
-  padding: 4px 10px;
-  border-radius: 10px;
-  background: rgba(255,238,0,.1);
-}
+.avatars{display:flex;gap:14px;justify-content:center;margin:4px 0 10px}
+.avatar{border:2px solid #ffcc44; padding:6px 12px; border-radius:14px; opacity:.55; transition:.2s}
+.avatar.active{opacity:1; box-shadow:0 0 12px #ffcc44 inset}
 
-/* ===== AVATARS ===== */
-.avatars {
-  display: flex;
-  justify-content: center;
-  gap: 13px;
-  margin-top: 5px;
-}
+.score{font-weight:700;margin:6px 0}
+.msg{min-height:22px;margin:6px 0;text-shadow:0 0 8px gold}
+.winner-banner.show-winner{animation:crownPulse .9s infinite}
+@keyframes crownPulse{0%{filter:drop-shadow(0 0 6px gold)}50%{filter:drop-shadow(0 0 18px purple)}100%{filter:drop-shadow(0 0 6px gold)}}
 
-.avatar {
-  border: 2px solid #ffcc44;
-  padding: 5px 10px;
-  border-radius: 12px;
-  opacity: .6;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.board{
+  width:calc(var(--cell)*3); margin:18px auto; display:grid; gap:10px;
+  grid-template-columns:repeat(3,var(--cell));
 }
-.avatar.active {
-  opacity: 1;
-  box-shadow: 0 0 10px #ffcc44;
+.cell{
+  width:var(--cell); height:var(--cell); border:3px solid #ffbe5b;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; border-radius:14px; user-select:none;
+  font-size:54px; font-weight:700; transition:.15s;
+  box-shadow:0 0 10px rgba(255,200,100,.35);
 }
+.win-cell{animation:winPop .6s ease-in-out infinite alternate}
+@keyframes winPop{from{transform:scale(1)}to{transform:scale(1.08)}}
 
-/* ===== SCORE & MESSAGE ===== */
-.score {
-  margin-top: 6px;
-  font-size: 18px;
-  font-weight: 700;
-}
-.msg {
-  height: 24px;
-  margin: 8px 0;
-  font-size: 18px;
-  text-shadow: 0 0 8px gold;
-}
+/* Skins */
+.classicX{color:#ffd86e; text-shadow:0 0 10px gold}
+.classicO{color:#8ce0ff; text-shadow:0 0 10px #8ce0ff}
+.fruitX{filter:drop-shadow(0 0 8px #ffa)}
+.fruitO{filter:drop-shadow(0 0 8px #aff)}
+.dragon{color:#ff6bff; text-shadow:0 0 12px #ff6bff,0 0 28px #b885ff}
+.phoenix{color:#8cedff; text-shadow:0 0 12px #8cedff,0 0 28px #6cfbff}
 
-/* ===== BOARD ===== */
-.board {
-  --cell: 90px;
-  width: calc(var(--cell)*3);
-  margin: 18px auto;
-  display: grid;
-  grid-template-columns: repeat(3, var(--cell));
-  gap: 10px;
+/* Buttons */
+.btngrp{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:8px 0 4px}
+.btn{
+  background:rgba(255,238,0,.15); color:#ffdd73; font-weight:700;
+  padding:10px 18px; border-radius:14px; cursor:pointer; border:2px solid #ffcc44;
+  backdrop-filter:blur(6px); text-shadow:0 0 8px #ffcc44;
+  box-shadow:0 0 10px #ffcc44, inset 0 0 10px rgba(255,200,0,.4);
+  transition:all .2s;
 }
+.btn:hover{transform:scale(1.05); box-shadow:0 0 16px #ffdd55, inset 0 0 16px rgba(255,200,0,.65)}
+.btn.red{background:rgba(255,0,60,.18); border-color:#ff2e63; text-shadow:0 0 8px #ff2e63}
+.btn.red:hover{box-shadow:0 0 22px #ff2e63, inset 0 0 18px rgba(255,0,60,.6)}
+.btn.small{padding:7px 12px; font-size:14px}
 
-.cell {
-  width: var(--cell);
-  height: var(--cell);
-  border: 3px solid #ffbe5b;
-  border-radius: 12px;
-  font-size: 52px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor: pointer;
-  user-select:none;
-  box-shadow: 0 0 10px rgba(255,200,100,.4);
+/* Home screen */
+.home{max-width:760px; margin:22px auto 0; padding:10px}
+.home.hidden{display:none}
+.home-grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(220px,1fr))}
+.card{display:flex; flex-direction:column; gap:6px; border:2px solid #ffcc44; padding:12px; border-radius:14px; background:rgba(255,238,0,.07); text-align:left}
+select{background:#000; color:gold; border:2px solid gold; padding:8px; border-radius:8px}
+.home-actions{display:flex; gap:12px; justify-content:center; margin-top:10px}
+.leader{text-align:left; max-width:520px; margin:10px auto}
+
+/* Themes */
+.theme-blue .dragon{color:#4cd3ff;text-shadow:0 0 12px #4cd3ff,0 0 30px #009dff}
+.theme-blue .phoenix{color:#00ffe5;text-shadow:0 0 12px #00ffe5,0 0 30px #00d9ff}
+.theme-classic .dragon,.theme-classic .phoenix{color:#000;text-shadow:none}
+.theme-gold .dragon,.theme-gold .phoenix{color:#ffd86e;text-shadow:0 0 12px gold,0 0 25px gold}
+
+/* Responsive */
+@media (max-width:580px){
+  :root{--cell:88px}
+  h1{font-size:38px}
+  .home-grid{grid-template-columns:1fr}
 }
-
-/* ===== SKINS ===== */
-.dragon { background:#210000; color:#ff6bff; text-shadow:0 0 12px #ff6bff; }
-.phoenix{ background:#001521; color:#8cedff; text-shadow:0 0 12px #8cedff; }
-
-.classicX { color:#ffd86e; font-size:64px; }
-.classicO { color:#7ce3ff; font-size:64px; }
-
-.fruitX, .fruitO { font-size:60px; }
-
-/* ===== WIN ===== */
-.win-cell { animation: glow .9s infinite alternate; }
-@keyframes glow {
-  0% { box-shadow:0 0 12px gold; }
-  100% { box-shadow:0 0 30px purple; }
-}
-
-/* ===== BUTTONS ===== */
-.btn {
-  background: rgba(255,238,0,.15);
-  border:2px solid #ffcc44;
-  color:#ffdd73;
-  padding:10px 22px;
-  border-radius:12px;
-  cursor:pointer;
-  margin:5px;
-}
-.btn.red {
-  background:rgba(255,0,60,.18);
-  border-color:#ff2e63;
-}
-.btn.small { padding:6px 14px; font-size:14px; }
-
-/* ===== HOME SCREEN (polished mobile UI) ===== */
-#homeScreen {
-  width: 95%;
-  max-width: 420px;
-  margin: auto;
-  padding-top: 20px;
-  text-align: center;
-}
-
-.home-card {
-  background: rgba(255, 200, 0, 0.12);
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid #ffdd55;
-  margin-bottom: 20px;
-  box-shadow: 0 0 12px rgba(255,200,0,0.18);
-}
-
-.home-card label {
-  display: block;
-  color: #ffd86b;
-  font-size: 18px;
-  margin-bottom: 6px;
-  text-shadow: 0 0 6px rgba(255,200,0,0.6);
-}
-
-.home-card select {
-  width: 100%;
-  padding: 12px;
-  background: #000;
-  color: gold;
-  border: 2px solid #ffcc44;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.btn.bar {
-  width: 48%;
-  margin: 4px 1%;
-}
-/* ===== MOBILE RESPONSIVE ===== */
-@media (max-width:480px){
-  h1.game-title { font-size:32px; }
-  .board { --cell:78px; gap:8px; }
-  .cell { font-size:42px; }
-  .btn { padding:8px 14px; font-size:14px; }
-}
-/* ===== HOME SCREEN (polished mobile UI) ===== */
-#homeScreen {
-  width: 95%;
-  max-width: 420px;
-  margin: auto;
-  padding-top: 20px;
-  text-align: center;
-}
-
-.home-card {
-  background: rgba(255, 200, 0, 0.12);
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid #ffdd55;
-  margin-bottom: 20px;
-  box-shadow: 0 0 12px rgba(255,200,0,0.18);
-}
-
-.home-card label {
-  display: block;
-  color: #ffd86b;
-  font-size: 18px;
-  margin-bottom: 6px;
-  text-shadow: 0 0 6px rgba(255,200,0,0.6);
-}
-
-.home-card select {
-  width: 100%;
-  padding: 12px;
-  background: #000;
-  color: gold;
-  border: 2px solid #ffcc44;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
+@media (max-width:380px){
+  :root{--cell:76px}
+  h1{font-size:32px}
 }
