@@ -138,3 +138,8 @@ select{
   transform: scale(0.90);
   box-shadow: 0 0 12px gold;
 }
+@media (hover: hover) {
+  .cell:hover {
+    box-shadow: 0 0 18px gold;
+  }
+}
