@@ -62,17 +62,62 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- Home screen -->
-  <section id="homeScreen" class="home">
-    <h2>RuneXO</h2>
+  <!-- Home Screen -->
+<section id="homeScreen" class="home">
+
+    <h2 class="title">RuneXO</h2>
+
     <div class="home-grid">
-      <label class="card">
-        <div>Game Mode</div>
-        <select id="gameMode">
-          <option>Player vs CPU</option>
-          <option>Player vs Player</option>
-        </select>
-      </label>
+
+        <!-- Game Mode -->
+        <label class="card">
+            <span>Game Mode</span>
+            <select id="gameMode">
+                <option>Player vs CPU</option>
+                <option>Player vs Player</option>
+            </select>
+        </label>
+
+        <!-- Difficulty -->
+        <label class="card">
+            <span>Difficulty</span>
+            <select id="difficulty">
+                <option>Easy</option>
+                <option>Normal</option>
+                <option>Hard</option>
+            </select>
+        </label>
+
+        <!-- Skin -->
+        <label class="card">
+            <span>Skin</span>
+            <select id="skin">
+                <option>Runes</option>
+                <option>Classic X/O</option>
+                <option>Fruit</option>
+            </select>
+        </label>
+
+        <!-- Theme -->
+        <label class="card">
+            <span>Theme</span>
+            <select id="themeSelect">
+                <option>Rune</option>
+                <option>Neon</option>
+                <option>Dark</option>
+            </select>
+        </label>
+
+    </div>
+
+    <div class="home-buttons">
+        <button id="startBtn" class="btn glow">Start Game</button>
+        <button id="installBtn2" class="btn small">Install App</button>
+    </div>
+
+    <h3 class="leader-title">Leaderboard (Top 10 fastest wins vs CPU)</h3>
+    <ul id="leaderList" class="leaderboard"></ul>
+</section>
 
       <label class="card">
         <div>Difficulty</div>
