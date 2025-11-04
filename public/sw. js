@@ -1,13 +1,14 @@
-// Basic offline cache
-const CACHE="runexo-v1";
+// sw.js - tiny cache
+const CACHE="rxo-v1";
 const ASSETS=[
-  "./","index.html","style.css","splash.css","board.js","game.js","runes.js","splash.js",
-  "manifest.json","logo-dragon.png",
-  "sound/click.mp3","sound/win.mp3","sound/bg.mp3"
+  "./",
+  "./index.html","./style.css","./splash.css",
+  "./app.js","./game.js","./board.js","./runes.js",
+  "./icon-512.png","./icon-mono.png","./logo-dragon.png",
+  "./sound/click.mp3","./sound/win.mp3","./sound/bg.mp3"
 ];
-self.addEventListener("install",e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
-});
-self.addEventListener("fetch",e=>{
-  e.respondWith(caches.match(e.request).then(r=> r || fetch(e.request)));
+self.addEventListener("install",(e)=>{ e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))); });
+self.addEventListener("activate",(e)=>{ e.waitUntil(self.clients.claim()); });
+self.addEventListener("fetch",(e)=>{
+  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
 });
