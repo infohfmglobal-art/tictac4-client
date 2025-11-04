@@ -458,3 +458,24 @@ select {
   margin-bottom: 4px;
   display: block;
 }
+#homeScreen {
+  max-width: 360px;
+  margin: auto;
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px solid var(--glow);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.4);
+}
+
+#homeScreen select,
+#homeScreen button {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#leaderList {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
