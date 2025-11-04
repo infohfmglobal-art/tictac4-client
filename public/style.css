@@ -479,3 +479,66 @@ select {
   text-align: center;
   font-size: 14px;
 }
+/* ===== UI Polish ===== */
+
+#homeScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 4vh;
+  gap: 12px;
+}
+
+/* Drop-down boxes styling */
+select {
+  width: 260px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  color: #ffd54f;
+  border: 1px solid #ffd54f;
+  font-size: 16px;
+}
+
+/* Buttons layout */
+.btngrp {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+button {
+  min-width: 120px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+/* Score text fix */
+#score {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+/* Center Winner Text */
+#msg.show-winner {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Board spacing fix */
+#board {
+  margin-top: 12px;
+}
+
+/* Crown center */
+#crown {
+  display: block;
+  text-align: center;
+  font-size: 26px;
+  margin-top: 0;
+}
