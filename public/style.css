@@ -214,3 +214,52 @@ body
   gap: 15px;
   margin-top: 12px;
 }
+.home {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 8px gold;
+}
+
+.home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    max-width: 450px;
+    margin: auto;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid gold;
+    border-radius: 10px;
+}
+
+.card span {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+select {
+    padding: 6px;
+    border-radius: 8px;
+    background: black;
+    color: gold;
+}
+
+.home-buttons {
+    margin-top: 20px;
+}
+
+.leader-title {
+    margin-top: 25px;
+    font-size: 16px;
+    text-shadow: 0 0 6px gold;
+}
