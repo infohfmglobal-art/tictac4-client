@@ -143,3 +143,63 @@ select{
     box-shadow: 0 0 18px gold;
   }
 }
+/* === Home Screen Polish === */
+
+#homeScreen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.home-card {
+  background: rgba(0,0,0,0.25);
+  border: 2px solid #ffbf47;
+  padding: 18px 22px;
+  border-radius: 14px;
+  width: 330px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.home-card h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  color: #ffbf47;
+}
+
+.home-card select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.1rem;
+  background: #111;
+  color: #fffae6;
+  border: 2px solid #ffbf47;
+  border-radius: 10px;
+}
+
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-row button {
+  flex: 1;
+}
+
+/* Title & Score spacing improvements */
+#score {
+  margin-top: 6px;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+#modeBar {
+  margin-bottom: 10px;
+}
