@@ -66,7 +66,13 @@ h1{font-size:44px;letter-spacing:3px;margin:10px 0 8px;text-shadow:0 0 15px gold
 .btn:hover{transform:scale(1.05);box-shadow:0 0 18px #ffdd55,inset 0 0 16px rgba(255,200,0,.7)}
 .btn.red{border-color:#ff2e63;background:rgba(255,0,60,.18);box-shadow:0 0 12px #ff2e63,inset 0 0 10px rgba(255,0,60,.4)}
 .btn.small{padding:8px 14px;font-size:14px}
-.btngrp{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 8px}
+.btngrp {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
 
 /* ==== HOME SCREEN UI ==== */
 #homeScreen {
@@ -248,22 +254,47 @@ select {
   margin-top: 20px;
 }
 
-/* Responsive grid fix */
+/* ✅ Responsive board layout */
 #board {
-  width: 90vw;
-  max-width: 350px;
+  width: 92vw;
+  max-width: 330px;
+  margin: 0 auto;
 }
 
-/* Tile size fix for small screens */
+/* Tiles for phones */
 .cell {
-  font-size: 40px;
+  font-size: 42px;
 }
 
+/* Tablets & Desktop */
 @media (min-width: 768px) {
   #board {
-    max-width: 400px;
+    max-width: 420px;
   }
   .cell {
-    font-size: 50px;
+    font-size: 60px;
   }
+}
+
+/* ✅ Proper Home Screen Spacing */
+#homeScreen {
+  width: 90%;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+.btngrp button,
+#startBtn,
+#installBtn2 {
+  min-width: 120px;
+  padding: 10px;
+  font-size: 16px;
 }
