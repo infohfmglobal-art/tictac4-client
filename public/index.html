@@ -1,122 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>RuneXO</title>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  />
+  <title>RuneXO</title>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#06000f" />
+  <!-- PWA + CSS -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="splash.css">
 
-<!-- Styles -->
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="splash.css">
-
-<script>
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  window.deferredPrompt = e;
-});
-</script>
+  <script>
+    // A2HS capture
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
 </head>
 
 <body class="theme-rune">
+  <!-- Splash (optional logo fade) -->
+  <div id="splash-screen">
+    <img src="logo-dragon.png" class="splash-logo" />
+    <div class="splash-title">RUNEXO</div>
+  </div>
 
-<!-- Splash -->
-<div id="splash-screen">
-  <img src="logo-dragon.png" class="splash-logo" alt="RuneXO"/>
-  <div class="splash-title">RUNEXO</div>
-</div>
+  <!-- Background particles canvas (not required but harmless) -->
+  <canvas id="runeParticles"></canvas>
 
-<!-- Title -->
-<h1 class="game-title">RuneXO</h1>
+  <!-- Title -->
+  <h1 class="game-title">RuneXO</h1>
 
-<!-- Mode bar -->
-<div id="modeBar" class="modebar">
-  <span id="modeBadge"  class="badge">Mode: PvC</span>
-  <span id="diffBadge"  class="badge">Difficulty: Easy</span>
-  <span id="skinBadge"  class="badge">Skin: Runes</span>
-</div>
+  <!-- Mode bar -->
+  <div id="modeBar" class="modebar">
+    <span id="modeBadge" class="badge">Mode: PvC</span>
+    <span id="diffBadge" class="badge">Difficulty: Easy</span>
+    <span id="skinBadge" class="badge">Skin: Runes</span>
+  </div>
 
-<!-- Avatar Turn -->
-<div class="avatars">
-  <button id="pX" class="avatar active"><img src="icon-512.png" alt=""> Dragon</button>
-  <button id="pO" class="avatar"><img src="icon-mono.png" alt=""> Phoenix</button>
-</div>
+  <!-- Avatars -->
+  <div class="avatars">
+    <div id="pX" class="avatar active"><span>🐉</span> Dragon</div>
+    <div id="pO" class="avatar"><span>🕊️</span> Phoenix</div>
+  </div>
 
-<!-- Score -->
-<div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
+  <!-- Score + winner message -->
+  <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
+  <div id="msg" class="msg winner-banner">
+    <span class="crown-burst">👑</span>
+    <span id="winnerText"></span>
+  </div>
 
-<!-- Winner -->
-<div id="msg" class="msg winner-banner">
-  <span class="crown-burst">👑</span>
-  <span id="winnerText"></span>
-</div>
+  <!-- Board -->
+  <div id="board" class="board"></div>
 
-<!-- GAME BOARD -->
-<div id="board" class="board" role="grid"></div>
+  <!-- Buttons -->
+  <div class="btngrp">
+    <button id="homeBtn" class="btn small">Home</button>
+    <button id="nextBtn" class="btn">Next Round</button>
+    <button id="resetBtn" class="btn red">Reset All</button>
+    <button id="sfxBtn" class="btn small">SFX: On</button>
+    <button id="musicBtn" class="btn small">Music: Off</button>
+    <button id="installBtn" class="btn small">Install App</button>
+  </div>
 
-<!-- Controls -->
-<div class="btngrp">
-  <button id="homeBtn" class="btn">Home</button>
-  <button id="nextBtn" class="btn">Next Round</button>
-  <button id="resetBtn" class="btn red">Reset All</button>
-  <button id="sfxBtn" class="btn small">SFX: On</button>
-  <button id="musicBtn" class="btn small">Music: Off</button>
-  <button id="installBtn" class="btn small">Install App</button>
-</div>
+  <!-- Home screen -->
+  <div id="homeScreen" class="home">
+    <h2>RuneXO</h2>
 
-<!-- HOME SCREEN -->
-<section id="homeScreen" class="home">
-  <h2>RuneXO</h2>
+    <label>Game Mode
+      <select id="gameMode">
+        <option>Player vs CPU</option>
+        <option>Player vs Player</option>
+      </select>
+    </label>
 
-  <label class="panel">
-    <div>Game Mode</div>
-    <select id="gameMode">
-      <option>Player vs CPU</option>
-      <option>Player vs Player</option>
-    </select>
-  </label>
+    <label>Difficulty
+      <select id="difficulty">
+        <option>Easy</option>
+        <option>Normal</option>
+        <option>Hard</option>
+      </select>
+    </label>
 
-  <label class="panel">
-    <div>Difficulty</div>
-    <select id="difficulty">
-      <option>Easy</option>
-      <option>Normal</option>
-      <option>Hard</option>
-    </select>
-  </label>
+    <label>Skin
+      <select id="skin">
+        <option>Runes</option>
+        <option>Classic X / O</option>
+        <option>Fruit</option>
+      </select>
+    </label>
 
-  <label class="panel">
-    <div>Skin</div>
-    <select id="skin">
-      <option>Runes</option>
-      <option>Classic X / O</option>
-      <option>Fruit</option>
-    </select>
-  </label>
+    <label>Theme
+      <select id="themeSelect">
+        <option>Rune</option>
+        <option>Blue</option>
+        <option>Classic</option>
+        <option>Gold</option>
+      </select>
+    </label>
 
-  <label class="panel">
-    <div>Theme</div>
-    <select id="themeSelect">
-      <option>Rune</option>
-      <option>Gold</option>
-      <option>Blue</option>
-    </select>
-  </label>
+    <div class="homeBtns">
+      <button id="startBtn" class="btn">Start Game</button>
+      <button id="installBtn2" class="btn small">Install App</button>
+    </div>
 
-  <button id="startBtn" class="btn start">Start Game</button>
-  <button id="installBtn2" class="btn small">Install App</button>
+    <h3>Leaderboard (Top 10 fastest wins vs CPU)</h3>
+    <ol id="leaderList"></ol>
+  </div>
 
-  <h3>Leaderboard (Top 10 fastest wins vs CPU)</h3>
-  <ul id="leaderList" class="leader"></ul>
-</section>
-
-<!-- Scripts -->
-<script type="module" src="app.js"></script>
+  <!-- Scripts -->
+  <script type="module" src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
 </body>
 </html>
