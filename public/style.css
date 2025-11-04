@@ -46,7 +46,6 @@ h1.game-title{
 #msg { min-height: 22px; margin: 6px 0 8px; font-size: clamp(12px,3.4vw,16px); }
 
 /* ====== BOARD ====== */
-/* auto scales between small phones and desktop */
 .board{
   --cell: clamp(70px, 24vw, 110px);
   width: calc(var(--cell) * 3);
@@ -68,7 +67,6 @@ h1.game-title{
 /* Skins */
 .classicX{ color:#ffd86e; }
 .classicO{ color:#9fe3ff; }
-.fruitX, .fruitO{}
 
 /* Runes */
 .dragon { color:#ff6bff; text-shadow:0 0 12px #ff6bff, 0 0 28px #b885ff; }
@@ -105,12 +103,12 @@ h1.game-title{
 /* Small button */
 .btn.small{ padding:6px 12px; }
 
-/* ====== AVATARS / TURN HIGHLIGHT ====== */
+/* ====== AVATARS ====== */
 .avatars{ display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; margin: 4px 0 6px; }
 .avatar{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border:2px solid var(--gold); border-radius:14px; background:rgba(255,238,0,.08); }
 .avatar.active{ box-shadow:0 0 18px rgba(255,205,100,.55), inset 0 0 10px rgba(255,205,100,.35); }
 
-/* ====== FORMS (home) ====== */
+/* ====== HOME PANEL ====== */
 .panel{
   width:min(560px, 92vw); margin: 8px auto; text-align:left;
   border:2px solid var(--gold); border-radius:16px; padding:12px 14px; background: rgba(255,238,0,.06); box-shadow: var(--shadow);
@@ -123,143 +121,23 @@ select{
   padding:10px 12px; border-radius:10px; font-weight:700;
 }
 
-/* ====== RESPONSIVE TWEAKS ====== */
+/* ====== HOME SCREEN BUTTONS ====== */
+#homeScreen{
+  width:100%; display:flex; flex-direction:column;
+  align-items:center; margin-top:20px;
+}
+
+/* ====== CELL TAP ANIMATION ====== */
+.cell { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.cell:active { transform: scale(0.90); box-shadow: 0 0 12px gold; }
+
+@media (hover: hover){
+  .cell:hover { box-shadow: 0 0 18px gold; }
+}
+
+/* ====== RESPONSIVE ====== */
 @media (max-width: 420px){
   #modeBar{ gap:8px; }
   .btngrp{ gap:8px; }
   .panel{ padding:10px 12px; }
-}
-/* Cell tap animation */
-.cell {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.cell:active {
-  transform: scale(0.90);
-  box-shadow: 0 0 12px gold;
-}
-@media (hover: hover) {
-  .cell:hover {
-    box-shadow: 0 0 18px gold;
-  }
-}
-/* === Home Screen Polish === */
-
-#homeScreen {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.home-card {
-  background: rgba(0,0,0,0.25);
-  border: 2px solid #ffbf47;
-  padding: 18px 22px;
-  border-radius: 14px;
-  width: 330px;
-  max-width: 90vw;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.home-card h2 {
-  text-align: center;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
-  color: #ffbf47;
-}
-
-.home-card select {
-  width: 100%;
-  padding: 10px;
-  font-size: 1.1rem;
-  background: #111;
-  color: #fffae6;
-  border: 2px solid #ffbf47;
-  border-radius: 10px;
-}
-
-.btn-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.btn-row button {
-  flex: 1;
-}
-
-/* Title & Score spacing improvements */
-#score {
-  margin-top: 6px;
-  margin-bottom: 4px;
-  font-size: 1rem;
-}
-
-#modeBar {
-  margin-bottom: 10px;
-}
-/* === Home Screen Polish === */
-
-#homeScreen {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.home-card {
-  background: rgba(0,0,0,0.25);
-  border: 2px solid #ffbf47;
-  padding: 18px 22px;
-  border-radius: 14px;
-  width: 330px;
-  max-width: 90vw;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.home-card h2 {
-  text-align: center;
-  font-size: 1.4rem;
-  margin-bottom: 8px;
-  color: #ffbf47;
-}
-
-.home-card select {
-  width: 100%;
-  padding: 10px;
-  font-size: 1.1rem;
-  background: #111;
-  color: #fffae6;
-  border: 2px solid #ffbf47;
-  border-radius: 10px;
-}
-
-.btn-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.btn-row button {
-  flex: 1;
-}
-
-/* Title & Score spacing improvements */
-#score {
-  margin-top: 6px;
-  margin-bottom: 4px;
-  font-size: 1rem;
-}
-
-#modeBar {
-  margin-bottom: 10px;
 }
