@@ -1,40 +1,52 @@
 // runes.js
+// Simple visual effects: rune burst, confetti, and screen shake.
+
 export function triggerRuneBurst(winner){
-  const container=document.body;
-  for(let i=0;i<16;i++){
-    const d=document.createElement("div");
-    d.className="rune-burst";
-    d.textContent = winner==="X" ? "🐉" : "🕊️";
-    d.style.position="fixed";
-    d.style.left=(50+Math.random()*20-10)+"vw";
-    d.style.top =(40+Math.random()*20-10)+"vh";
-    d.style.fontSize=(16+Math.random()*12)+"px";
-    d.style.pointerEvents="none";
-    d.style.filter="drop-shadow(0 0 6px gold)";
-    container.appendChild(d);
-    setTimeout(()=>d.remove(),700);
-  }
+  const el = document.createElement("div");
+  el.className = "rune-burst";
+  el.textContent = winner === "X" ? "🐉" : "🕊️";
+  Object.assign(el.style,{
+    position:"fixed",left:"50%",top:"40%",transform:"translate(-50%,-50%) scale(1)",
+    fontSize:"72px",pointerEvents:"none",filter:"drop-shadow(0 0 8px gold)",
+    zIndex:9999,opacity:1,transition:"transform .7s ease, opacity .7s ease"
+  });
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{ el.style.transform="translate(-50%,-50%) scale(1.6)"; el.style.opacity="0"; });
+  setTimeout(()=>el.remove(),750);
 }
 
 export function confettiBurst(){
-  for(let i=0;i<35;i++){
-    const s=document.createElement("span");
-    s.className="confetti";
-    s.style.position="fixed";
-    s.style.left=Math.random()*100+"vw";
-    s.style.top="-4vh";
-    s.style.fontSize=(10+Math.random()*10)+"px";
-    s.textContent="✨";
-    document.body.appendChild(s);
-    const t=800+Math.random()*600;
-    s.animate([{transform:"translateY(0)"},{transform:"translateY(110vh)"}],{duration:t,easing:"ease-in"});
-    setTimeout(()=>s.remove(),t);
+  const canvas = document.getElementById("fxLayer");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  resize(); draw();
+
+  const parts = Array.from({length:80}).map(()=>({
+    x: Math.random()*canvas.width,
+    y: -10-Math.random()*200,
+    s: 2+Math.random()*3,
+    v: 2+Math.random()*3,
+    a: Math.random()*Math.PI*2
+  }));
+
+  let t = 0;
+  function draw(){
+    t++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p=>{
+      p.y += p.v; p.x += Math.sin((t+p.a)/10);
+      ctx.fillStyle = `hsl(${(p.x+p.y)%360},100%,70%)`;
+      ctx.fillRect(p.x,p.y,p.s,p.s);
+    });
+    if (t<90) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
   }
+  function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  window.addEventListener("resize", resize, {once:true});
 }
 
 export function screenShake(){
   document.body.animate(
-    [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
-    {duration:250}
+    [{transform:"translate(0,0)"},{transform:"translate(4px,0)"},{transform:"translate(-4px,0)"},{transform:"translate(0,0)"}],
+    {duration:250,iterations:1}
   );
 }
