@@ -71,47 +71,58 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- Home screen -->
-  <div id="homeScreen" class="home">
-    <h2>RuneXO</h2>
+  <!-- Home Screen -->
+<div id="homeScreen" class="homeScreen">
+  <h2 class="title">RuneXO</h2>
 
-    <label>Game Mode
-      <select id="gameMode">
+  <div class="menu-box">
+
+    <div class="menu-row">
+      <label>Game Mode</label>
+      <select id="gameMode" class="menu-select">
         <option>Player vs CPU</option>
         <option>Player vs Player</option>
       </select>
-    </label>
+    </div>
 
-    <label>Difficulty
-      <select id="difficulty">
+    <div class="menu-row">
+      <label>Difficulty</label>
+      <select id="difficulty" class="menu-select">
         <option>Easy</option>
         <option>Normal</option>
         <option>Hard</option>
       </select>
-    </label>
+    </div>
 
-    <label>Skin
-      <select id="skin">
+    <div class="menu-row">
+      <label>Skin</label>
+      <select id="skin" class="menu-select">
         <option>Runes</option>
         <option>Classic X / O</option>
         <option>Fruit</option>
       </select>
-    </label>
+    </div>
 
-    <label>Theme
-      <select id="themeSelect">
+    <div class="menu-row">
+      <label>Theme</label>
+      <select id="themeSelect" class="menu-select">
         <option>Rune</option>
         <option>Blue</option>
         <option>Classic</option>
         <option>Gold</option>
       </select>
-    </label>
-
-    <div class="homeBtns">
-      <button id="startBtn" class="btn">Start Game</button>
-      <button id="installBtn2" class="btn small">Install App</button>
     </div>
 
+    <div class="homeBtns">
+      <button id="startBtn" class="btn glow">Start Game</button>
+      <button id="installBtn2" class="btn glow small">Install App</button>
+    </div>
+
+  </div>
+
+  <p class="leader-text">Leaderboard (Top fastest wins vs CPU)</p>
+  <ul id="leaderList" class="leaderList"></ul>
+</div>
     <h3>Leaderboard (Top 10 fastest wins vs CPU)</h3>
     <ol id="leaderList"></ol>
   </div>
