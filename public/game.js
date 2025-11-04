@@ -54,30 +54,42 @@ export class Game{
   getWinningCells(){ return this.board.winCells.slice(); }
 
   // ===== AI =====
-  cpuMove(){
-    // 1) win if possible
-    let mv=this._bestFor("O"); if(mv) return mv;
-    // 2) block player
-    mv=this._bestFor("X"); if(mv) return mv;
-    // 3) heuristics by difficulty
-    const empties=this.board.emptyCells();
-    if(this.difficulty.toLowerCase()==="easy"){
-      return empties[Math.floor(Math.random()*empties.length)];
-    }
-    // prefer center -> corners -> sides
-    if(this.board.isEmpty(1,1)) return [1,1];
-    const corners=[[0,0],[0,2],[2,0],[2,2]].filter(([r,c])=>this.board.isEmpty(r,c));
-    const sides  =[[0,1],[1,0],[1,2],[2,1]].filter(([r,c])=>this.board.isEmpty(r,c));
+  cpuMove() {
+  const diff = this.difficulty.toLowerCase();
 
-    if(this.difficulty.toLowerCase()==="normal"){
-      if(Math.random()<0.7 && corners.length) return corners[Math.floor(Math.random()*corners.length)];
-      const pool=corners.concat(sides); return pool[Math.floor(Math.random()*pool.length)];
-    }
-    // hard
-    if(corners.length) return corners[Math.floor(Math.random()*corners.length)];
-    if(sides.length) return sides[Math.floor(Math.random()*sides.length)];
-    return empties[Math.floor(Math.random()*empties.length)];
+  // EASY — random move
+  if (diff === "easy") {
+    const cells = this.board.emptyCells();
+    return cells[Math.floor(Math.random() * cells.length)];
   }
+
+  // MEDIUM — try win/block, otherwise random
+  if (diff === "normal") {
+    // Win if possible
+    let move = this.findBestFor("O");
+    if (move) return move;
+
+    // Block player
+    move = this.findBestFor("X");
+    if (move) return move;
+
+    // Sometimes make mistake (30% random)
+    if (Math.random() < 0.3) {
+      const cells = this.board.emptyCells();
+      return cells[Math.floor(Math.random() * cells.length)];
+    }
+
+    // Smart choice: center → corners → sides
+    if (this.board.isEmpty(1,1)) return [1,1];
+    const corners = [[0,0],[0,2],[2,0],[2,2]].filter(([r,c])=>this.board.isEmpty(r,c));
+    if (corners.length) return corners[Math.floor(Math.random()*corners.length)];
+    const sides = [[0,1],[1,0],[1,2],[2,1]].filter(([r,c])=>this.board.isEmpty(r,c));
+    return sides[Math.floor(Math.random()*sides.length)];
+  }
+
+  // HARD — MiniMax (unbeatable)
+  return this.miniMaxMove();
+}
 
   _bestFor(player){
     for(const [r,c] of this.board.emptyCells()){
