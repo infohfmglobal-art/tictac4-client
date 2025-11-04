@@ -37,7 +37,6 @@ export function screenShake(){
   setTimeout(()=>document.body.classList.remove("shake"),600);
 }
 // Better win glow burst
-export function triggerRuneBurst(player) {
   const emoji = (player === "X") ? "🐉" : "🕊️";
   const burst = document.createElement("div");
   burst.className = "burst";
