@@ -199,3 +199,71 @@ ol {
 .game-container {
   padding-top: 20px;
 }
+/* --- UI POLISH UPDATE —  RuneXO --- */
+
+/* Center home screen content */
+#homeScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Fix container width for mobile */
+.home-box, .btngrp {
+  max-width: 380px;
+  width: 90%;
+  margin: auto;
+}
+
+/* Dropdown styling fix */
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 10px;
+}
+
+/* Center buttons on home */
+.home-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Title smaller on home */
+#homeScreen h1 {
+  font-size: 34px;
+  margin-bottom: 6px;
+}
+
+/* Reduce top gap on gameplay screen */
+#gameScreenTitle {
+  margin-top: 20px;
+}
+
+/* Responsive grid fix */
+#board {
+  width: 90vw;
+  max-width: 350px;
+}
+
+/* Tile size fix for small screens */
+.cell {
+  font-size: 40px;
+}
+
+@media (min-width: 768px) {
+  #board {
+    max-width: 400px;
+  }
+  .cell {
+    font-size: 50px;
+  }
+}
