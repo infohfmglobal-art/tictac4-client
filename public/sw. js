@@ -1,14 +1,4 @@
-// sw.js - tiny cache
-const CACHE="rxo-v1";
-const ASSETS=[
-  "./",
-  "./index.html","./style.css","./splash.css",
-  "./app.js","./game.js","./board.js","./runes.js",
-  "./icon-512.png","./icon-mono.png","./logo-dragon.png",
-  "./sound/click.mp3","./sound/win.mp3","./sound/bg.mp3"
-];
-self.addEventListener("install",(e)=>{ e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))); });
-self.addEventListener("activate",(e)=>{ e.waitUntil(self.clients.claim()); });
-self.addEventListener("fetch",(e)=>{
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
-});
+// Minimal SW so it doesn't 404; you can expand caching later.
+self.addEventListener("install", ()=>self.skipWaiting());
+self.addEventListener("activate", (e)=>e.waitUntil(self.clients.claim()));
+self.addEventListener("fetch", ()=>{ /* pass-through */ });
