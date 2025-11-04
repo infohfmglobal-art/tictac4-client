@@ -15,6 +15,7 @@ const sfxBtn = document.getElementById("sfxBtn");
 const musicBtn = document.getElementById("musicBtn");
 const installBtn = document.getElementById("installBtn");
 const installBtn2 = document.getElementById("installBtn2");
+
 const modeBar = document.getElementById("modeBar");
 const modeBadge = document.getElementById("modeBadge");
 const diffBadge = document.getElementById("diffBadge");
@@ -22,7 +23,7 @@ const skinBadge = document.getElementById("skinBadge");
 const pX = document.getElementById("pX");
 const pO = document.getElementById("pO");
 
-// Home UI
+// Home screen
 const homeScreen = document.getElementById("homeScreen");
 const startBtn = document.getElementById("startBtn");
 const gameMode = document.getElementById("gameMode");
@@ -38,7 +39,7 @@ const music = new Audio("sound/bg.mp3");
 music.loop = true;
 let musicWanted = false;
 
-// Build board
+// Build Board
 function renderBoard() {
   boardEl.innerHTML = "";
   for (let r = 0; r < 3; r++) {
@@ -54,30 +55,28 @@ function renderBoard() {
 }
 renderBoard();
 
-// ===== HANDLE MOVE =====
-function handleMove(r,c){
-  if (musicWanted && music.paused) music.play().catch(()=>{});
+// MOVE HANDLER
+function handleMove(r, c) {
+  if (musicWanted && music.paused) music.play().catch(() => {});
+  
+  const result = game.move(r, c, true);
+  if (!result) return;
 
-  const moved = game.move(r,c);
-  if (!moved) return;
-
-  haptic(10);
-  if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+  haptic(15);
+  if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(() => {});
   updateBoard();
 
-  // CPU Turn
-  if (game.mode === "Player vs CPU" && game.turn === "O" && !game.winner) {
+  if (result === "cpuPending") {
     setTimeout(() => {
-      const [cr, cc] = game.cpuMove();
-      game.move(cr, cc);
+      game.performCpuMove();
       haptic(15);
-      if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+      if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(() => {});
       updateBoard();
     }, 600);
   }
 }
 
-// ===== UPDATE BOARD =====
+// UPDATE UI
 function updateBoard() {
   const cells = boardEl.children;
   for (let i = 0; i < cells.length; i++) {
@@ -95,6 +94,7 @@ function updateBoard() {
       cell.textContent = val === "X" ? "🍎" : "🍊";
     } else {
       cell.textContent = val === "X" ? "🐉" : "🕊️";
+      cell.classList.add(val === "X" ? "dragon" : "phoenix");
     }
   }
 
@@ -114,9 +114,8 @@ function updateBoard() {
     triggerRuneBurst(game.winner);
     confettiBurst();
     screenShake();
-    haptic([40,40,80]);
-
-    if (game.sfxOn) winSfx.currentTime = 0, winSfx.play().catch(()=>{});
+    haptic([40, 40, 80]);
+    if (game.sfxOn) winSfx.currentTime = 0, winSfx.play().catch(() => {});
   } else {
     msgEl.classList.remove("show-winner");
     winnerTxt.textContent = "";
@@ -129,20 +128,25 @@ function updateBoard() {
 nextBtn.onclick = () => { game.nextRound(); renderBoard(); updateBoard(); };
 resetBtn.onclick = () => { game.scoreX=game.scoreO=game.scoreD=0; game.resetAll(); renderBoard(); updateBoard(); };
 homeBtn.onclick = () => showHome(true);
-sfxBtn.onclick = () => { game.toggleSfx(); sfxBtn.textContent = `SFX: ${game.sfxOn ? "On":"Off"}` };
-musicBtn.onclick = () => {
-  musicWanted = !musicWanted;
-  musicBtn.textContent = `Music: ${musicWanted?"On":"Off"}`;
-  if (musicWanted) music.play().catch(()=>{}); else music.pause();
+
+sfxBtn.onclick = () => {
+  game.toggleSfx();
+  sfxBtn.textContent = `SFX: ${game.sfxOn ? "On" : "Off"}`;
 };
 
-// Home
+musicBtn.onclick = () => {
+  musicWanted = !musicWanted;
+  musicBtn.textContent = `Music: ${musicWanted ? "On" : "Off"}`;
+  if (musicWanted) music.play().catch(() => {}); else music.pause();
+};
+
+// Home UI
 function showHome(show) {
   homeScreen.classList.toggle("hidden", !show);
-  boardEl.style.display = show ? "none":"grid";
-  document.querySelector(".btngrp").style.display = show ? "none":"flex";
-  modeBar.style.display = show ? "none":"flex";
-  document.querySelector(".avatars").style.display = show ? "none":"flex";
+  boardEl.style.display = show ? "none" : "grid";
+  document.querySelector(".btngrp").style.display = show ? "none" : "flex";
+  modeBar.style.display = show ? "none" : "flex";
+  document.querySelector(".avatars").style.display = show ? "none" : "flex";
 }
 
 startBtn.onclick = () => {
@@ -151,15 +155,19 @@ startBtn.onclick = () => {
   game.skin = skinSel.value;
   document.body.className = `theme-${themeSel.value.toLowerCase()}`;
 
-  game.resetAll(); 
-  renderBoard(); 
+  modeBadge.textContent = `Mode: ${game.mode === "Player vs CPU" ? "PvC" : "PvP"}`;
+  diffBadge.textContent = `Difficulty: ${game.difficulty}`;
+  skinBadge.textContent = `Skin: ${game.skin}`;
+
+  game.resetAll();
+  renderBoard();
   updateBoard();
   showHome(false);
 };
 
 // Haptics
-function haptic(p) {
-  if ("vibrate" in navigator) navigator.vibrate(p);
+function haptic(pattern) {
+  if ("vibrate" in navigator) navigator.vibrate(pattern);
 }
 
 // Init
