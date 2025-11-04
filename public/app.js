@@ -114,9 +114,9 @@ function updateBoard(){
       addLeaderboard({time:elapsed, moves, diff:game.difficulty.toLowerCase(), skin:game.skin.toLowerCase()});
     }
   }else if(game.winner==="Draw"){
-    winnerTxt.textContent="Draw!"; msgEl.classList.add("show-winner");
+    winnerTxt.textContent="Draw!"; msgEl.classList.add("-winner");
   }else{
-    msgEl.classList.remove("show-winner"); winnerTxt.textContent="";
+    msgEl.classList.remove("-winner"); winnerTxt.textContent="";
   }
 
   scoreEl.textContent=`Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
@@ -142,20 +142,36 @@ musicBtn.onclick=()=>{
 /* Home screen */
 function showHome(show){
   homeScreen.classList.toggle("hidden", !show);
-  boardEl.style.display = show?"none":"grid";
-  document.querySelector(".btngrp").style.display = show?"none":"flex";
-  modeBar.style.display = show?"none":"flex";
-  document.querySelector(".avatars").style.display = show?"none":"flex";
+  boardEl.style.display = show ? "none" : "grid";
+  document.querySelector(".btngrp").style.display = show ? "none" : "flex";
+  modeBar.style.display = show ? "none" : "flex";
+  document.querySelector(".avatars").style.display = show ? "none" : "flex";
 }
-startBtn.onclick=()=>{
-  game.mode=gameMode.value; game.difficulty=difficulty.value; game.skin=skinSel.value;
-  document.body.className=`theme-${themeSel.value.toLowerCase()}`;
-  modeBadge.textContent=`Mode: ${game.mode==="Player vs CPU"?"PvC":"PvP"}`;
-  diffBadge.textContent=`Difficulty: ${game.difficulty}`;
-  skinBadge.textContent=`Skin: ${game.skin}`;
-  if(musicWanted) music.play().catch(()=>{});
-  game.resetAll(); renderBoard(); updateBoard(); showHome(false);
+
+startBtn.onclick = ()=>{
+  // Apply menu selections
+  game.mode = gameMode.value;
+  game.difficulty = difficulty.value;
+  game.skin = skinSel.value;
+  document.body.className = `theme-${themeSel.value.toLowerCase()}`;
+
+  // Update top badges
+  modeBadge.textContent = `Mode: ${game.mode === "Player vs CPU" ? "PvC" : "PvP"}`;
+  diffBadge.textContent = `Difficulty: ${game.difficulty}`;
+  skinBadge.textContent = `Skin: ${game.skin}`;
+
+  // Start music if user turned ON
+  if (musicWanted) music.play().catch(()=>{});
+
+  // Start fresh round
+  game.resetAll();
+  renderBoard();
+  updateBoard();
+
+  showHome(false);
 };
+
+// Start on home screen at launch
 showHome(true);
 
 /* Haptics */
