@@ -60,8 +60,40 @@ h1{font-size:48px; letter-spacing:3px; margin:12px 0 6px;
 .btn.red:hover{box-shadow:0 0 22px #ff2e63, inset 0 0 18px rgba(255,0,60,.6)}
 .btn.small{padding:7px 12px; font-size:14px}
 
-/* Home screen */
-.home{max-width:760px; margin:22px auto 0; padding:10px}
+/* Home screen container */
+.home {
+  max-width: 600px;
+  margin: 40px auto 0;
+  padding: 20px 14px;
+  text-align: center;
+}
+
+/* Dropdown cards */
+.home-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr;
+  margin-bottom: 20px;
+}
+
+/* Settings card box */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid #fcca44;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+}
+
+/* Center buttons better */
+.home-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
 .home.hidden{display:none}
 .home-grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(220px,1fr))}
 .card{display:flex; flex-direction:column; gap:6px; border:2px solid #ffcc44; padding:12px; border-radius:14px; background:rgba(255,238,0,.07); text-align:left}
@@ -134,4 +166,16 @@ select{background:#000; color:gold; border:2px solid gold; padding:8px; border-r
 @keyframes pulse {
   from { transform: scale(1); }
   to { transform: scale(1.15); }
+}
+@media (max-width:480px){
+  .home {
+    padding: 12px;
+  }
+  .home-actions {
+    flex-direction: column;
+  }
+  .btn {
+    width: 100%;
+    justify-content:center;
+  }
 }
