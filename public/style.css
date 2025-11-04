@@ -129,3 +129,12 @@ select{
   .btngrp{ gap:8px; }
   .panel{ padding:10px 12px; }
 }
+/* Cell tap animation */
+.cell {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cell:active {
+  transform: scale(0.90);
+  box-shadow: 0 0 12px gold;
+}
