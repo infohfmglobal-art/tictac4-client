@@ -1,76 +1,40 @@
-// runes.js — WIN FX
-
-// ===== Rune Burst (emoji burst on win) =====
-export function triggerRuneBurst(winner) {
-  const container = document.body;
-  const emoji = winner === "X" ? "🐉" : "🕊️";
-
-  for (let i = 0; i < 15; i++) {
-    const el = document.createElement("div");
-    el.className = "rune-burst";
-    el.textContent = emoji;
-    el.style.left = (50 + Math.random()*30 - 15) + "%";
-    el.style.top  = (50 + Math.random()*30 - 15) + "%";
-    el.style.fontSize = (30 + Math.random()*25) + "px";
-    el.style.transform = `rotate(${Math.random()*360}deg)`;
-
-    container.appendChild(el);
-    setTimeout(()=>el.remove(),800);
+// runes.js
+export function triggerRuneBurst(winner){
+  const container=document.body;
+  for(let i=0;i<16;i++){
+    const d=document.createElement("div");
+    d.className="rune-burst";
+    d.textContent = winner==="X" ? "🐉" : "🕊️";
+    d.style.position="fixed";
+    d.style.left=(50+Math.random()*20-10)+"vw";
+    d.style.top =(40+Math.random()*20-10)+"vh";
+    d.style.fontSize=(16+Math.random()*12)+"px";
+    d.style.pointerEvents="none";
+    d.style.filter="drop-shadow(0 0 6px gold)";
+    container.appendChild(d);
+    setTimeout(()=>d.remove(),700);
   }
 }
 
-// ===== Confetti =====
 export function confettiBurst(){
-  for (let i=0; i<25; i++){
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random()*100 + "%";
-    c.style.background = `hsl(${Math.random()*360},80%,60%)`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),1200);
+  for(let i=0;i<35;i++){
+    const s=document.createElement("span");
+    s.className="confetti";
+    s.style.position="fixed";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top="-4vh";
+    s.style.fontSize=(10+Math.random()*10)+"px";
+    s.textContent="✨";
+    document.body.appendChild(s);
+    const t=800+Math.random()*600;
+    s.animate([{transform:"translateY(0)"},{transform:"translateY(110vh)"}],{duration:t,easing:"ease-in"});
+    setTimeout(()=>s.remove(),t);
   }
 }
 
-// ===== Screen Shake =====
 export function screenShake(){
-  document.body.classList.add("shake");
-  setTimeout(()=>document.body.classList.remove("shake"),600);
-}
-// Better win glow burst
-  const emoji = (player === "X") ? "🐉" : "🕊️";
-  const burst = document.createElement("div");
-  burst.className = "burst";
-  burst.textContent = emoji;
-  document.body.appendChild(burst);
-
-  setTimeout(() => burst.remove(), 1200);
-}
-
-// Confetti burst
-export function confettiBurst() {
-  for (let i = 0; i < 40; i++) {
-    const c = document.createElement("div");
-    c.className = "conf";
-    document.body.appendChild(c);
-
-    const size = (Math.random()*8)+4;
-    c.style.width = size+"px";
-    c.style.height = size+"px";
-    c.style.left = Math.random()*100 + "vw";
-    c.style.top = "-10px";
-
-    const endX = (Math.random()*100-50)+"vw";
-    c.animate([
-      { transform:`translate(0,0)` },
-      { transform:`translate(${endX},100vh)` }
-    ], { duration: 1200 + Math.random()*500 });
-
-    setTimeout(()=>c.remove(),1500);
-  }
-}
-
-// Screen shake
-export function screenShake() {
-  document.body.style.animation = "shakeAnim 0.3s";
-  setTimeout(()=>document.body.style.animation="", 350);
+  document.body.animate(
+    [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
+    {duration:250}
+  );
 }
