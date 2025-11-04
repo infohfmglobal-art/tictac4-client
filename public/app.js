@@ -69,26 +69,25 @@ function handleMove(r, c) {
     clickSfx.currentTime = 0;
     clickSfx.play().catch(()=>{});
   }
+
   updateBoard();
 
   // CPU move (PvC mode)
   if (game.mode === "Player vs CPU" && game.turn === "O") {
-    setTimeout(() => {
-      const [r2, c2] = game.cpuMove();
-      game.move(r2, c2);
+      setTimeout(() => {
+          const [r2, c2] = game.cpuMove();
+          game.move(r2, c2);
 
-      haptic(15);
-      if (game.sfxOn) {
-        clickSfx.currentTime = 0;
-        clickSfx.play().catch(()=>{});
-      }
+          haptic(15);
+          if (game.sfxOn) {
+            clickSfx.currentTime = 0;
+            clickSfx.play().catch(()=>{});
+          }
 
-      updateBoard();
-    }, 550); // delay for realistic CPU
+          updateBoard();
+      }, 550); // delay for realistic CPU
   }
-}
-// ===== Update UI =====
-function updateBoard(){
+}function updateBoard(){
   const cells = boardEl.children;
 
   for(let i=0;i<cells.length;i++){
