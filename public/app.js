@@ -25,7 +25,7 @@ const skinBadge = document.getElementById("skinBadge");
 const pX        = document.getElementById("pX");
 const pO        = document.getElementById("pO");
 
-// Home screen
+// Home
 const homeScreen= document.getElementById("homeScreen");
 const startBtn  = document.getElementById("startBtn");
 const gameMode  = document.getElementById("gameMode");
@@ -34,21 +34,20 @@ const skinSel   = document.getElementById("skin");
 const themeSel  = document.getElementById("themeSelect");
 const leaderList= document.getElementById("leaderList");
 
-// ===== Audio =====
+// Audio
 const clickSfx = new Audio("sound/click.mp3");
 const winSfx   = new Audio("sound/win.mp3");
-const music    = new Audio("sound/bg.mp3");
-music.loop = true;
-let musicWanted = false; // toggled by button; starts after first gesture
+const music    = new Audio("sound/bg.mp3"); music.loop = true;
+let musicWanted = false;
 
 // Build board
 function renderBoard(){
-  boardEl.innerHTML="";
-  for(let r=0;r<3;r++){
-    for(let c=0;c<3;c++){
-      const cell=document.createElement("div");
-      cell.classList.add("cell");
-      cell.dataset.r=r; cell.dataset.c=c;
+  boardEl.innerHTML = "";
+  for (let r=0;r<3;r++){
+    for (let c=0;c<3;c++){
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.dataset.r = r; cell.dataset.c = c;
       cell.addEventListener("click", ()=>handleMove(r,c));
       boardEl.appendChild(cell);
     }
@@ -56,154 +55,145 @@ function renderBoard(){
 }
 renderBoard();
 
-// ===== Handle move (single, clean) =====
+// Single, final handleMove
 function handleMove(r,c){
-  // start bg music after first user gesture
-  if(musicWanted && music.paused) music.play().catch(()=>{});
+  // start music after any gesture (autoplay)
+  if (musicWanted && music.paused) music.play().catch(()=>{});
 
-  // player move
   const result = game.move(r,c,true);
-  if(!result) return;
+  if (!result) return;
 
   haptic(15);
-  if(game.sfxOn){ clickSfx.currentTime=0; clickSfx.play().catch(()=>{}); }
+  if (game.sfxOn){ clickSfx.currentTime=0; clickSfx.play().catch(()=>{}); }
   updateBoard();
 
-  // CPU next?
-  if(result==="cpuPending"){
+  if (result === "cpuPending"){
     setTimeout(()=>{
+      const before = game.board.emptyCells().length;
       game.performCpuMove();
+      if (before !== game.board.emptyCells().length && game.sfxOn){
+        clickSfx.currentTime=0; clickSfx.play().catch(()=>{});
+      }
       haptic(15);
-      if(game.sfxOn){ clickSfx.currentTime=0; clickSfx.play().catch(()=>{}); }
       updateBoard();
-    }, 500);
+    }, 500); // CPU delay
   }
 }
 
-// ===== Update UI =====
+// Update UI
 function updateBoard(){
   const cells = boardEl.children;
 
-  // paint cells
-  for(let i=0;i<cells.length;i++){
-    const r=Math.floor(i/3), c=i%3;
+  for (let i=0;i<cells.length;i++){
+    const r = Math.floor(i/3), c = i%3;
     const val = game.board.grid[r][c];
     const cell = cells[i];
-    cell.className="cell"; // reset
+    cell.className = "cell";
+    if (!val){ cell.textContent=""; continue; }
 
-    if(!val){ cell.textContent=""; continue; }
-
-    if(game.skin.startsWith("Classic")){
+    if (game.skin.startsWith("Classic")){
       cell.textContent = val;
       cell.classList.add(val==="X" ? "classicX" : "classicO");
-    }else if(game.skin==="Fruit"){
+    } else if (game.skin === "Fruit"){
       cell.textContent = (val==="X") ? "🍎" : "🍊";
       cell.classList.add(val==="X" ? "fruitX" : "fruitO");
-    }else{
+    } else {
       cell.textContent = (val==="X") ? "🐉" : "🕊️";
       cell.classList.add(val==="X" ? "dragon" : "phoenix");
     }
   }
 
-  // Avatar highlight
   pX.classList.toggle("active", game.turn==="X");
   pO.classList.toggle("active", game.turn==="O");
 
-  // Winner / draw
-  if(game.winner && game.winner!=="Draw"){
+  if (game.winner && game.winner!=="Draw"){
     winnerTxt.textContent = (game.winner==="X") ? "Dragon Wins!" : "Phoenix Wins!";
-    msgEl.classList.add("show-winner");
-
-    for(const [r,c] of game.getWinningCells()){
-      const idx=r*3+c; cells[idx].classList.add("win-cell");
+    for (const [r,c] of game.getWinningCells()){
+      const idx = r*3 + c; cells[idx].classList.add("win-cell");
     }
-
-    triggerRuneBurst(game.winner);
-    confettiBurst();
-    screenShake();
+    triggerRuneBurst(game.winner); confettiBurst(); screenShake();
     haptic([40,40,80]);
-    if(game.sfxOn){ winSfx.currentTime=0; winSfx.play().catch(()=>{}); }
+    if (game.sfxOn){ winSfx.currentTime=0; winSfx.play().catch(()=>{}); }
 
-    if(game.mode==="Player vs CPU" && game.winner==="X"){
+    // leaderboard (PvC only, X wins)
+    if (game.mode==="Player vs CPU" && game.winner==="X"){
       const elapsed = ((performance.now()-game.roundStart)/1000).toFixed(2);
       const moves = 9 - game.board.emptyCells().length;
-      addLeaderboard({time:elapsed,moves,diff:game.difficulty.toLowerCase(),skin:game.skin.toLowerCase()});
+      addLeaderboard({time:elapsed, moves, diff:game.difficulty.toLowerCase(), skin:game.skin.toLowerCase()});
     }
-  }else if(game.winner==="Draw"){
-    winnerTxt.textContent="Draw!";
-    msgEl.classList.add("show-winner");
-  }else{
-    msgEl.classList.remove("show-winner");
-    winnerTxt.textContent="";
+  } else if (game.winner==="Draw"){
+    winnerTxt.textContent = "Draw!";
+  } else {
+    winnerTxt.textContent = "";
   }
 
-  scoreEl.textContent=`Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
+  scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
 // Buttons
-nextBtn.addEventListener("click",()=>{ game.nextRound(); renderBoard(); updateBoard(); });
-resetBtn.addEventListener("click",()=>{ game.scoreX=game.scoreO=game.scoreD=0; game.resetAll(); renderBoard(); updateBoard(); });
-homeBtn.addEventListener("click",()=>showHome(true));
-sfxBtn.addEventListener("click",()=>{ game.toggleSfx(); sfxBtn.textContent=`SFX: ${game.sfxOn?"On":"Off"}`; });
-musicBtn.addEventListener("click",()=>{
-  musicWanted=!musicWanted;
+nextBtn.addEventListener("click", ()=>{ game.nextRound(); renderBoard(); updateBoard(); game.roundStart = performance.now(); });
+resetBtn.addEventListener("click", ()=>{ game.scoreX=game.scoreO=game.scoreD=0; game.resetAll(); renderBoard(); updateBoard(); });
+homeBtn.addEventListener("click", ()=>showHome(true));
+sfxBtn.addEventListener("click", ()=>{ game.toggleSfx(); sfxBtn.textContent = `SFX: ${game.sfxOn?"On":"Off"}`; });
+musicBtn.addEventListener("click", ()=>{
+  musicWanted = !musicWanted;
   musicBtn.textContent = `Music: ${musicWanted?"On":"Off"}`;
-  if(musicWanted) music.play().catch(()=>{}); else music.pause();
+  if (musicWanted) music.play().catch(()=>{}); else music.pause();
 });
 [installBtn,installBtn2].forEach(btn=>{
-  if(!btn) return;
+  if (!btn) return;
   btn.addEventListener("click", async ()=>{
-    const prompt=window.deferredPrompt; if(!prompt) return;
-    prompt.prompt(); await prompt.userChoice; window.deferredPrompt=null;
+    if (!window.deferredPrompt) return;
+    window.deferredPrompt.prompt(); await window.deferredPrompt.userChoice; window.deferredPrompt=null;
   });
 });
 
 // Home screen logic
 function showHome(show){
   homeScreen.classList.toggle("hidden", !show);
-  boardEl.style.display = show ? "none" : "grid";
-  document.querySelector(".btngrp").style.display = show ? "none" : "flex";
-  modeBar.style.display = show ? "none" : "flex";
-  document.querySelector(".avatars").style.display = show ? "none" : "flex";
+  boardEl.style.display = show ? "none":"grid";
+  document.querySelector(".btngrp").style.display = show ? "none":"flex";
+  modeBar.style.display = show ? "none":"flex";
+  document.querySelector(".avatars").style.display = show ? "none":"flex";
 }
-startBtn.addEventListener("click",()=>{
+startBtn.addEventListener("click", ()=>{
   game.mode = gameMode.value;
   game.difficulty = difficulty.value;
   game.skin = skinSel.value;
   document.body.className = `theme-${themeSel.value.toLowerCase()}`;
 
-  modeBadge.textContent = `Mode: ${game.mode==="Player vs CPU"?"PvC":"PvP"}`;
+  modeBadge.textContent = `Mode: ${game.mode === "Player vs CPU" ? "PvC" : "PvP"}`;
   diffBadge.textContent = `Difficulty: ${game.difficulty}`;
   skinBadge.textContent = `Skin: ${game.skin}`;
 
-  if(musicWanted) music.play().catch(()=>{});
+  if (musicWanted) music.play().catch(()=>{});
   game.resetAll(); renderBoard(); updateBoard();
   showHome(false);
 });
 
-// init
+// Init
 showHome(true);
 loadLeaderboard();
 
 // Haptics
-function haptic(p){ if("vibrate" in navigator) navigator.vibrate(p); }
+function haptic(pattern){ if ("vibrate" in navigator) navigator.vibrate(pattern); }
 
-// Leaderboard (local)
+// Leaderboard (localStorage)
 function addLeaderboard(entry){
-  const k="rxo_leader";
-  const list=JSON.parse(localStorage.getItem(k)||"[]");
+  const key="rxo_leader";
+  const list = JSON.parse(localStorage.getItem(key) || "[]");
   list.push(entry);
-  list.sort((a,b)=>(parseFloat(a.time)-parseFloat(b.time))||(a.moves-b.moves));
-  localStorage.setItem(k, JSON.stringify(list.slice(0,10)));
+  list.sort((a,b)=> (parseFloat(a.time)-parseFloat(b.time)) || (a.moves-b.moves));
+  localStorage.setItem(key, JSON.stringify(list.slice(0,10)));
   loadLeaderboard();
 }
 function loadLeaderboard(){
-  const k="rxo_leader";
-  const list=JSON.parse(localStorage.getItem(k)||"[]");
-  leaderList.innerHTML="";
+  const key="rxo_leader";
+  const list = JSON.parse(localStorage.getItem(key) || "[]");
+  leaderList.innerHTML = "";
   list.forEach((e,i)=>{
-    const li=document.createElement("li");
-    li.textContent=`${i+1}. ${e.time}s · ${e.moves} moves · ${e.diff} · ${e.skin}`;
+    const li = document.createElement("li");
+    li.textContent = `${i+1}. ${e.time}s · ${e.moves} moves · ${e.diff} · ${e.skin}`;
     leaderList.appendChild(li);
   });
 }
