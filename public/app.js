@@ -55,29 +55,38 @@ function renderBoard() {
 }
 renderBoard();
 
-// ✅ CLEAN handleMove (final)
-function handleMove(r,c){
+// ===== Handle move =====
+function handleMove(r, c) {
+  // Start music after first gesture (autoplay rules)
   if (musicWanted && music.paused) music.play().catch(()=>{});
 
   // Player move
-  const result = game.move(r, c, true);
+  const result = game.move(r, c);
   if (!result) return;
 
   haptic(15);
-  if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+  if (game.sfxOn) {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(()=>{});
+  }
   updateBoard();
 
-  // CPU move needed
-  if (result === "cpuPending") {
-      setTimeout(()=>{
-          game.performCpuMove();
-          haptic(15);
-          if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
-          updateBoard();
-      }, 550);
+  // CPU move (PvC mode)
+  if (game.mode === "Player vs CPU" && game.turn === "O") {
+    setTimeout(() => {
+      const [r2, c2] = game.cpuMove();
+      game.move(r2, c2);
+
+      haptic(15);
+      if (game.sfxOn) {
+        clickSfx.currentTime = 0;
+        clickSfx.play().catch(()=>{});
+      }
+
+      updateBoard();
+    }, 550); // delay for realistic CPU
   }
 }
-
 // ===== Update UI =====
 function updateBoard(){
   const cells = boardEl.children;
