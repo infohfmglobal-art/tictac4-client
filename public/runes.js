@@ -36,3 +36,42 @@ export function screenShake(){
   document.body.classList.add("shake");
   setTimeout(()=>document.body.classList.remove("shake"),600);
 }
+// Better win glow burst
+export function triggerRuneBurst(player) {
+  const emoji = (player === "X") ? "🐉" : "🕊️";
+  const burst = document.createElement("div");
+  burst.className = "burst";
+  burst.textContent = emoji;
+  document.body.appendChild(burst);
+
+  setTimeout(() => burst.remove(), 1200);
+}
+
+// Confetti burst
+export function confettiBurst() {
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement("div");
+    c.className = "conf";
+    document.body.appendChild(c);
+
+    const size = (Math.random()*8)+4;
+    c.style.width = size+"px";
+    c.style.height = size+"px";
+    c.style.left = Math.random()*100 + "vw";
+    c.style.top = "-10px";
+
+    const endX = (Math.random()*100-50)+"vw";
+    c.animate([
+      { transform:`translate(0,0)` },
+      { transform:`translate(${endX},100vh)` }
+    ], { duration: 1200 + Math.random()*500 });
+
+    setTimeout(()=>c.remove(),1500);
+  }
+}
+
+// Screen shake
+export function screenShake() {
+  document.body.style.animation = "shakeAnim 0.3s";
+  setTimeout(()=>document.body.style.animation="", 350);
+}
