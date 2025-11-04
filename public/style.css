@@ -68,10 +68,15 @@ h1{font-size:44px;letter-spacing:3px;margin:10px 0 8px;text-shadow:0 0 15px gold
 .btn.small{padding:8px 14px;font-size:14px}
 .btngrp{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 8px}
 
-.homeScreen {
+#homeScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
   text-align: center;
-  padding: 20px;
-  margin-top: 10px;
+  margin-top: 0;
+  padding-top: 20px;
 }
 
 .title {
@@ -82,13 +87,14 @@ h1{font-size:44px;letter-spacing:3px;margin:10px 0 8px;text-shadow:0 0 15px gold
 }
 
 .menu-box {
-  width: 85%;
-  max-width: 380px;
+  width: 90%;
+  max-width: 360px;
   margin: auto;
   padding: 20px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,215,0,0.5);
+  border: 2px solid gold;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 15px rgba(255,215,0,0.4);
 }
 
 .menu-row {
@@ -112,11 +118,11 @@ h1{font-size:44px;letter-spacing:3px;margin:10px 0 8px;text-shadow:0 0 15px gold
   font-size: 1rem;
 }
 
-.homeBtns {
+.menu-buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 16px;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
 }
 
 .btn.glow {
@@ -168,4 +174,11 @@ ol {
 @media (max-width:380px){
   .board{--cell:76px}
   .btngrp{gap:8px}
+}
+#board {
+  margin: 0 auto;
+  margin-top: 10px;
+}
+.game-container {
+  padding-top: 20px;
 }
