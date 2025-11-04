@@ -436,3 +436,25 @@ select {
   .btngrp .btn { padding: 9px 12px; font-size: 13px; }
   .board { --cell: 28vw; gap: 8px; }
 }
+/* ✅ Home screen layout polish */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  width: 90%;
+  max-width: 330px;
+  margin: auto;
+}
+
+.home-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.card span {
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
+}
