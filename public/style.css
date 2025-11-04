@@ -542,3 +542,31 @@ button {
   font-size: 26px;
   margin-top: 0;
 }
+/* Win burst */
+.burst {
+  position: fixed;
+  font-size: 120px;
+  animation: zoomFade 1.2s ease-out;
+  left: 50%; top: 40%;
+  transform: translate(-50%, -50%);
+}
+
+/* Confetti */
+.conf {
+  position: fixed;
+  background: #ffd54f;
+  border-radius: 50%;
+  z-index: 9999;
+}
+
+/* Animations */
+@keyframes zoomFade {
+  0% { opacity:1; transform:translate(-50%,-50%) scale(0.2); }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(2); }
+}
+
+@keyframes shakeAnim {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
