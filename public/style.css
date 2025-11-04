@@ -141,3 +141,39 @@ select{
   .btngrp{ gap:8px; }
   .panel{ padding:10px 12px; }
 }
+/* ✅ Responsive Home Screen */
+#homeScreen {
+  width: 100%;
+  max-width: 450px;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#homeScreen select,
+#homeScreen button {
+  width: 100%;
+  font-size: 18px;
+  padding: 10px;
+}
+
+/* ✅ Center Game Board on Phone */
+#board {
+  max-width: 360px;
+  margin: auto;
+}
+
+/* ✅ Buttons row */
+.btngrp {
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ✅ Avatar row */
+.avatars {
+  justify-content: center;
+  margin-bottom: 10px;
+}
