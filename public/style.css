@@ -554,19 +554,13 @@ button {
 /* Confetti */
 .conf {
   position: fixed;
-  background: #ffd54f;
+  background: #ff454f;
   border-radius: 50%;
   z-index: 9999;
 }
 
 /* Animations */
 @keyframes zoomFade {
-  0% { opacity:1; transform:translate(-50%,-50%) scale(0.2); }
-  100% { opacity:0; transform:translate(-50%,-50%) scale(2); }
-}
-
-@keyframes shakeAnim {
-  0%,100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
+  0% { opacity:1; transform:translate(-50%, -50%) scale(0.2); }
+  100% { opacity:0; transform:translate(-50%, -50%) scale(2); }
 }
