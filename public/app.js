@@ -60,43 +60,44 @@ function renderBoard() {
 }
 renderBoard();
 
-// ===============================================
-// Move flow
-function handleMove(r, c) {
-  // start bg music only after a user gesture
-  if (musicWanted && music.paused) music.play().catch(() => {});
+// ===== Handle move =====
+function handleMove(r,c){
+  // Start music after first gesture (autoplay rules)
+  if (musicWanted && music.paused) music.play().catch(()=>{});
 
   // Player move
-  const moved = game.move(r, c);
-  if (!moved) return;
+  const result = game.move(r, c, true);
+  if (!result) return;
 
-  haptic(12);
-  if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(()=>{}); }
+  haptic(15);
+  if (game.sfxOn) {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(()=>{});
+  }
   updateBoard();
 
-  // If PvC and CPU's turn, make a delayed CPU move
-  maybeCpuTurn();
+  // CPU turn (PvC mode only)
+  if (game.mode === "Player vs CPU" && game.turn === "O") {
+    setTimeout(() => {
+      const emptyBefore = game.board.emptyCells().length;
+
+      // CPU move
+      const [cr, cc] = game.cpuMove();
+      game.move(cr, cc);
+
+      const emptyAfter = game.board.emptyCells().length;
+
+      // play cpu sound
+      if (emptyBefore !== emptyAfter && game.sfxOn) {
+        clickSfx.currentTime = 0;
+        clickSfx.play().catch(()=>{});
+      }
+
+      haptic(20);
+      updateBoard();
+    }, 450); // CPU delay
+  }
 }
-
-function maybeCpuTurn() {
-  if (game.mode !== "Player vs CPU") return;
-  if (game.winner || game.turn !== "O") return;
-  if (cpuThinking) return; // guard
-
-  cpuThinking = true;
-  setTimeout(() => {
-    if (game.winner || game.turn !== "O") { cpuThinking = false; return; }
-
-    const [cr, cc] = game.cpuMove();
-    game.move(cr, cc);
-
-    haptic(12);
-    if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(()=>{}); }
-    cpuThinking = false;
-    updateBoard();
-  }, 520); // natural-feeling CPU delay
-}
-
 // ===============================================
 // UI update
 function updateBoard() {
