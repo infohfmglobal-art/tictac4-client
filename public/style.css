@@ -226,3 +226,59 @@ h1.game-title{
 
 /* Winner banner height safety */
 .msg{ min-height: 26px; }
+/* === FIX LAYOUT + RESPONSIVE UI === */
+
+/* Center main wrapper */
+#homeScreen {
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* Form card */
+.settings-card {
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+    padding: 18px;
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+}
+
+/* Select dropdowns tidy */
+.settings-card select {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: black;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+}
+
+/* Start / install buttons row */
+.settings-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+/* Board centered & smaller on desktop */
+#board {
+    width: 330px;
+    height: 330px;
+    margin: 20px auto;
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  #board {
+      width: 300px;
+      height: 300px;
+  }
+
+  .settings-card {
+      max-width: 90%;
+      padding: 12px;
+  }
+}
