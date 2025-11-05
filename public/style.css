@@ -319,33 +319,34 @@ h1.game-title{
   100% { opacity: 0; transform: translate(-50%, -70%) scale(0.6); }
 }
 /* 🎮 NEW GAME MENU UI */
-.home-screen {
-  text-align: center;
-  padding-top: 50px;
-}
-
-.menu-title {
-  font-size: 32px;
-  color: #ffbf00;
-  text-shadow: 0 0 8px #ffbf00;
-  margin-bottom: 10px;
-}
-
-.menu-card {
-  width: 300px;
-  margin: auto;
-  padding: 20px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid #ffbf00;
+./* Home Screen Panel Center */
+.home-panel {
+  width: 320px;
+  background: rgba(0,0,0,0.55);
+  border: 2px solid #FFBF00;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(255,191,0,0.3);
+  padding: 18px;
+  box-shadow: 0 0 20px rgba(255,180,0,0.4);
+  margin: 30px auto 0 auto;
+  position: relative;
+  top: -20px;
 }
 
-.menu-card label {
-  display: block;
-  margin-top: 12px;
-  font-size: 14px;
-  color: #e8e8e8;
+/* Center dropdowns spacing */
+.home-panel select {
+  margin: 8px 0;
+  padding: 10px;
+  font-size: 15px;
+}
+
+/* Fix main page layout */
+#board {
+  margin-top: 10px;
+}
+
+/* Add space above home panel when game ends */
+.show-home #homeScreen {
+  margin-top: 20px;
 }
 
 .menu-card select {
