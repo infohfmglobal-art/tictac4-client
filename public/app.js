@@ -56,6 +56,7 @@ function renderBoard(){
 renderBoard();
 
 // ===== Handle move =====
+
   // Start music after first gesture (autoplay rules)
   if (musicWanted && music.paused) music.play().catch(()=>{});
 
