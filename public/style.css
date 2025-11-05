@@ -134,32 +134,49 @@ button:hover {
   color: #000;
 }
 
-/* ===== Home Screen ===== */
+/* --- Home Screen Panel Fix --- */
 #homeScreen {
-  margin-top: 25px;
+  margin: 0 auto;
+  max-width: 350px;
+  padding: 20px;
   text-align: center;
 }
 
-.hidden {
-  display: none;
+#homeScreen h2 {
+  margin-bottom: 15px;
 }
 
-.home-controls {
-  width: 350px;
-  margin: auto;
+.select-group {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-bottom: 18px;
 }
 
 select {
   width: 100%;
-  padding: 10px;
-  font-size: 15px;
-  background: black;
-  border: 2px solid #ffb400;
-  color: #ffb400;
+  padding: 8px 10px;
+  font-size: 16px;
+  background: #111;
+  border: 2px solid #f5a623;
   border-radius: 8px;
+  color: #f5a623;
+  font-weight: bold;
+  outline: none;
+}
+
+select:focus {
+  border-color: #ffeb3b;
+  box-shadow: 0px 0px 8px #ffeb3baa;
+}
+
+button#startBtn, 
+button#installBtn2 {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 16px;
 }
 
 .home-buttons {
