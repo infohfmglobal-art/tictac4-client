@@ -203,14 +203,22 @@ musicBtn?.addEventListener("click", () => {
 });
 
 // ===============================================
-// Home screen
-function showHome(show) {
+// ===== Home screen =====
+function showHome(show){
   homeScreen.classList.toggle("hidden", !show);
-  boardEl.style.display = show ? "none" : "grid";
-  document.querySelector(".btngrp").style.display = show ? "none" : "flex";
-  modeBar.style.display = show ? "none" : "flex";
+  boardEl.style.display = show ? "none":"grid";
+  document.querySelector(".btngrp").style.display = show ? "none":"flex";
+  modeBar.style.display = show ? "none":"flex";
+
   const avatars = document.querySelector(".avatars");
   if (avatars) avatars.style.display = show ? "none" : "flex";
+
+  // clear banner when going home
+  if (show) {
+    msgEl.classList.remove("show-winner");
+    winnerTxt.textContent = "";
+  }
+}
 
   if (show) { // clear banner when going home
     msgEl.classList.remove("show-winner");
