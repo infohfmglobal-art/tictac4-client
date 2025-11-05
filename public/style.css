@@ -228,3 +228,27 @@ button#installBtn2 {
     font-size: 48px;
   }
 }
+/* ✅ Hide home screen container when in game */
+.hidden {
+  display: none !important;
+}
+
+/* ✅ Home screen container alignment */
+#homeScreen {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ✅ Center menu box */
+.home-box {
+  width: 300px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ✅ Better buttons */
+.home-box button {
+  width: 100%;
+}
