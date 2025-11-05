@@ -178,3 +178,51 @@ h1{
   .btn{padding:8px 18px;font-size:14px}
   .avatars span{font-size:22px}
 }
+/* ===== Responsive polish ===== */
+:root{
+  --maxw: 760px;
+}
+body{
+  margin:0;
+}
+.container{
+  width: min(100%, var(--maxw));
+  margin: 0 auto;
+  padding: clamp(12px, 3vw, 28px);
+}
+
+h1.game-title{
+  font-size: clamp(28px, 6vw, 56px);
+  margin: clamp(6px, 2vw, 14px) 0 8px;
+}
+
+.topbar, .modebar, .btngrp, .avatars{
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.board{
+  --cell: clamp(78px, 22vw, 110px);
+  margin: 18px auto;
+}
+
+.btn{ font-size: clamp(12px, 3.3vw, 16px); }
+
+/* Prevent accidental zoom on double-tap */
+* { touch-action: manipulation; }
+
+/* Home panel centering */
+#homeScreen{
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+/* Fix small phones bottom buttons overflow */
+.btngrp{
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+/* Winner banner height safety */
+.msg{ min-height: 26px; }
