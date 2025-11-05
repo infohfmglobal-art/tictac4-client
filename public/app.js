@@ -60,35 +60,31 @@ function renderBoard() {
 }
 renderBoard();
 
-// ===============================================
-// Handle move (human + delayed CPU)
+// ===== Handle move (Human + delayed CPU) =====
 function handleMove(r, c) {
-  // start music after first gesture (autoplay policy)
-  if (musicWanted && music.paused) music.play().catch(() => {});
+  // Start music after first gesture (autoplay policy)
+  if (musicWanted && music.paused) music.play().catch(()=>{});
 
-  // human move
-  const result = game.move(r, c, true); // 'true' = from human
-  if (!result) return;
+  // Human move
+  const result = game.move(r, c, true); // "true" = from human
+  if (!result) return; // invalid click or cell filled
 
   haptic(15);
-  if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(() => {}); }
+  if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(()=>{}); }
   updateBoard();
 
-  // if CPU must play next (PvC + now turn 'O'), delay & perform
+  // If CPU must play next (PvC + now turn 'O'), delay & perform
   if (result === "cpuPending") {
     setTimeout(() => {
-      game.performCpuMove(); // does one O move + winner check internally
+      game.performCpuMove(); // CPU move + win check inside
 
-      // CPU feedback
       haptic(15);
-      if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(() => {}); }
+      if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(()=>{}); }
 
       updateBoard();
-    }, 450);
+    }, 500); // CPU reaction delay
   }
 }
-
-// ===============================================
 // UI update
 function updateBoard() {
   const cells = boardEl.children;
