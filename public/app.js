@@ -106,26 +106,48 @@ function updateBoard(){
   pX.classList.toggle("active", game.turn==="X");
   pO.classList.toggle("active", game.turn==="O");
 
-  if (game.winner && game.winner!=="Draw"){
-    winnerTxt.textContent = (game.winner==="X") ? "Dragon Wins!" : "Phoenix Wins!";
-    for (const [r,c] of game.getWinningCells()){
-      const idx = r*3 + c; cells[idx].classList.add("win-cell");
-    }
-    triggerRuneBurst(game.winner); confettiBurst(); screenShake();
-    haptic([40,40,80]);
-    if (game.sfxOn){ winSfx.currentTime=0; winSfx.play().catch(()=>{}); }
+ // Winner / Draw UI
+if (game.winner && game.winner !== "Draw") {
+    msgEl.classList.add("show-winner");
+    winnerTxt.textContent = (game.winner === "X") ? "Dragon Wins!" : "Phoenix Wins!";
 
-    // leaderboard (PvC only, X wins)
-    if (game.mode==="Player vs CPU" && game.winner==="X"){
-      const elapsed = ((performance.now()-game.roundStart)/1000).toFixed(2);
-      const moves = 9 - game.board.emptyCells().length;
-      addLeaderboard({time:elapsed, moves, diff:game.difficulty.toLowerCase(), skin:game.skin.toLowerCase()});
+    // highlight winning cells
+    for (const [r, c] of game.getWinningCells()) {
+        const idx = r * 3 + c;
+        cells[idx].classList.add("win-cell");
     }
-  } else if (game.winner==="Draw"){
+
+    // effects
+    triggerRuneBurst(game.winner);
+    confettiBurst();
+    screenShake();
+    haptic([40, 40, 80]);
+
+    if (game.sfxOn) {
+        winSfx.currentTime = 0;
+        winSfx.play().catch(() => {});
+    }
+
+    // ✅ leaderboard (PvC only + X wins)
+    if (game.mode === "Player vs CPU" && game.winner === "X") {
+        const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
+        const moves = 9 - game.board.emptyCells().length;
+
+        addLeaderboard({
+            time: elapsed,
+            moves,
+            diff: game.difficulty.toLowerCase(),
+            skin: game.skin.toLowerCase()
+        });
+    }
+
+} else if (game.winner === "Draw") {
+    msgEl.classList.add("show-winner");
     winnerTxt.textContent = "Draw!";
-  } else {
+} else {
+    msgEl.classList.remove("show-winner");
     winnerTxt.textContent = "";
-  }
+}
 
   scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
