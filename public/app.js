@@ -196,17 +196,24 @@ function showHome(show){
   document.querySelector(".avatars").style.display = show ? "none":"flex";
 }
 startBtn.addEventListener("click", ()=>{
+  // apply selections
   game.mode = gameMode.value;
   game.difficulty = difficulty.value;
   game.skin = skinSel.value;
   document.body.className = `theme-${themeSel.value.toLowerCase()}`;
 
+  // update badges
   modeBadge.textContent = `Mode: ${game.mode === "Player vs CPU" ? "PvC" : "PvP"}`;
   diffBadge.textContent = `Difficulty: ${game.difficulty}`;
   skinBadge.textContent = `Skin: ${game.skin}`;
 
+  // start music after user gesture if toggled on
   if (musicWanted) music.play().catch(()=>{});
-  game.resetAll(); renderBoard(); updateBoard();
+
+  // fresh round
+  game.resetAll();
+  renderBoard();
+  updateBoard();
   showHome(false);
 });
 
