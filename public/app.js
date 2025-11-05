@@ -1,4 +1,4 @@
-// app.js (RuneXO) — polished drop-in
+// app.js (RuneXO) — clean, final
 import { Game } from "./game.js";
 import { triggerRuneBurst, confettiBurst, screenShake } from "./runes.js";
 
@@ -18,7 +18,7 @@ const musicBtn   = document.getElementById("musicBtn");
 const installBtn = document.getElementById("installBtn");
 const installBtn2= document.getElementById("installBtn2");
 
-// top badges / avatars
+// badges / avatars
 const modeBar    = document.getElementById("modeBar");
 const modeBadge  = document.getElementById("modeBadge");
 const diffBadge  = document.getElementById("diffBadge");
@@ -40,8 +40,8 @@ const clickSfx = new Audio("sound/click.mp3");
 const winSfx   = new Audio("sound/win.mp3");
 const music    = new Audio("sound/bg.mp3");
 music.loop = true;
-let musicWanted = false;           // user toggle
-let cpuThinking = false;           // guard to prevent double CPU turns
+
+let musicWanted = false; // user toggle
 
 // ===============================================
 // Build board
@@ -60,46 +60,34 @@ function renderBoard() {
 }
 renderBoard();
 
-// ===== Handle move =====
+// ===============================================
+// Handle move (human + delayed CPU)
 function handleMove(r, c) {
-    // Start music after first gesture (autoplay policy)
-    if (musicWanted && music.paused) music.play().catch(()=>{});
+  // start music after first gesture (autoplay policy)
+  if (musicWanted && music.paused) music.play().catch(() => {});
 
-    // Player move
-    const result = game.move(r, c, true);
-    if (!result) return;
+  // human move
+  const result = game.move(r, c, true); // 'true' = from human
+  if (!result) return;
 
-    haptic(15);
-    if (game.sfxOn) {
-        clickSfx.currentTime = 0;
-        clickSfx.play().catch(()=>{});
-    }
-    updateBoard();
+  haptic(15);
+  if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(() => {}); }
+  updateBoard();
 
-    // If game already ended after player move — stop here
-    if (game.winner || game.board.full()) return;
+  // if CPU must play next (PvC + now turn 'O'), delay & perform
+  if (result === "cpuPending") {
+    setTimeout(() => {
+      game.performCpuMove(); // does one O move + winner check internally
 
-    // CPU turn (PvC only)
-    if (game.mode === "Player vs CPU" && game.turn === "O") {
-        setTimeout(() => {
-            const emptyBefore = game.board.emptyCells().length;
+      // CPU feedback
+      haptic(15);
+      if (game.sfxOn) { clickSfx.currentTime = 0; clickSfx.play().catch(() => {}); }
 
-            const [r2, c2] = game.cpuMove();
-            game.move(r2, c2);
-
-            const emptyAfter = game.board.emptyCells().length;
-
-            // CPU sound if moved
-            if (emptyBefore !== emptyAfter && game.sfxOn) {
-                clickSfx.currentTime = 0;
-                clickSfx.play().catch(()=>{});
-            }
-
-            haptic(20);
-            updateBoard();
-        }, 450);
-    }
+      updateBoard();
+    }, 450);
+  }
 }
+
 // ===============================================
 // UI update
 function updateBoard() {
@@ -111,8 +99,8 @@ function updateBoard() {
     const val = game.board.grid[r][c];
     const cell = cells[i];
 
-    cell.className = "cell";      // reset classes
-    cell.textContent = "";        // reset content
+    cell.className = "cell"; // reset classes
+    cell.textContent = "";   // reset content
 
     if (!val) continue;
 
@@ -135,7 +123,7 @@ function updateBoard() {
     pO.classList.toggle("active", game.turn === "O");
   }
 
-  // winner / draw
+  // winner / draw banner + effects
   if (game.winner) {
     if (game.winner === "Draw") {
       winnerTxt.textContent = "Draw!";
@@ -144,21 +132,21 @@ function updateBoard() {
       winnerTxt.textContent = (game.winner === "X") ? "Dragon Wins!" : "Phoenix Wins!";
       msgEl.classList.add("show-winner");
 
-      // highlight winning line
+      // highlight winning cells
       const line = game.getWinningCells?.() || [];
       for (const [r, c] of line) {
         const idx = r * 3 + c;
         cells[idx]?.classList.add("win-cell");
       }
 
-      // celebration
+      // celebrations
       triggerRuneBurst(game.winner);
       confettiBurst();
       screenShake();
       haptic([40, 40, 80]);
-      if (game.sfxOn) { winSfx.currentTime = 0; winSfx.play().catch(()=>{}); }
+      if (game.sfxOn) { winSfx.currentTime = 0; winSfx.play().catch(() => {}); }
 
-      // leaderboard (only when Human X beats CPU)
+      // leaderboard — only when human X beats CPU
       if (game.mode === "Player vs CPU" && game.winner === "X") {
         const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
         const moves = 9 - game.board.emptyCells().length;
@@ -175,7 +163,8 @@ function updateBoard() {
     winnerTxt.textContent = "";
   }
 
-  scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
+  scoreEl.textContent =
+    `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
 // ===============================================
@@ -185,7 +174,6 @@ nextBtn?.addEventListener("click", () => {
   renderBoard();
   updateBoard();
   game.roundStart = performance.now();
-  cpuThinking = false;
 });
 
 resetBtn?.addEventListener("click", () => {
@@ -193,7 +181,6 @@ resetBtn?.addEventListener("click", () => {
   game.resetAll();
   renderBoard();
   updateBoard();
-  cpuThinking = false;
 });
 
 homeBtn?.addEventListener("click", () => showHome(true));
@@ -206,7 +193,7 @@ sfxBtn?.addEventListener("click", () => {
 musicBtn?.addEventListener("click", () => {
   musicWanted = !musicWanted;
   musicBtn.textContent = `Music: ${musicWanted ? "On" : "Off"}`;
-  if (musicWanted) music.play().catch(()=>{}); else music.pause();
+  if (musicWanted) music.play().catch(() => {}); else music.pause();
 });
 
 [installBtn, installBtn2].forEach(btn => {
@@ -229,8 +216,7 @@ function showHome(show) {
   const avatars = document.querySelector(".avatars");
   if (avatars) avatars.style.display = show ? "none" : "flex";
 
-  // clear banner when going home
-  if (show) {
+  if (show) { // clear banner when going home
     msgEl.classList.remove("show-winner");
     winnerTxt.textContent = "";
   }
@@ -245,23 +231,20 @@ startBtn?.addEventListener("click", () => {
   // theme apply
   document.body.className = `theme-${themeSel.value.toLowerCase()}`;
 
-  // update badges
+  // badges
   modeBadge.textContent = `Mode: ${game.mode === "Player vs CPU" ? "PvC" : "PvP"}`;
   diffBadge.textContent = `Difficulty: ${game.difficulty}`;
   skinBadge.textContent = `Skin: ${game.skin}`;
 
-  // start bg music if user enabled it
-  if (musicWanted) music.play().catch(()=>{});
+  if (musicWanted) music.play().catch(() => {});
 
-  // prepare round
   game.resetAll();
-  cpuThinking = false;
   renderBoard();
   updateBoard();
   showHome(false);
 });
 
-// initial state
+// initial
 showHome(true);
 loadLeaderboard();
 
@@ -278,8 +261,9 @@ function addLeaderboard(entry) {
   const key = "rxo_leader";
   const list = JSON.parse(localStorage.getItem(key) || "[]");
   list.push(entry);
-  // best = least time, then least moves
-  list.sort((a,b) => (parseFloat(a.time) - parseFloat(b.time)) || (a.moves - b.moves));
+  list.sort((a, b) =>
+    (parseFloat(a.time) - parseFloat(b.time)) || (a.moves - b.moves)
+  );
   localStorage.setItem(key, JSON.stringify(list.slice(0, 10)));
   loadLeaderboard();
 }
