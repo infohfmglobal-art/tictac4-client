@@ -318,3 +318,79 @@ h1.game-title{
   0% { opacity: 1; transform: translate(-50%, -50%) scale(2); }
   100% { opacity: 0; transform: translate(-50%, -70%) scale(0.6); }
 }
+/* 🎮 NEW GAME MENU UI */
+.home-screen {
+  text-align: center;
+  padding-top: 50px;
+}
+
+.menu-title {
+  font-size: 32px;
+  color: #ffbf00;
+  text-shadow: 0 0 8px #ffbf00;
+  margin-bottom: 10px;
+}
+
+.menu-card {
+  width: 300px;
+  margin: auto;
+  padding: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #ffbf00;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(255,191,0,0.3);
+}
+
+.menu-card label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #e8e8e8;
+}
+
+.menu-card select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  background: black;
+  border: 1px solid #ffbf00;
+  border-radius: 6px;
+  color: gold;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.menu-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.menu-btn.start {
+  background: #ffbf00;
+  color: black;
+  font-weight: bold;
+}
+
+.menu-btn.install {
+  background: #444;
+  color: white;
+}
+
+.menu-sub {
+  margin-top: 20px;
+  font-size: 16px;
+  color: white;
+  text-shadow: 0 0 8px #ffbf00;
+}
+
+.leader-list {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  color: #ddd;
+}
