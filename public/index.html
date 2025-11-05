@@ -1,140 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>RuneXO</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RuneXO</title>
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="splash.css">
+<link rel="manifest" href="manifest.json">
 
-  <!-- PWA + Styles -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="splash.css">
-
-  <meta name="theme-color" content="#06000f">
-
-  <script>
-    // PWA install prompt stash
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      window.deferredPrompt = e;
-    });
-  </script>
+<script>
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    window.deferredPrompt = e;
+  });
+</script>
 </head>
 
 <body class="theme-rune">
-  <!-- Splash -->
-  <div id="splash-screen">
-    <img src="logo-dragon.png" class="splash-logo" alt="">
-    <div class="splash-title">RUNEXO</div>
-  </div>
 
-  <!-- Background particles (optional) -->
-  <canvas id="runeParticles" aria-hidden="true"></canvas>
-
-  <!-- Title -->
-  <h1 class="game-title">RuneXO</h1>
-
-  <!-- Mode / badges row shown in game -->
-  <div id="modeBar" class="topbar">
-    <span id="modeBadge" class="badge">Mode: PvC</span>
-    <span id="diffBadge" class="badge">Difficulty: Easy</span>
-    <span id="skinBadge" class="badge">Skin: Runes</span>
-    <button id="installBtn" class="btn small">Install App</button>
-  </div>
-
-  <!-- Avatars / turn highlight -->
-  <div class="avatars">
-    <span id="pX" class="avatar dragon">Dragon</span>
-    <span id="pO" class="avatar phoenix">Phoenix</span>
-  </div>
-
-  <!-- Score + Winner text -->
-  <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
-  <div id="msg" class="msg winner-banner">
-    <span class="crown-burst">👑</span>
-    <span id="winnerText"></span>
-  </div>
-
-  <!-- 3×3 Board -->
-  <div id="board" class="board" role="grid" aria-label="Tic Tac Toe board"></div>
-
-  <!-- Buttons shown in game -->
-  <div class="btngrp">
-    <button id="homeBtn" class="btn">Home</button>
-    <button id="nextBtn" class="btn">Next Round</button>
-    <button id="resetBtn" class="btn red">Reset All</button>
-    <button id="sfxBtn" class="btn small">SFX: On</button>
-    <button id="musicBtn" class="btn small">Music: Off</button>
-    <button id="installBtn2" class="btn small">Install App</button>
-  </div>
-
-  <!-- Home screen (visible on load) -->
- <div id="homeScreen" class="home-screen">
-  <h2 class="menu-title">RuneXO</h2>
-
-  <div class="menu-card">
-    <label>Game Mode</label>
-    <select id="gameMode">
-      <option>Player vs CPU</option>
-      <option>Player vs Player</option>
-    </select>
-
-    <label>Difficulty</label>
-    <select id="difficulty">
-      <option>Easy</option>
-      <option>Normal</option>
-      <option>Hard</option>
-    </select>
-
-    <label>Skin</label>
-    <select id="skin">
-      <option>Runes</option>
-      <option>Classic X/O</option>
-      <option>Fruit</option>
-    </select>
-
-    <label>Theme</label>
-    <select id="themeSelect">
-      <option>Rune</option>
-      <option>Gold</option>
-      <option>Blue</option>
-    </select>
-
-    <button id="startBtn" class="menu-btn start">Start Game</button>
-    <button id="installBtn2" class="menu-btn install">Install App</button>
-  </div>
-
-  <h3 class="menu-sub">Leaderboard (Top 10 fastest wins)</h3>
-  <ul id="leaderList" class="leader-list"></ul>
+<!-- SPLASH -->
+<div id="splash-screen">
+  <img src="logo-dragon.png" class="splash-logo" />
+  <div class="splash-title">RUNEXO</div>
 </div>
-  <!-- Confetti / FX overlay -->
-  <canvas id="fx-layer" class="fx-layer" aria-hidden="true"></canvas>
 
-  <!-- Scripts -->
-  <script type="module" src="app.js"></script>
-  <script type="module" src="runes.js"></script>
-  <script type="module" src="splash.js"></script>
+<canvas id="runeParticles"></canvas>
 
-  <script>
-    // Hook the extra Home install button to the same prompt
-    const btn = document.getElementById('installBtnHome');
-    if (btn) {
-      btn.addEventListener('click', async () => {
-        const p = window.deferredPrompt;
-        if (!p) return;
-        p.prompt();
-        await p.userChoice;
-        window.deferredPrompt = null;
-      });
-    }
+<h1 class="game-title">RuneXO</h1>
 
-    // Service worker (available in production)
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(()=>{});
-    }
-  </script>
+<div id="modeBar" class="topbar">
+  <span id="modeBadge" class="badge">Mode: PvC</span>
+  <span id="diffBadge" class="badge">Easy</span>
+  <span id="skinBadge" class="badge">Runes</span>
+</div>
+
+<div class="avatars">
+  <div id="pX" class="avatar">🐉 Dragon</div>
+  <div id="pO" class="avatar">🕊️ Phoenix</div>
+</div>
+
+<div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
+
+<div id="msg" class="msg winner-banner">
+  <span class="crown-burst">👑</span>
+  <span id="winnerText"></span>
+</div>
+
+<div id="board" class="board"></div>
+
+<div class="btngrp">
+  <button id="homeBtn" class="btn small">Home</button>
+  <button id="nextBtn" class="btn small">Next Round</button>
+  <button id="resetBtn" class="btn red small">Reset All</button>
+  <button id="sfxBtn" class="btn small">SFX: On</button>
+  <button id="musicBtn" class="btn small">Music: Off</button>
+  <button id="installBtn" class="btn small">Install App</button>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="homeScreen" class="">
+  <h2>RuneXO</h2>
+
+  <label>Game Mode</label>
+  <select id="gameMode">
+    <option>Player vs CPU</option>
+    <option>Player vs Player</option>
+  </select>
+
+  <label>Difficulty</label>
+  <select id="difficulty">
+    <option>Easy</option>
+    <option>Normal</option>
+    <option>Hard</option>
+  </select>
+
+  <label>Skin</label>
+  <select id="skin">
+    <option>Runes</option>
+    <option>Classic X / O</option>
+    <option>Fruit</option>
+  </select>
+
+  <label>Theme</label>
+  <select id="themeSelect">
+    <option>Rune</option>
+    <option>Gold</option>
+    <option>Blue</option>
+    <option>Classic</option>
+  </select>
+
+  <button id="startBtn" class="btn">Start Game</button>
+  <button id="installBtn2" class="btn small">Install App</button>
+
+  <h3>Leaderboard (Top 10 fastest wins vs CPU)</h3>
+  <ul id="leaderList"></ul>
+</div>
+
+<script type="module" src="app.js"></script>
+<script type="module" src="splash.js"></script>
+<script type="module" src="runes.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
+
 </body>
 </html>
