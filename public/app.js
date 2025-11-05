@@ -61,42 +61,44 @@ function renderBoard() {
 renderBoard();
 
 // ===== Handle move =====
-function handleMove(r,c){
-  // Start music after first gesture (autoplay rules)
-  if (musicWanted && music.paused) music.play().catch(()=>{});
+function handleMove(r, c) {
+    // Start music after first gesture (autoplay policy)
+    if (musicWanted && music.paused) music.play().catch(()=>{});
 
-  // Player move
-  const result = game.move(r, c, true);
-  if (!result) return;
+    // Player move
+    const result = game.move(r, c, true);
+    if (!result) return;
 
-  haptic(15);
-  if (game.sfxOn) {
-    clickSfx.currentTime = 0;
-    clickSfx.play().catch(()=>{});
-  }
-  updateBoard();
-
-  // CPU turn (PvC mode only)
-  if (game.mode === "Player vs CPU" && game.turn === "O") {
-    setTimeout(() => {
-      const emptyBefore = game.board.emptyCells().length;
-
-      // CPU move
-      const [cr, cc] = game.cpuMove();
-      game.move(cr, cc);
-
-      const emptyAfter = game.board.emptyCells().length;
-
-      // play cpu sound
-      if (emptyBefore !== emptyAfter && game.sfxOn) {
+    haptic(15);
+    if (game.sfxOn) {
         clickSfx.currentTime = 0;
         clickSfx.play().catch(()=>{});
-      }
+    }
+    updateBoard();
 
-      haptic(20);
-      updateBoard();
-    }, 450); // CPU delay
-  }
+    // If game already ended after player move — stop here
+    if (game.winner || game.board.full()) return;
+
+    // CPU turn (PvC only)
+    if (game.mode === "Player vs CPU" && game.turn === "O") {
+        setTimeout(() => {
+            const emptyBefore = game.board.emptyCells().length;
+
+            const [r2, c2] = game.cpuMove();
+            game.move(r2, c2);
+
+            const emptyAfter = game.board.emptyCells().length;
+
+            // CPU sound if moved
+            if (emptyBefore !== emptyAfter && game.sfxOn) {
+                clickSfx.currentTime = 0;
+                clickSfx.play().catch(()=>{});
+            }
+
+            haptic(20);
+            updateBoard();
+        }, 450);
+    }
 }
 // ===============================================
 // UI update
