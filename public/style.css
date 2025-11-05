@@ -1,65 +1,180 @@
-/* Base */
-:root { --gold:#ffd86e; --bg:#06000f; --cell:95px; }
-*{box-sizing:border-box}
-body{font-family:'Orbitron',sans-serif;background:var(--bg);color:var(--gold);text-align:center;padding:20px}
+/* ========== ROOT & BASE ========== */
+:root { 
+  --gold:#ffd86e; 
+  --bg:#06000f; 
+  --cell:95px; 
+}
 
-/* Title */
-h1{font-size:48px;letter-spacing:3px;margin:8px 0 6px;text-shadow:0 0 15px gold,0 0 35px purple}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Orbitron',sans-serif;
+  background:var(--bg);
+  color:var(--gold);
+  text-align:center;
+  padding:20px;
+  user-select:none;
+}
 
-/* Badges */
-.hud{display:flex;gap:10px;justify-content:center;margin:6px 0 10px}
-.badge{border:2px solid #ffcc44;border-radius:12px;padding:4px 10px;display:inline-block;background:rgba(255,238,0,.1)}
-.score{margin:6px 0 8px;font-weight:700}
-.msg{min-height:24px;margin:6px 0 10px;text-shadow:0 0 8px gold}
+/* ========== TITLE ========== */
+h1{
+  font-size:48px;
+  letter-spacing:3px;
+  margin:8px 0 12px;
+  text-shadow:0 0 15px gold,0 0 35px purple;
+}
 
-/* Avatars */
-.avatars{display:flex;gap:14px;justify-content:center;margin-bottom:10px}
-.avatar{border:2px solid #ffcc44;border-radius:16px;padding:6px 12px;background:rgba(255,238,0,.08)}
-.avatar.active{box-shadow:0 0 18px #ffcc44}
-.avatar span{font-size:24px;display:block}
+/* ========== HUD BADGES ========== */
+.hud, #modeBar{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin:6px 0 10px;
+  flex-wrap:wrap;
+}
+.badge{
+  border:2px solid #ffcc44;
+  border-radius:12px;
+  padding:4px 10px;
+  display:inline-block;
+  background:rgba(255,238,0,.1);
+  font-weight:700;
+}
 
-/* Board */
+/* Score + Winner */
+.score{margin:6px 0 8px;font-weight:700;}
+.msg{min-height:26px;margin:8px 0;text-shadow:0 0 8px gold;}
+.winner-banner{font-size:20px;}
+.crown-burst{font-size:22px;margin-right:4px}
+
+/* ========== AVATARS ========== */
+.avatars{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  margin-bottom:14px;
+}
+.avatar{
+  border:2px solid #ffcc44;
+  border-radius:16px;
+  padding:6px 14px;
+  background:rgba(255,238,0,.08);
+  font-size:18px;
+}
+.avatar.active{
+  box-shadow:0 0 18px #ffcc44;
+}
+.avatar span{font-size:26px}
+
+/* ========== BOARD ========== */
 .board{
   width:calc(var(--cell)*3);
-  margin:18px auto;
+  margin:18px auto 12px;
   display:grid;
   grid-template-columns:repeat(3,var(--cell));
   gap:10px;
 }
 .cell{
-  width:var(--cell);height:var(--cell);
-  display:flex;align-items:center;justify-content:center;
-  border:3px solid #ffbe5b;border-radius:12px;cursor:pointer;
-  user-select:none;font-size:52px;font-weight:700;
-  box-shadow:0 0 10px rgba(255,200,100,.4);transition:.15s
+  width:var(--cell);
+  height:var(--cell);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:3px solid #ffbe5b;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:52px;
+  font-weight:700;
+  box-shadow:0 0 10px rgba(255,200,100,.4);
+  transition:.15s;
 }
+.cell:active{transform:scale(.96)}
 .win-cell{animation:winPulse .9s infinite}
-@keyframes winPulse{0%{box-shadow:0 0 12px gold}50%{box-shadow:0 0 28px purple}100%{box-shadow:0 0 12px gold}}
+@keyframes winPulse{
+  0%{box-shadow:0 0 12px gold}
+  50%{box-shadow:0 0 28px purple}
+ 100%{box-shadow:0 0 12px gold}
+}
 
-/* Skins */
+/* ========== SKINS ========== */
 .classicX{color:#ffb84d}
 .classicO{color:#4dffff}
 .dragon{color:#ff6bff;text-shadow:0 0 12px #ff6bff,0 0 28px #b885ff}
 .phoenix{color:#8cedff;text-shadow:0 0 12px #8cedff,0 0 28px #6cfbff}
 .fruitX,.fruitO{font-size:46px}
 
-/* Buttons */
-.btngrp{display:flex;gap:10px;justify-content:center;margin:10px auto 0}
-.btn{background:rgba(255,238,0,.15);color:#ffdd73;font-weight:700;padding:10px 22px;border-radius:14px;cursor:pointer;border:2px solid #ffcc44;backdrop-filter:blur(6px);transition:.25s;text-shadow:0 0 8px #ffcc44;box-shadow:0 0 10px #ffcc44,inset 0 0 10px rgba(255,200,0,.4)}
-.btn:hover{transform:scale(1.06);box-shadow:0 0 15px #ffdd55,0 0 35px #ffdd55,inset 0 0 18px rgba(255,200,0,.7)}
+/* ========== BUTTONS ========== */
+.btngrp{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin:12px auto;
+  flex-wrap:wrap;
+}
+.btn{
+  background:rgba(255,238,0,.15);
+  color:#ffdd73;
+  font-weight:700;
+  padding:10px 22px;
+  border-radius:14px;
+  cursor:pointer;
+  border:2px solid #ffcc44;
+  transition:.25s;
+  box-shadow:0 0 10px #ffcc44,inset 0 0 10px rgba(255,200,0,.4);
+}
+.btn:hover{
+  transform:scale(1.06);
+  box-shadow:0 0 15px #ffdd55,0 0 35px #ffdd55,inset 0 0 18px rgba(255,200,0,.7);
+}
 .btn.red{border-color:#ff2e63;background:rgba(255,0,60,.18);color:#fff}
 .btn.small{padding:6px 14px;font-size:14px}
 
-/* Home */
-.home{max-width:460px;margin:24px auto 0;padding:16px;border:2px solid #ffcc44;border-radius:20px;background:rgba(255,238,0,.04)}
+/* ========== HOME SCREEN ========== */
+.home{
+  max-width:460px;
+  margin:24px auto 0;
+  padding:18px;
+  border:2px solid #ffcc44;
+  border-radius:20px;
+  background:rgba(255,238,0,.04);
+}
 .home.hidden{display:none}
-.home h2{margin:0 0 8px}
-.home label{display:block;text-align:left;margin:10px 0}
-.home select{width:100%;background:#000;border:2px solid gold;color:gold;padding:8px;border-radius:8px}
-.home-buttons{display:flex;gap:10px;justify-content:center;margin-top:8px}
+.home h2{margin-bottom:6px}
+.home label{display:block;text-align:left;margin:10px 0;font-size:14px;}
+.home select{
+  width:100%;
+  background:#000;
+  border:2px solid gold;
+  color:gold;
+  padding:8px;
+  border-radius:8px;
+}
+.home-buttons{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:12px;
+}
 
-/* Themes (optional overrides) */
-.theme-gold .dragon,.theme-gold .phoenix{color:#ffd86e;text-shadow:0 0 12px gold,0 0 25px gold}
+/* Leaderboard */
+#leaderList{
+  list-style:none;
+  margin-top:12px;
+  padding:0;
+  font-size:14px;
+}
+
+/* ========== THEMES ========== */
+.theme-gold .dragon,.theme-gold .phoenix{
+  color:#ffd86e;text-shadow:0 0 12px gold,0 0 25px gold;
+}
 .theme-blue .dragon{color:#4cd3ff;text-shadow:0 0 12px #4cd3ff,0 0 30px #009dff}
 .theme-blue .phoenix{color:#00ffe5;text-shadow:0 0 12px #00ffe5,0 0 30px #00d9ff}
 .theme-classic .dragon,.theme-classic .phoenix{color:#000;text-shadow:none}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media(max-width:480px){
+  :root{--cell:80px}
+  h1{font-size:36px}
+  .btn{padding:8px 18px;font-size:14px}
+  .avatars span{font-size:22px}
+}
