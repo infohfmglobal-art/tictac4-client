@@ -55,28 +55,39 @@ function renderBoard(){
 }
 renderBoard();
 
-// Single, final handleMove
-function handleMove(r,c){
-  // start music after any gesture (autoplay)
-  if (musicWanted && music.paused) music.play().catch(()=>{});
+// ===== Handle move =====
+function handleMove(r, c) {
 
-  const result = game.move(r,c,true);
-  if (!result) return;
+  // ✅ Start music after gesture
+  if (musicWanted && music.paused) music.play().catch(() => {});
+
+  // ✅ Player move
+  if (!game.move(r, c)) return;
 
   haptic(15);
-  if (game.sfxOn){ clickSfx.currentTime=0; clickSfx.play().catch(()=>{}); }
+  if (game.sfxOn) {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(() => {});
+  }
   updateBoard();
 
-  if (result === "cpuPending"){
-    setTimeout(()=>{
-      const before = game.board.emptyCells().length;
-      game.performCpuMove();
-      if (before !== game.board.emptyCells().length && game.sfxOn){
-        clickSfx.currentTime=0; clickSfx.play().catch(()=>{});
-      }
+  // ✅ Stop if game ended
+  if (game.winner || game.board.full()) return;
+
+  // ✅ CPU Turn (with delay)
+  if (game.mode === "Player vs CPU" && game.turn === "O") {
+    setTimeout(() => {
+      const [r2, c2] = game.cpuMove();
+      game.move(r2, c2);
+
       haptic(15);
+      if (game.sfxOn) {
+        clickSfx.currentTime = 0;
+        clickSfx.play().catch(() => {});
+      }
+
       updateBoard();
-    }, 500); // CPU delay
+    }, 600); // CPU delay 0.6s
   }
 }
 
