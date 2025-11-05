@@ -156,11 +156,18 @@ startBtn.onclick = () => {
 };
 
 // Show home
-function showHome(show) {
+function showHome(show){
   homeScreen.classList.toggle("hidden", !show);
   boardEl.style.display = show ? "none" : "grid";
   document.querySelector(".btngrp").style.display = show ? "none" : "flex";
+  modeBar.style.display = show ? "none" : "flex";
   document.querySelector(".avatars").style.display = show ? "none" : "flex";
+
+  if (show) {
+    // stop showing game content
+    msgEl.classList.remove("show-winner");
+    winnerTxt.textContent = "";
+  }
 }
 
 // Vibration
