@@ -72,50 +72,44 @@
   </div>
 
   <!-- Home screen (visible on load) -->
-  <section id="homeScreen" class="home">
-    <h2>RuneXO</h2>
+ <div id="homeScreen" class="home-screen">
+  <h2 class="menu-title">RuneXO</h2>
 
-    <label>Game Mode
-      <select id="gameMode">
-        <option>Player vs CPU</option>
-        <option>Player vs Player</option>
-      </select>
-    </label>
+  <div class="menu-card">
+    <label>Game Mode</label>
+    <select id="gameMode">
+      <option>Player vs CPU</option>
+      <option>Player vs Player</option>
+    </select>
 
-    <label>Difficulty
-      <select id="difficulty">
-        <option>Easy</option>
-        <option>Normal</option>
-        <option>Hard</option>
-      </select>
-    </label>
+    <label>Difficulty</label>
+    <select id="difficulty">
+      <option>Easy</option>
+      <option>Normal</option>
+      <option>Hard</option>
+    </select>
 
-    <label>Skin
-      <select id="skin">
-        <option>Runes</option>
-        <option>Classic X / O</option>
-        <option>Fruit</option>
-      </select>
-    </label>
+    <label>Skin</label>
+    <select id="skin">
+      <option>Runes</option>
+      <option>Classic X/O</option>
+      <option>Fruit</option>
+    </select>
 
-    <label>Theme
-      <select id="themeSelect">
-        <option>Rune</option>
-        <option>Gold</option>
-        <option>Blue</option>
-        <option>Classic</option>
-      </select>
-    </label>
+    <label>Theme</label>
+    <select id="themeSelect">
+      <option>Rune</option>
+      <option>Gold</option>
+      <option>Blue</option>
+    </select>
 
-    <div class="home-buttons">
-      <button id="startBtn" class="btn">Start Game</button>
-      <button id="installBtnHome" class="btn">Install App</button>
-    </div>
+    <button id="startBtn" class="menu-btn start">Start Game</button>
+    <button id="installBtn2" class="menu-btn install">Install App</button>
+  </div>
 
-    <h3>Leaderboard (Top 10 fastest wins vs CPU)</h3>
-    <ol id="leaderList" class="leader"></ol>
-  </section>
-
+  <h3 class="menu-sub">Leaderboard (Top 10 fastest wins)</h3>
+  <ul id="leaderList" class="leader-list"></ul>
+</div>
   <!-- Confetti / FX overlay -->
   <canvas id="fx-layer" class="fx-layer" aria-hidden="true"></canvas>
 
