@@ -60,28 +60,35 @@ function handleMove(r, c) {
   // Start music after first gesture (autoplay rules)
   if (musicWanted && music.paused) music.play().catch(()=>{});
 
-  // Player move
+  // --- Player move ---
   const result = game.move(r, c, true);
-  if (!result) return; // invalid tap
+  if (!result) return; // invalid tap, or someone already won
 
   haptic(15);
-  if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+  if (game.sfxOn) {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(()=>{});
+  }
+
   updateBoard();
 
-  // If game ended, stop here
+  // If game finished after player move, stop here
   if (game.winner || game.board.full()) return;
 
-  // CPU turn (PvC mode only)
+  // --- CPU move (PvC mode only) ---
   if (game.mode === "Player vs CPU" && game.turn === "O") {
-      setTimeout(() => {
-          game.performCpuMove();
+    setTimeout(() => {
+      const [r2, c2] = game.cpuMove();
+      game.move(r2, c2);
 
-          // Haptic + sound for CPU move
-          haptic(15);
-          if (game.sfxOn) clickSfx.currentTime = 0, clickSfx.play().catch(()=>{});
+      haptic(20);
+      if (game.sfxOn) {
+        clickSfx.currentTime = 0;
+        clickSfx.play().catch(()=>{});
+      }
 
-          updateBoard();
-      }, 600); // CPU delay 0.6s
+      updateBoard();
+    }, 550); // CPU delay ~0.5s
   }
 }
 
