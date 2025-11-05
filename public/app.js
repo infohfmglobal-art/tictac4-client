@@ -159,8 +159,14 @@ homeBtn.addEventListener("click", ()=>showHome(true));
 sfxBtn.addEventListener("click", ()=>{ game.toggleSfx(); sfxBtn.textContent = `SFX: ${game.sfxOn?"On":"Off"}`; });
 musicBtn.addEventListener("click", ()=>{
   musicWanted = !musicWanted;
-  musicBtn.textContent = `Music: ${musicWanted?"On":"Off"}`;
-  if (musicWanted) music.play().catch(()=>{}); else music.pause();
+  musicBtn.textContent = `Music: ${musicWanted ? "On" : "Off"}`;
+
+  if (musicWanted) {
+    music.currentTime = 0;
+    music.play().catch(()=>{});
+  } else {
+    music.pause();
+  }
 });
 [installBtn,installBtn2].forEach(btn=>{
   if (!btn) return;
