@@ -89,18 +89,27 @@ function updateBoard(){
     const cell = cells[i];
     cell.className = "cell";
 
-    if (!val){ cell.textContent=""; continue; }
+    if (game.skin.startsWith("Classic")) {
+  cell.textContent = val;
+  cell.classList.add(val === "X" ? "classicX" : "classicO");
 
-    if (game.skin.startsWith("Classic")){
-      cell.textContent = val;
-      cell.classList.add(val==="X" ? "classicX" : "classicO");
-    } else if (game.skin==="Fruit"){
-      cell.textContent = (val==="X") ? "🍎" : "🍊";
-      cell.classList.add(val==="X" ? "fruitX" : "fruitO");
-    } else {
-      cell.textContent = (val==="X") ? "🐉" : "🕊️";
-      cell.classList.add(val==="X" ? "dragon" : "phoenix");
-    }
+  // === Classic X/O color & glow ===
+  if (val === "X") {
+    cell.style.color = "#00ffff"; // cyan
+    cell.style.textShadow = "0 0 12px #00ffff, 0 0 25px #00cccc"; // glow for X
+  } else if (val === "O") {
+    cell.style.color = "#ff66cc"; // pink
+    cell.style.textShadow = "0 0 12px #ff66cc, 0 0 25px #ff3399"; // glow for O
+  }
+} else if (game.skin === "Fruit") {
+  cell.textContent = (val === "X") ? "🍎" : "🍊";
+  cell.classList.add(val === "X" ? "fruitX" : "fruitO");
+  cell.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00cc66";
+} else {
+  cell.textContent = (val === "X") ? "🐉" : "🕊️";
+  cell.classList.add(val === "X" ? "dragon" : "phoenix");
+  cell.style.textShadow = "0 0 15px #ffcc33, 0 0 30px #ffaa00";
+}
   }
 
   pX.classList.toggle("active", game.turn==="X");
