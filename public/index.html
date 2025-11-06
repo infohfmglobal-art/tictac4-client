@@ -26,13 +26,12 @@
     <div class="splash-title">RUNEXO</div>
   </div>
 
-  <!-- Neon header -->
+  <!-- Header -->
   <header class="hero">
     <h1 class="logo-title">
       <span class="glow">Rune</span><span class="spark">XO</span>
     </h1>
     <p class="tagline">Battle of Dragon 🐉 vs Phoenix 🕊️ — Tap & Win!</p>
-    <!-- floating runes (pure CSS) -->
     <div class="rune-orbs">
       <span class="orb o1">✨</span>
       <span class="orb o2">💫</span>
@@ -43,11 +42,12 @@
     </div>
   </header>
 
-  <!-- Top badges (used by app.js) -->
+  <!-- Top status bar -->
   <div id="modeBar" class="topbar">
     <span id="modeBadge" class="badge">Mode: PvC</span>
     <span id="diffBadge" class="badge">Difficulty: Easy</span>
     <span id="skinBadge" class="badge">Skin: Runes</span>
+    <span id="playerCoins" class="badge coin">💰 0</span>
   </div>
 
   <!-- Avatars -->
@@ -60,11 +60,10 @@
   <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
   <div id="msg" class="msg"><span id="winnerText"></span></div>
 
-  <!-- Login bar (buttons & coins) -->
+  <!-- Login bar (for in-game quick login) -->
   <div id="loginBar" class="login-bar">
     <button id="googleLoginBtn" class="btn bubble">Login with Google</button>
     <button id="guestLoginBtn" class="btn bubble secondary">Play as Guest</button>
-    <span id="playerCoins" class="badge coin">💰 0</span>
   </div>
 
   <!-- Board -->
@@ -80,10 +79,9 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- HOME SCREEN (new gorgeous menu) -->
+  <!-- HOME SCREEN -->
   <div id="homeScreen" class="home-screen">
     <div class="home-inner">
-
       <h2 class="menu-logo">
         <span class="glow">Rune</span><span class="spark">XO</span>
       </h2>
@@ -144,7 +142,7 @@
     </div>
   </div>
 
-  <!-- Optional particles canvas (kept) -->
+  <!-- Canvas for effects -->
   <canvas id="runeParticles"></canvas>
 
   <script type="module" src="./app.js"></script>
