@@ -1,3 +1,4 @@
+import { auth, db, GoogleAuthProvider, signInWithPopup, signOut, doc, getDoc, setDoc, updateDoc } from "./firebaseSetup.js";
 // app.js
 import { Game } from "./game.js";
 import { triggerRuneBurst, confettiBurst, screenShake } from "./runes.js";
@@ -193,4 +194,39 @@ function loadLeaderboard(){
     li.textContent = `${i+1}. ${e.time}s · ${e.moves} moves · ${e.diff} · ${e.skin}`;
     leaderList.appendChild(li);
   });
+}
+// === RuneXO Login + Coin System ===
+async function loginGoogle() {
+  const provider = new GoogleAuthProvider();
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
+  const ref = doc(db, "players", user.uid);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    await setDoc(ref, {
+      name: user.displayName,
+      email: user.email,
+      coins: 200,
+      wins: 0,
+      createdAt: Date.now()
+    });
+    alert(`Welcome ${user.displayName}! 🎉 You've received 200 coins.`);
+    window.currentCoins = 200;
+  } else {
+    window.currentCoins = snap.data().coins;
+  }
+
+  document.getElementById("playerCoins").textContent = `💰 ${window.currentCoins}`;
+}
+
+async function updateCoins(change) {
+  const user = auth.currentUser;
+  if (!user) return;
+  const ref = doc(db, "players", user.uid);
+  const snap = await getDoc(ref);
+  const coins = (snap.data().coins || 0) + change;
+  await updateDoc(ref, { coins });
+  window.currentCoins = coins;
+  document.getElementById("playerCoins").textContent = `💰 ${coins}`;
 }
