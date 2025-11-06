@@ -1,4 +1,4 @@
-// Minimal SW so it doesn't 404; you can expand caching later.
-self.addEventListener("install", ()=>self.skipWaiting());
-self.addEventListener("activate", (e)=>e.waitUntil(self.clients.claim()));
-self.addEventListener("fetch", ()=>{ /* pass-through */ });
+// sw.js
+const V = "rxo-v1";
+self.addEventListener("install", e=>{ self.skipWaiting(); });
+self.addEventListener("activate", e=>{ self.clients
