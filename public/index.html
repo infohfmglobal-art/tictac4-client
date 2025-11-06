@@ -1,102 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>RuneXO</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>RuneXO</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="splash.css">
-<link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./splash.css">
 
-<script>
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    window.deferredPrompt = e;
-  });
-</script>
+  <script>
+    // PWA install
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
 </head>
 
 <body class="theme-rune">
-
-<!-- SPLASH -->
-<div id="splash-screen">
-  <img src="logo-dragon.png" class="splash-logo" />
-  <div class="splash-title">RUNEXO</div>
-</div>
-
-<canvas id="runeParticles"></canvas>
-
-<h1 class="game-title">RuneXO</h1>
-
-<div id="modeBar" class="topbar">
-  <span id="modeBadge" class="badge">Mode: PvC</span>
-  <span id="diffBadge" class="badge">Easy</span>
-  <span id="skinBadge" class="badge">Runes</span>
-</div>
-
-<div class="avatars">
-  <div id="pX" class="avatar">🐉 Dragon</div>
-  <div id="pO" class="avatar">🕊️ Phoenix</div>
-</div>
-
-<div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
-
-<div id="msg" class="msg winner-banner">
-  <span class="crown-burst">👑</span>
-  <span id="winnerText"></span>
-</div>
-
-<div id="board" class="board"></div>
-
-<div class="btngrp">
-  <button id="homeBtn" class="btn small">Home</button>
-  <button id="nextBtn" class="btn small">Next Round</button>
-  <button id="resetBtn" class="btn red small">Reset All</button>
-  <button id="sfxBtn" class="btn small">SFX: On</button>
-  <button id="musicBtn" class="btn small">Music: Off</button>
-  <button id="installBtn" class="btn small">Install App</button>
-</div>
-
-<!-- HOME SCREEN -->
-<div id="homeScreen">
-  <h2>RuneXO</h2>
-
-  <div class="home-box">
-    <label>Game Mode</label>
-    <select id="gameMode"></select>
-
-    <label>Difficulty</label>
-    <select id="difficulty"></select>
-
-    <label>Skin</label>
-    <select id="skin"></select>
-
-    <label>Theme</label>
-    <select id="themeSelect"></select>
-
-    <button id="startBtn">START GAME</button>
-    <button id="installBtn2">INSTALL APP</button>
+  <!-- Splash -->
+  <div id="splash-screen">
+    <img src="./logo-dragon.png" class="splash-logo">
+    <div class="splash-title">RUNEXO</div>
   </div>
 
-  <h3>Leaderboard (Top 10 fastest wins)</h3>
-  <ul id="leaderList"></ul>
-</div>
+  <!-- Title / badges -->
+  <h1 class="game-title">RuneXO</h1>
+  <div id="modeBar" class="topbar">
+    <span id="modeBadge" class="badge">Mode: PvC</span>
+    <span id="diffBadge" class="badge">Difficulty: Easy</span>
+    <span id="skinBadge" class="badge">Skin: Runes</span>
+  </div>
 
-  <h3>Leaderboard (Top 10 fastest wins)</h3>
-  <ul id="leaderList"></ul>
-</div>
+  <!-- Avatars -->
+  <div class="avatars">
+    <div id="pX" class="avatar active">🐉 Dragon</div>
+    <div id="pO" class="avatar">🕊️ Phoenix</div>
+  </div>
 
-<script type="module" src="app.js"></script>
-<script type="module" src="splash.js"></script>
-<script type="module" src="runes.js"></script>
+  <!-- Score + message -->
+  <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
+  <div id="msg" class="msg"><span id="winnerText"></span></div>
 
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js");
-}
-</script>
+  <!-- Board -->
+  <div id="board" class="board"></div>
 
+  <!-- Buttons -->
+  <div class="btngrp">
+    <button id="homeBtn"  class="btn">Home</button>
+    <button id="nextBtn"  class="btn">Next Round</button>
+    <button id="resetBtn" class="btn red">Reset All</button>
+    <button id="sfxBtn"   class="btn small">SFX: On</button>
+    <button id="musicBtn" class="btn small">Music: Off</button>
+    <button id="installBtn" class="btn small">Install App</button>
+  </div>
+
+  <!-- Home screen -->
+  <div id="homeScreen" class="">
+    <h2>RuneXO</h2>
+    <label>Game Mode
+      <select id="gameMode">
+        <option>Player vs CPU</option>
+        <option>Player vs Player</option>
+      </select>
+    </label>
+    <label>Difficulty
+      <select id="difficulty">
+        <option>Easy</option><option>Normal</option><option>Hard</option>
+      </select>
+    </label>
+    <label>Skin
+      <select id="skin">
+        <option>Runes</option><option>Classic X / O</option><option>Fruit</option>
+      </select>
+    </label>
+    <label>Theme
+      <select id="themeSelect">
+        <option>Rune</option><option>Blue</option><option>Classic</option><option>Gold</option>
+      </select>
+    </label>
+    <div class="btngrp">
+      <button id="startBtn" class="btn">Start Game</button>
+      <button id="installBtn2" class="btn small">Install App</button>
+    </div>
+
+    <h4>Leaderboard (Top 10 fastest wins vs CPU)</h4>
+    <ol id="leaderList"></ol>
+  </div>
+
+  <!-- Particles canvas (optional visuals) -->
+  <canvas id="runeParticles"></canvas>
+
+  <script type="module" src="./app.js"></script>
+  <script type="module" src="./splash.js"></script>
+  <script type="module" src="./runes.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      // IMPORTANT: relative path, not "/sw.js"
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
 </body>
 </html>
