@@ -176,6 +176,16 @@ body.theme-classic{ background:#111; color:#eee; }
   0% { text-shadow: 0 0 8px #ffcc33, 0 0 16px #ffaa00; }
   100% { text-shadow: 0 0 20px #fff299, 0 0 40px #ffcc33; }
 }
+@keyframes bounceIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.msg.show-winner #winnerText {
+  animation: winnerGlow 1.6s ease-in-out infinite alternate,
+             bounceIn 0.6s ease-out;
+}
 
 
 /* ---------- LOGIN BAR (in-game) ---------- */
