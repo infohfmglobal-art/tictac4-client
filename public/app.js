@@ -56,29 +56,37 @@ function renderBoard() {
 }
 renderBoard();
 
-// Move logic
+// ===== Handle move =====
 function handleMove(r, c) {
-    if (musicWanted && music.paused) music.play().catch(() => {});
+  // Start music after first gesture
+  if (musicWanted && music.paused) music.play().catch(()=>{});
 
-    const result = game.move(r, c, true);
-    if (!result) return;
+  // Player move
+  const result = game.move(r, c, true);
+  if (!result) return;
 
-    haptic(20);
+  haptic(15);
+  if (game.sfxOn) {
     clickSfx.currentTime = 0;
-    clickSfx.play().catch(() => {});
-    updateBoard();
+    clickSfx.play().catch(()=>{});
+  }
+  updateBoard();
 
-    if (result === "cpuPending") {
-        setTimeout(() => {
-            game.performCpuMove();
-            haptic(20);
-            clickSfx.currentTime = 0;
-            clickSfx.play().catch(() => {});
-            updateBoard();
-        }, 500);
-    }
+  // CPU turn (if needed)
+  if (result === "cpuPending") {
+    setTimeout(() => {
+      game.performCpuMove();
+
+      haptic(20);
+      if (game.sfxOn) {
+        clickSfx.currentTime = 0;
+        clickSfx.play().catch(()=>{});
+      }
+
+      updateBoard();
+    }, 550);
+  }
 }
-
 // Update UI
 function updateBoard() {
     const cells = boardEl.children;
