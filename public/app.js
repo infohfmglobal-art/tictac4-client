@@ -89,26 +89,35 @@ function updateBoard(){
     const cell = cells[i];
     cell.className = "cell";
 
-    if (game.skin.startsWith("Classic")) {
+   // === Render Skins (X/O/Emoji) ===
+if (game.skin.startsWith("Classic")) {
   cell.textContent = val;
   cell.classList.add(val === "X" ? "classicX" : "classicO");
 
   // === Classic X/O color & glow ===
   if (val === "X") {
-    cell.style.color = "#00ffff"; // cyan
-    cell.style.textShadow = "0 0 12px #00ffff, 0 0 25px #00cccc"; // glow for X
+    cell.style.color = "#00ffff"; // Cyan
+    cell.style.textShadow = "0 0 12px #00ffff, 0 0 25px #00cccc";
   } else if (val === "O") {
-    cell.style.color = "#ff66cc"; // pink
-    cell.style.textShadow = "0 0 12px #ff66cc, 0 0 25px #ff3399"; // glow for O
+    cell.style.color = "#ff66cc"; // Pink
+    cell.style.textShadow = "0 0 12px #ff66cc, 0 0 25px #ff3399";
   }
+
 } else if (game.skin === "Fruit") {
+  // === Fruit Skin ===
   cell.textContent = (val === "X") ? "🍎" : "🍊";
-  cell.classList.add(val === "X" ? "fruitX" : "fruitO");
-  cell.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00cc66";
-} else {
+  cell.style.color = "#ffffff";
+  cell.style.textShadow = (val === "X")
+    ? "0 0 15px #ff3366, 0 0 25px #ff0033"
+    : "0 0 15px #ffaa00, 0 0 25px #ff7700";
+
+} else if (game.skin === "Runes") {
+  // === Rune Skin ===
   cell.textContent = (val === "X") ? "🐉" : "🕊️";
-  cell.classList.add(val === "X" ? "dragon" : "phoenix");
-  cell.style.textShadow = "0 0 15px #ffcc33, 0 0 30px #ffaa00";
+  cell.style.color = "#ffd700";
+  cell.style.textShadow = (val === "X")
+    ? "0 0 15px #00ffff, 0 0 30px #00cccc"  // Dragon glow
+    : "0 0 15px #ff66cc, 0 0 30px #ff3399"; // Phoenix glow
 }
   }
 
