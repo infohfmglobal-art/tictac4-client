@@ -149,9 +149,13 @@ body.theme-classic{ background:#111; color:#eee; }
 
 /* ---------- SCORE & MESSAGE ---------- */
 .score{ text-align:center; margin:4px 0 10px; opacity:.9; }
-.msg{ text-align:center; min-height:28px; }
-.msg.show-winner #winnerText{ display:inline-block; padding:8px 14px; border-radius:999px; background:rgba(255,204,51,.12); border:2px solid var(--border); box-shadow: var(--shadow); }
 .msg.show-winner #winnerText {
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(255,204,51,.12);
+  border:2px solid var(--border);
+  box-shadow: var(--shadow);
   animation: winnerGlow 1.6s ease-in-out infinite alternate;
 }
 
