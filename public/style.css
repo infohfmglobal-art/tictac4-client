@@ -357,3 +357,28 @@ button#installBtn2 {
   margin-top: 10px;
   font-size: 0.9rem;
 }
+/* === THEME VARIANTS === */
+body.theme-rune {
+  background: #000;
+  color: #ffcc33;
+}
+
+body.theme-gold {
+  background: #121212;
+  color: #ffd700;
+}
+
+body.theme-blue {
+  background: #001f3f;
+  color: #00aaff;
+}
+
+body.theme-neon {
+  background: #050505;
+  color: #39ff14;
+}
+
+/* Common accent helpers */
+.btn, .badge, .board div {
+  transition: all 0.3s ease;
+}
