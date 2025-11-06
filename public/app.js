@@ -125,14 +125,25 @@ function updateBoard(){
   pO.classList.toggle("active", game.turn==="O");
 
   // Handle Winner
-  if (game.winner && game.winner!=="Draw"){
-    winnerTxt.textContent = (game.winner==="X") ? "Dragon Wins!" : "Phoenix Wins!";
-    msgEl.classList.add("show-winner");
+  if (game.winner && game.winner !== "Draw") {
+  let winnerName = "";
 
-    for (const [r,c] of game.getWinningCells()){
-      const idx=r*3+c;
-      cells[idx].classList.add("win-cell");
-    }
+  if (game.skin === "Classic X / O") {
+    winnerName = (game.winner === "X") ? "❌ X Wins!" : "🟣 O Wins!";
+  } 
+  else if (game.skin === "Fruit") {
+    winnerName = (game.winner === "X") ? "🍎 Apple Wins!" : "🍊 Orange Wins!";
+  } 
+  else if (game.skin === "Runes") {
+    winnerName = (game.winner === "X") ? "🐉 Dragon Wins!" : "🕊️ Phoenix Wins!";
+  } 
+  else {
+    winnerName = `${game.winner} Wins!`;
+  }
+
+  winnerTxt.textContent = winnerName;
+  msgEl.classList.add("show-winner");
+}
 
     triggerRuneBurst(game.winner);
     confettiBurst(); screenShake();
