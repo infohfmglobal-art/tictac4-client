@@ -279,5 +279,9 @@ body::before {
   from { background-position: 20% 80%, 80% 20%; }
   to   { background-position: 40% 60%, 60% 40%; }
 }
+.btn:active, .menu-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(255,255,255,.6);
+}
 
 
