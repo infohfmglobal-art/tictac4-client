@@ -327,5 +327,35 @@ body::before {
 .logo-title, .menu-logo {
   animation: logoIntro 1.2s ease-out forwards;
 }
+/* === WINNER: DRAW GLOW === */
+.msg.show-winner.draw #winnerText{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:999px;
+  background: rgba(150, 230, 255, .10);
+  border: 2px solid rgba(100, 220, 255, .45);
+  box-shadow: 0 0 12px rgba(100, 220, 255, .35), inset 0 0 10px rgba(20, 30, 40, .6);
+  animation: drawGlow 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes drawGlow{
+  0%   { text-shadow: 0 0 8px #76e2ff, 0 0 16px #33ccff; color:#dff7ff; }
+  100% { text-shadow: 0 0 20px #b8f0ff, 0 0 40px #76e2ff; color:#ffffff; }
+}
+
+/* === COIN REWARD FLOAT === */
+.coin-fx{
+  position: fixed;           /* we position near the coin badge via JS */
+  pointer-events: none;
+  font-size: 18px;
+  filter: drop-shadow(0 0 6px rgba(255,200,50,.8));
+  animation: coinFloat .9s ease-out forwards;
+  z-index: 9999;
+}
+@keyframes coinFloat{
+  0%   { transform: translateY(0) scale(1);   opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translateY(-48px) scale(1.2); opacity: 0; }
+}
 
 
