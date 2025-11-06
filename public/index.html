@@ -57,35 +57,58 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- Home screen -->
-  <div id="homeScreen" class="">
-    <h2>RuneXO</h2>
-    <label>Game Mode
+  <!-- ✅ HOME SCREEN -->
+<div id="homeScreen" class="home-screen">
+
+  <h2 class="menu-title">RuneXO</h2>
+
+  <div class="menu-box">
+
+    <div class="menu-row">
+      <label>Game Mode</label>
       <select id="gameMode">
         <option>Player vs CPU</option>
         <option>Player vs Player</option>
       </select>
-    </label>
-    <label>Difficulty
-      <select id="difficulty">
-        <option>Easy</option><option>Normal</option><option>Hard</option>
-      </select>
-    </label>
-    <label>Skin
-      <select id="skin">
-        <option>Runes</option><option>Classic X / O</option><option>Fruit</option>
-      </select>
-    </label>
-    <label>Theme
-      <select id="themeSelect">
-        <option>Rune</option><option>Blue</option><option>Classic</option><option>Gold</option>
-      </select>
-    </label>
-    <div class="btngrp">
-      <button id="startBtn" class="btn">Start Game</button>
-      <button id="installBtn2" class="btn small">Install App</button>
     </div>
 
+    <div class="menu-row">
+      <label>Difficulty</label>
+      <select id="difficulty">
+        <option>Easy</option>
+        <option>Normal</option>
+        <option>Hard</option>
+      </select>
+    </div>
+
+    <div class="menu-row">
+      <label>Skin</label>
+      <select id="skin">
+        <option>Runes</option>
+        <option>Classic X / O</option>
+        <option>Fruit</option>
+      </select>
+    </div>
+
+    <div class="menu-row">
+      <label>Theme</label>
+      <select id="themeSelect">
+        <option>Rune</option>
+        <option>Gold</option>
+        <option>Blue</option>
+        <option>Classic</option>
+      </select>
+    </div>
+
+    <button id="startBtn" class="menu-btn">Start Game</button>
+    <button id="installBtn2" class="menu-btn secondary">Install App</button>
+
+  </div>
+
+  <h3 class="leader-title">Leaderboard (Top 10 fastest wins vs CPU)</h3>
+  <ul id="leaderList" class="leader-list"></ul>
+
+</div>
     <h4>Leaderboard (Top 10 fastest wins vs CPU)</h4>
     <ol id="leaderList"></ol>
   </div>
