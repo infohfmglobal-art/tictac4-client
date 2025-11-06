@@ -289,3 +289,71 @@ button#installBtn2 {
   padding: 0;
   font-size: 0.9rem;
 }
+/* ✅ HOME MENU UI IMPROVED */
+.home-screen {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.menu-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.menu-box {
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
+  border: 2px solid #ffaa00;
+  padding: 20px 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.menu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  width: 260px;
+}
+
+.menu-row label {
+  font-size: 1rem;
+}
+
+.menu-row select {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 2px solid #ffaa00;
+  background: black;
+  color: #ffaa00;
+  width: 140px;
+}
+
+.menu-btn {
+  width: 260px;
+  padding: 10px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 2px solid #ffaa00;
+  font-size: 1.1rem;
+}
+
+.menu-btn.secondary {
+  border-color: #aaa;
+  color: #ddd;
+}
+
+.leader-title {
+  margin-top: 25px;
+  font-size: 1.1rem;
+}
+
+.leader-list {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
