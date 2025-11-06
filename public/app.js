@@ -1,11 +1,12 @@
+// === Import Modules ===
 import { auth, db, GoogleAuthProvider, signInWithPopup, signOut, doc, getDoc, setDoc, updateDoc } from "./firebaseSetup.js";
-// app.js
 import { Game } from "./game.js";
 import { triggerRuneBurst, confettiBurst, screenShake } from "./runes.js";
 
+// === Initialize Game ===
 const game = new Game();
 
-// --------- DOM ---------
+// === DOM References ===
 const boardEl   = document.getElementById("board");
 const scoreEl   = document.getElementById("score");
 const msgEl     = document.getElementById("msg");
@@ -26,7 +27,6 @@ const skinBadge = document.getElementById("skinBadge");
 const pX        = document.getElementById("pX");
 const pO        = document.getElementById("pO");
 
-// Home screen
 const homeScreen= document.getElementById("homeScreen");
 const startBtn  = document.getElementById("startBtn");
 const gameMode  = document.getElementById("gameMode");
@@ -35,15 +35,15 @@ const skinSel   = document.getElementById("skin");
 const themeSel  = document.getElementById("themeSelect");
 const leaderList= document.getElementById("leaderList");
 
-// --------- Audio ---------
+// === Audio ===
 const clickSfx = new Audio("./sound/click.mp3");
 const winSfx   = new Audio("./sound/win.mp3");
 const music    = new Audio("./sound/bg.mp3");
 music.loop = true;
 let musicWanted = false;
 
-// --------- Render board ---------
-function renderBoard(){
+// === Board Rendering ===
+function renderBoard() {
   boardEl.innerHTML = "";
   for (let r=0;r<3;r++){
     for (let c=0;c<3;c++){
@@ -57,11 +57,9 @@ function renderBoard(){
 }
 renderBoard();
 
-// --------- Handle move (ONLY ONE FUNCTION!) ---------
+// === Handle Move ===
 function handleMove(r,c){
-  // start bg music on first gesture
   if (musicWanted && music.paused) music.play().catch(()=>{});
-
   const result = game.move(r,c,true);
   if (!result) return;
 
@@ -79,7 +77,7 @@ function handleMove(r,c){
   }
 }
 
-// --------- Update UI ---------
+// === Update UI ===
 function updateBoard(){
   const cells = boardEl.children;
 
@@ -89,48 +87,53 @@ function updateBoard(){
     const cell = cells[i];
     cell.className = "cell";
 
-   // === Render Skins (X/O/Emoji) ===
-if (game.skin.startsWith("Classic")) {
-  cell.textContent = val;
-  cell.classList.add(val === "X" ? "classicX" : "classicO");
+    // === Render Skins (X/O/Emoji) ===
+    if (game.skin.startsWith("Classic")) {
+      cell.textContent = val;
+      if (val === "X") {
+        cell.style.color = "#00ffff";
+        cell.style.textShadow = "0 0 12px #00ffff, 0 0 25px #00cccc";
+      } else if (val === "O") {
+        cell.style.color = "#ff66cc";
+        cell.style.textShadow = "0 0 12px #ff66cc, 0 0 25px #ff3399";
+      }
 
-  // === Classic X/O color & glow ===
-  if (val === "X") {
-    cell.style.color = "#00ffff"; // Cyan
-    cell.style.textShadow = "0 0 12px #00ffff, 0 0 25px #00cccc";
-  } else if (val === "O") {
-    cell.style.color = "#ff66cc"; // Pink
-    cell.style.textShadow = "0 0 12px #ff66cc, 0 0 25px #ff3399";
+    } else if (game.skin === "Fruit") {
+      if (val === "X") {
+        cell.textContent = "🍎";
+        cell.style.textShadow = "0 0 15px #ff3366, 0 0 25px #ff0033";
+      } else if (val === "O") {
+        cell.textContent = "🍊";
+        cell.style.textShadow = "0 0 15px #ffaa00, 0 0 25px #ff7700";
+      }
+
+    } else if (game.skin === "Runes") {
+      if (val === "X") {
+        cell.textContent = "🐉";
+        cell.style.color = "#00ffff";
+        cell.style.textShadow = "0 0 15px #00ffff, 0 0 30px #00cccc";
+      } else if (val === "O") {
+        cell.textContent = "🕊️";
+        cell.style.color = "#ff66cc";
+        cell.style.textShadow = "0 0 15px #ff66cc, 0 0 30px #ff3399";
+      }
+    }
   }
 
-} else if (game.skin === "Fruit") {
-  // === Fruit Skin ===
-  cell.textContent = (val === "X") ? "🍎" : "🍊";
-  cell.style.color = "#ffffff";
-  cell.style.textShadow = (val === "X")
-    ? "0 0 15px #ff3366, 0 0 25px #ff0033"
-    : "0 0 15px #ffaa00, 0 0 25px #ff7700";
-
-} else if (game.skin === "Runes") {
-  // === Rune Skin ===
-  cell.textContent = (val === "X") ? "🐉" : "🕊️";
-  cell.style.color = "#ffd700";
-  cell.style.textShadow = (val === "X")
-    ? "0 0 15px #00ffff, 0 0 30px #00cccc"  // Dragon glow
-    : "0 0 15px #ff66cc, 0 0 30px #ff3399"; // Phoenix glow
-}
-  }
-
+  // Toggle Active Player
   pX.classList.toggle("active", game.turn==="X");
   pO.classList.toggle("active", game.turn==="O");
 
+  // Handle Winner
   if (game.winner && game.winner!=="Draw"){
     winnerTxt.textContent = (game.winner==="X") ? "Dragon Wins!" : "Phoenix Wins!";
     msgEl.classList.add("show-winner");
 
     for (const [r,c] of game.getWinningCells()){
-      const idx=r*3+c; cells[idx].classList.add("win-cell");
+      const idx=r*3+c;
+      cells[idx].classList.add("win-cell");
     }
+
     triggerRuneBurst(game.winner);
     confettiBurst(); screenShake();
     haptic([40,40,80]);
@@ -152,7 +155,7 @@ if (game.skin.startsWith("Classic")) {
   scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
-// --------- Buttons ---------
+// === Buttons ===
 nextBtn.onclick = ()=>{ game.nextRound(); renderBoard(); updateBoard(); game.roundStart=performance.now(); };
 resetBtn.onclick= ()=>{ game.scoreX=game.scoreO=game.scoreD=0; game.resetAll(); renderBoard(); updateBoard(); };
 homeBtn.onclick = ()=> showHome(true);
@@ -162,14 +165,14 @@ musicBtn.onclick= ()=>{ musicWanted=!musicWanted; musicBtn.textContent=`Music: $
   const p=window.deferredPrompt; if(!p) return; p.prompt(); await p.userChoice; window.deferredPrompt=null;
 }));
 
-// --------- Home Screen ---------
+// === Home Screen ===
 function showHome(show){
   homeScreen.classList.toggle("hidden", !show);
   boardEl.style.display = show ? "none":"grid";
   document.querySelector(".btngrp").style.display = show ? "none":"flex";
   modeBar.style.display = show ? "none":"flex";
   document.querySelector(".avatars").style.display = show ? "none":"flex";
-  scoreEl.style.display = show ? "none" : "block"; // ✅ hide score on home
+  scoreEl.style.display = show ? "none" : "block";
 }
 
 startBtn.onclick = ()=>{
@@ -191,10 +194,10 @@ startBtn.onclick = ()=>{
 showHome(true);
 loadLeaderboard();
 
-// --------- Haptics ---------
+// === Haptics ===
 function haptic(pattern){ if ("vibrate" in navigator) navigator.vibrate(pattern); }
 
-// --------- Leaderboard (local) ---------
+// === Leaderboard ===
 function addLeaderboard(entry){
   const key="rxo_leader";
   const list = JSON.parse(localStorage.getItem(key) || "[]");
@@ -203,6 +206,7 @@ function addLeaderboard(entry){
   localStorage.setItem(key, JSON.stringify(list.slice(0,10)));
   loadLeaderboard();
 }
+
 function loadLeaderboard(){
   const key="rxo_leader";
   const list = JSON.parse(localStorage.getItem(key) || "[]");
@@ -213,7 +217,8 @@ function loadLeaderboard(){
     leaderList.appendChild(li);
   });
 }
-// === RuneXO Login + Coin System ===
+
+// === Firebase Login + Coin System ===
 async function loginGoogle() {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
@@ -248,6 +253,7 @@ async function updateCoins(change) {
   window.currentCoins = coins;
   document.getElementById("playerCoins").textContent = `💰 ${coins}`;
 }
+
 document.getElementById("googleLoginBtn").addEventListener("click", loginGoogle);
 document.getElementById("guestLoginBtn").addEventListener("click", () => {
   alert("Guest mode: coins not saved!");
