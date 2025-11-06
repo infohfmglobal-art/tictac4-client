@@ -266,3 +266,18 @@ body.theme-classic{ background:#111; color:#eee; }
   .menu-row{ flex-direction:column; align-items:flex-start; }
   .menu-row select{ width:100%; }
 }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(800px 600px at 20% 80%, rgba(0,255,255,0.06), transparent 60%),
+              radial-gradient(900px 700px at 80% 20%, rgba(255,0,255,0.06), transparent 60%);
+  animation: bgShift 20s ease-in-out infinite alternate;
+  z-index: -1;
+}
+@keyframes bgShift {
+  from { background-position: 20% 80%, 80% 20%; }
+  to   { background-position: 40% 60%, 60% 40%; }
+}
+
+
