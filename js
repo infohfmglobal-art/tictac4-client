@@ -6,3 +6,9 @@
     "start": "echo 'Static site - nothing to start'"
   }
 }
+document.getElementById("googleLoginBtn").addEventListener("click", loginGoogle);
+document.getElementById("guestLoginBtn").addEventListener("click", () => {
+  alert("Guest mode: coins not saved!");
+  window.currentCoins = 100;
+  document.getElementById("playerCoins").textContent = `💰 ${window.currentCoins}`;
+});
