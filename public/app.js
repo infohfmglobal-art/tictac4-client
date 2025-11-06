@@ -45,6 +45,39 @@ const winSfx   = new Audio("./sound/win.mp3");
 const music    = new Audio("./sound/bg.mp3");
 music.loop = true;
 let musicWanted = false;
+// --- Coin reward helper (works for Google login AND guest) ---
+let rewardGranted = false;
+
+function coinBurstFX(text = "+20") {
+  // find coin badge position
+  const badge = document.getElementById("playerCoins");
+  if (!badge) return;
+  const r = badge.getBoundingClientRect();
+  const fx = document.createElement("div");
+  fx.className = "coin-fx";
+  fx.textContent = `💰 ${text}`;
+  fx.style.left = (r.left + r.width/2 - 14) + "px";
+  fx.style.top  = (r.top - 6) + "px";
+  document.body.appendChild(fx);
+  setTimeout(()=> fx.remove(), 1000);
+}
+
+async function grantCoins(amount){
+  try{
+    if (auth.currentUser) {
+      await updateCoins(amount);             // Firebase path (already defined in your file)
+    } else {
+      // guest coins (local only)
+      window.currentCoins = (window.currentCoins || 0) + amount;
+      const pc = document.getElementById("playerCoins");
+      if (pc) pc.textContent = `💰 ${window.currentCoins}`;
+    }
+    coinBurstFX("+" + amount);
+  }catch(e){
+    console.warn("coin grant failed:", e);
+  }
+}
+
 
 // === Board Rendering ===
 function renderBoard() {
