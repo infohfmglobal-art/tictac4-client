@@ -382,3 +382,17 @@ body.theme-neon {
 .btn, .badge, .board div {
   transition: all 0.3s ease;
 }
+@keyframes pulseGlow {
+  0%, 100% { text-shadow: 0 0 10px currentColor, 0 0 30px currentColor; }
+  50% { text-shadow: 0 0 25px currentColor, 0 0 50px currentColor; }
+}
+
+.win-cell {
+  animation: pulseGlow 1s infinite;
+}
+
+.board div {
+  transition: all 0.3s ease;
+  font-weight: bold;
+  font-size: 2.5rem;
+}
