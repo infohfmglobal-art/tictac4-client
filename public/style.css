@@ -283,5 +283,13 @@ body::before {
   transform: scale(0.95);
   box-shadow: 0 0 10px rgba(255,255,255,.6);
 }
+@keyframes logoIntro {
+  0% { opacity: 0; transform: scale(0.6) translateY(-20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.logo-title, .menu-logo {
+  animation: logoIntro 1.2s ease-out forwards;
+}
 
 
