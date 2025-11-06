@@ -143,6 +143,32 @@ function updateBoard(){
 
   winnerTxt.textContent = winnerName;
   msgEl.classList.add("show-winner");
+
+  for (const [r, c] of game.getWinningCells()) {
+    const idx = r * 3 + c;
+    cells[idx].classList.add("win-cell");
+  }
+
+  triggerRuneBurst(game.winner);
+  confettiBurst();
+  screenShake();
+  haptic([40,40,80]);
+
+  if (game.sfxOn) {
+    winSfx.currentTime = 0;
+    winSfx.play().catch(() => {});
+  }
+
+  if (game.mode === "Player vs CPU" && game.winner === "X") {
+    const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
+    const moves = 9 - game.board.emptyCells().length;
+    addLeaderboard({
+      time: elapsed,
+      moves,
+      diff: game.difficulty.toLowerCase(),
+      skin: game.skin.toLowerCase()
+    });
+  }
 }
 
     triggerRuneBurst(game.winner);
