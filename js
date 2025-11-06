@@ -12,9 +12,12 @@ document.getElementById("guestLoginBtn").addEventListener("click", () => {
   window.currentCoins = 100;
   document.getElementById("playerCoins").textContent = `💰 ${window.currentCoins}`;
 });
-if (skin === "Classic X / O") {
-  if (mark === "X") cell.style.color = "#00ffff"; // cyan
-  else if (mark === "O") cell.style.color = "#ff66cc"; // pink
-} else if (skin === "Runes") {
-  // your rune emoji logic
+function renderMove(cell, mark, skin) {
+    if (skin === "Classic X / O") {
+        if (mark === "X") cell.style.color = "#00ffff";
+        else if (mark === "O") cell.style.color = "#ff66cc";
+    } else if (skin === "Runes") {
+        // your rune emoji logic
+    }
+    cell.textContent = mark;
 }
