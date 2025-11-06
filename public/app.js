@@ -45,12 +45,12 @@ const winSfx   = new Audio("./sound/win.mp3");
 const music    = new Audio("./sound/bg.mp3");
 music.loop = true;
 let musicWanted = false;
-// --- Coin reward helper (works for Google login AND guest) ---
-let rewardGranted = false;
+
+// === Coin Reward Helpers (works for Google login AND guest) ===
+let rewardGranted = false; // one reward per round
 
 function coinBurstFX(text = "+20") {
-  // find coin badge position
-  const badge = document.getElementById("playerCoins");
+  const badge = document.getElementById("playerCoins"); // top bar coin badge
   if (!badge) return;
   const r = badge.getBoundingClientRect();
   const fx = document.createElement("div");
@@ -65,7 +65,7 @@ function coinBurstFX(text = "+20") {
 async function grantCoins(amount){
   try{
     if (auth.currentUser) {
-      await updateCoins(amount);             // Firebase path (already defined in your file)
+      await updateCoins(amount); // Firebase path (below)
     } else {
       // guest coins (local only)
       window.currentCoins = (window.currentCoins || 0) + amount;
@@ -77,7 +77,6 @@ async function grantCoins(amount){
     console.warn("coin grant failed:", e);
   }
 }
-
 
 // === Board Rendering ===
 function renderBoard() {
@@ -184,6 +183,7 @@ function updateBoard() {
     }
 
     winnerTxt.textContent = winnerName;
+    msgEl.classList.remove("draw");          // ensure draw style removed
     msgEl.classList.add("show-winner");
 
     // highlight winning cells
@@ -210,11 +210,17 @@ function updateBoard() {
         skin: game.skin.toLowerCase()
       });
     }
+
+    // 🔥 coin reward for a win (once per round)
+    if (!rewardGranted) { rewardGranted = true; grantCoins(20); }
+
   } else if (game.winner === "Draw") {
     winnerTxt.textContent = "Draw!";
-    msgEl.classList.add("show-winner");
+    msgEl.classList.add("show-winner", "draw");  // draw glow style
+    if (!rewardGranted) { rewardGranted = true; grantCoins(5); }
+
   } else {
-    msgEl.classList.remove("show-winner");
+    msgEl.classList.remove("show-winner", "draw");
     winnerTxt.textContent = "";
   }
 
@@ -225,12 +231,14 @@ function updateBoard() {
 
 // === Buttons ===
 nextBtn.onclick = () => {
+  rewardGranted = false; // reset round reward
   game.nextRound();
   renderBoard();
   updateBoard();
   game.roundStart = performance.now();
 };
 resetBtn.onclick = () => {
+  rewardGranted = false; // reset round reward
   game.scoreX = game.scoreO = game.scoreD = 0;
   game.resetAll();
   renderBoard();
@@ -275,6 +283,8 @@ startBtn.onclick = () => {
   skinBadge.textContent = `Skin: ${game.skin}`;
 
   if (musicWanted) music.play().catch(() => {});
+
+  rewardGranted = false; // reset at new round
   game.resetAll();
   renderBoard();
   updateBoard();
@@ -332,7 +342,12 @@ async function loginGoogle() {
   } else {
     window.currentCoins = snap.data().coins;
   }
-  document.getElementById("playerCoins").textContent = `💰 ${window.currentCoins}`;
+
+  // Update both coin badges if present
+  const topCoin  = document.getElementById("playerCoins");
+  const homeCoin = document.getElementById("playerCoinsHome");
+  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
+  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
 }
 
 async function updateCoins(change) {
@@ -343,7 +358,11 @@ async function updateCoins(change) {
   const coins = (snap.data().coins || 0) + change;
   await updateDoc(ref, { coins });
   window.currentCoins = coins;
-  document.getElementById("playerCoins").textContent = `💰 ${coins}`;
+
+  const topCoin  = document.getElementById("playerCoins");
+  const homeCoin = document.getElementById("playerCoinsHome");
+  if (topCoin)  topCoin.textContent  = `💰 ${coins}`;
+  if (homeCoin) homeCoin.textContent = `💰 ${coins}`;
 }
 
 // buttons for login/guest
@@ -351,5 +370,14 @@ document.getElementById("googleLoginBtn").addEventListener("click", loginGoogle)
 document.getElementById("guestLoginBtn").addEventListener("click", () => {
   alert("Guest mode: coins not saved!");
   window.currentCoins = 100;
-  document.getElementById("playerCoins").textContent = `💰 ${window.currentCoins}`;
+  const topCoin  = document.getElementById("playerCoins");
+  const homeCoin = document.getElementById("playerCoinsHome");
+  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
+  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
 });
+
+// (optional) map home-screen login buttons to same actions if you want them active on home
+const glHome = document.getElementById("googleLoginBtnHome");
+const gsHome = document.getElementById("guestLoginBtnHome");
+if (glHome) glHome.addEventListener("click", () => document.getElementById("googleLoginBtn").click());
+if (gsHome) gsHome.addEventListener("click", () => document.getElementById("guestLoginBtn").click());
