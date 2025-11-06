@@ -137,12 +137,23 @@ musicBtn.onclick = () => {
 };
 
 // Home screen
-function showHome(show) {
-    homeScreen.classList.toggle("hidden", !show);
-    boardEl.style.display = show ? "none" : "grid";
-    modeBar.style.display = show ? "none" : "flex";
-    document.querySelector(".btngrp").style.display = show ? "none" : "flex";
-    document.querySelector(".avatars").style.display = show ? "none" : "flex";
+function showHome(show){
+  if (show) {
+      // show home screen
+      homeScreen.style.display = "block";
+      boardEl.style.display = "none";
+      document.querySelector(".btngrp").style.display = "none";
+      modeBar.style.display = "none";
+      document.querySelector(".avatars").style.display = "none";
+      msgEl.classList.remove("show-winner");
+  } else {
+      // show game screen
+      homeScreen.style.display = "none";
+      boardEl.style.display = "grid";
+      document.querySelector(".btngrp").style.display = "flex";
+      modeBar.style.display = "flex";
+      document.querySelector(".avatars").style.display = "flex";
+  }
 }
 showHome(true);
 
