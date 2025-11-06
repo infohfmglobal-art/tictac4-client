@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="./splash.css">
 
   <script>
-    // PWA install
+    // PWA install capture
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -22,12 +22,28 @@
 <body class="theme-rune">
   <!-- Splash -->
   <div id="splash-screen">
-    <img src="./logo-dragon.png" class="splash-logo">
+    <img src="./logo-dragon.png" class="splash-logo" alt="RuneXO">
     <div class="splash-title">RUNEXO</div>
   </div>
 
-  <!-- Title / badges -->
-  <h1 class="game-title">RuneXO</h1>
+  <!-- Neon header -->
+  <header class="hero">
+    <h1 class="logo-title">
+      <span class="glow">Rune</span><span class="spark">XO</span>
+    </h1>
+    <p class="tagline">Battle of Dragon 🐉 vs Phoenix 🕊️ — Tap & Win!</p>
+    <!-- floating runes (pure CSS) -->
+    <div class="rune-orbs">
+      <span class="orb o1">✨</span>
+      <span class="orb o2">💫</span>
+      <span class="orb o3">🔮</span>
+      <span class="orb o4">✨</span>
+      <span class="orb o5">💫</span>
+      <span class="orb o6">🔮</span>
+    </div>
+  </header>
+
+  <!-- Top badges (used by app.js) -->
   <div id="modeBar" class="topbar">
     <span id="modeBadge" class="badge">Mode: PvC</span>
     <span id="diffBadge" class="badge">Difficulty: Easy</span>
@@ -43,11 +59,14 @@
   <!-- Score + message -->
   <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
   <div id="msg" class="msg"><span id="winnerText"></span></div>
-<div id="loginBar">
-  <button id="googleLoginBtn" class="btn small">Login with Google</button>
-  <button id="guestLoginBtn" class="btn small">Play as Guest</button>
-  <span id="playerCoins" class="badge">💰 0</span>
-</div>
+
+  <!-- Login bar (buttons & coins) -->
+  <div id="loginBar" class="login-bar">
+    <button id="googleLoginBtn" class="btn bubble">Login with Google</button>
+    <button id="guestLoginBtn" class="btn bubble secondary">Play as Guest</button>
+    <span id="playerCoins" class="badge coin">💰 0</span>
+  </div>
+
   <!-- Board -->
   <div id="board" class="board"></div>
 
@@ -61,63 +80,71 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- ✅ HOME SCREEN -->
-<div id="homeScreen" class="home-screen">
+  <!-- HOME SCREEN (new gorgeous menu) -->
+  <div id="homeScreen" class="home-screen">
+    <div class="home-inner">
 
-  <h2 class="menu-title">RuneXO</h2>
+      <h2 class="menu-logo">
+        <span class="glow">Rune</span><span class="spark">XO</span>
+      </h2>
 
-  <div class="menu-box">
+      <div class="menu-box">
+        <div class="menu-row">
+          <label>Game Mode</label>
+          <select id="gameMode">
+            <option>Player vs CPU</option>
+            <option>Player vs Player</option>
+          </select>
+        </div>
 
-    <div class="menu-row">
-      <label>Game Mode</label>
-      <select id="gameMode">
-        <option>Player vs CPU</option>
-        <option>Player vs Player</option>
-      </select>
+        <div class="menu-row">
+          <label>Difficulty</label>
+          <select id="difficulty">
+            <option>Easy</option>
+            <option>Normal</option>
+            <option>Hard</option>
+          </select>
+        </div>
+
+        <div class="menu-row">
+          <label>Skin</label>
+          <select id="skin">
+            <option>Runes</option>
+            <option>Classic X / O</option>
+            <option>Fruit</option>
+          </select>
+        </div>
+
+        <div class="menu-row">
+          <label>Theme</label>
+          <select id="themeSelect">
+            <option>Rune</option>
+            <option>Gold</option>
+            <option>Blue</option>
+            <option>Neon</option>
+            <option>Classic</option>
+          </select>
+        </div>
+
+        <button id="startBtn" class="menu-btn play-btn">Play</button>
+
+        <div class="login-cta">
+          <button id="googleLoginBtnHome" class="menu-btn bubble">Login with Google</button>
+          <button id="guestLoginBtnHome" class="menu-btn bubble secondary">Play as Guest</button>
+          <span id="playerCoinsHome" class="badge coin">💰 0</span>
+        </div>
+
+        <button id="installBtn2" class="menu-btn secondary">Install App</button>
+      </div>
+
+      <div class="leader-wrap">
+        <h3 class="leader-title">Top 10 Fastest Wins</h3>
+        <ul id="leaderList" class="leader-list"></ul>
+      </div>
     </div>
-
-    <div class="menu-row">
-      <label>Difficulty</label>
-      <select id="difficulty">
-        <option>Easy</option>
-        <option>Normal</option>
-        <option>Hard</option>
-      </select>
-    </div>
-
-    <div class="menu-row">
-      <label>Skin</label>
-      <select id="skin">
-        <option>Runes</option>
-        <option>Classic X / O</option>
-        <option>Fruit</option>
-      </select>
-    </div>
-
-    <div class="menu-row">
-      <label>Theme</label>
-      <select id="themeSelect">
-        <option>Rune</option>
-        <option>Gold</option>
-        <option>Blue</option>
-        <option>Classic</option>
-      </select>
-    </div>
-
-    <button id="startBtn" class="menu-btn">Start Game</button>
-    <button id="installBtn2" class="menu-btn secondary">Install App</button>
-
   </div>
 
-  <h3 class="leader-title">Leaderboard (Top 10 fastest wins vs CPU)</h3>
-  <ul id="leaderList" class="leader-list"></ul>
-
-</div>
-    <h4>Leaderboard (Top 10 fastest wins vs CPU)</h4>
-    <ol id="leaderList"></ol>
-  </div>
-
-  <!-- Particles canvas (optional visuals) -->
+  <!-- Optional particles canvas (kept) -->
   <canvas id="runeParticles"></canvas>
 
   <script type="module" src="./app.js"></script>
@@ -125,7 +152,6 @@
   <script type="module" src="./runes.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      // IMPORTANT: relative path, not "/sw.js"
       navigator.serviceWorker.register("./sw.js");
     }
   </script>
