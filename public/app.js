@@ -230,3 +230,9 @@ async function updateCoins(change) {
   window.currentCoins = coins;
   document.getElementById("playerCoins").textContent = `💰 ${coins}`;
 }
+document.getElementById("googleLoginBtn").addEventListener("click", loginGoogle);
+document.getElementById("guestLoginBtn").addEventListener("click", () => {
+  alert("Guest mode: coins not saved!");
+  window.currentCoins = 100;
+  document.getElementById("playerCoins").textContent = `💰 ${window.currentCoins}`;
+});
