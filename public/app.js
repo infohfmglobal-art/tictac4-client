@@ -214,11 +214,11 @@ if (game.winner && game.winner !== "Draw") {
     });
   }
 
-  // === coin reward (once per round) ===
-  if (!rewardGranted) {
-    rewardGranted = true;
-    grantCoins(20);
-  }
+ // coin reward (only once per round)
+if (!rewardGranted) {
+  rewardGranted = true;
+  grantCoins(20);
+}
 
 } else if (game.winner === "Draw") {
   winnerTxt.textContent = "Draw!";
