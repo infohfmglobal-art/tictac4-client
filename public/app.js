@@ -6,7 +6,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const bell = document.getElementById("introBell");
   const loginGate = document.getElementById("loginGate");
 
-  // play bell after slight delay
   setTimeout(() => {
     bell.volume = 0.8;
     bell.play().catch(() => {});
@@ -15,7 +14,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // fade out splash after 3 seconds
   setTimeout(() => {
     splash.classList.add("hide");
-    // show login after fade
     setTimeout(() => loginGate.classList.remove("hidden"), 1000);
   }, 3000);
 });
@@ -41,7 +39,6 @@ function showHome() {
     document.getElementById("loginGate").classList.add("hidden");
     homeScreen.classList.remove("hidden");
 
-    // reveal orb after home shows
     setTimeout(() => {
       installOrb.classList.remove("hidden");
       installOrb.classList.add("show");
@@ -49,7 +46,7 @@ function showHome() {
   });
 }
 
-// click handlers
+// === LOGIN BUTTON HANDLERS ===
 guestBtn.addEventListener("click", () => {
   alert("Guest mode activated! 🪄 Coins will not be saved online.");
   showHome();
@@ -72,27 +69,7 @@ installOrb.addEventListener("click", async () => {
   window.deferredPrompt = null;
 });
 
-// === HOME → GAME START HANDLER ===
-const startBtn = document.getElementById("startBtn");
-if (startBtn) {
-  startBtn.addEventListener("click", () => {
-    console.log("▶️ Play button clicked!");
-    startGame();
-  });
-}
-
-function startGame() {
-  const homeScreen = document.getElementById("homeScreen");
-  const gameArea = document.getElementById("gameArea");
-
-  // fade home out
-  homeScreen.classList.add("fade-out");
-
-  setTimeout(() => {
-    homeScreen.classList.add("hidden");
-    if (gameArea) gameArea.classList.remove("hidden");
-  }, 600);
-// === SIMPLE GAME BOARD LOGIC ===
+// === GAME BOARD INITIALIZATION ===
 function initGameBoard() {
   const board = document.getElementById("gameBoard");
   if (!board) return;
@@ -100,20 +77,17 @@ function initGameBoard() {
   const cells = board.querySelectorAll(".cell");
   let currentPlayer = "X";
 
-  // Attach listeners once
   cells.forEach(cell => {
     cell.addEventListener("click", () => {
       if (cell.textContent !== "") return;
       cell.textContent = currentPlayer;
       cell.style.textShadow = "0 0 10px gold";
       cell.style.color = "gold";
-
-      // Simple switch between players
       currentPlayer = currentPlayer === "X" ? "O" : "X";
     });
   });
 
-  // Reset, Next Round, Home Buttons
+  // Button controls
   const resetBtn = document.getElementById("resetBtn");
   const nextRoundBtn = document.getElementById("nextRoundBtn");
   const homeBtn = document.getElementById("homeBtn");
@@ -140,16 +114,25 @@ function initGameBoard() {
   }
 }
 
-// Initialize only when Play is clicked
+// === START GAME (FROM HOME) ===
+const startBtn = document.getElementById("startBtn");
+if (startBtn) {
+  startBtn.addEventListener("click", () => {
+    console.log("▶️ Play button clicked!");
+    startGame();
+  });
+}
+
 function startGame() {
   const homeScreen = document.getElementById("homeScreen");
   const gameArea = document.getElementById("gameArea");
 
   homeScreen.classList.add("fade-out");
+
   setTimeout(() => {
     homeScreen.classList.add("hidden");
     gameArea.classList.remove("hidden");
-    initGameBoard(); // ✅ Initialize after board is visible
+    initGameBoard(); // Initialize game
   }, 600);
 
   new Audio("./sound/click.mp3").play().catch(() => {});
