@@ -11,11 +11,13 @@
   visibility: visible;
   transition: opacity 1s ease, visibility 1s ease;
 }
-.intro-splash.hide {
+..intro-splash.hide {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transition: opacity 1.2s ease, visibility 1.2s ease;
 }
+
 
 .intro-bg {
   position: absolute;
