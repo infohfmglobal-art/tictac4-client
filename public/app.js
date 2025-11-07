@@ -1,6 +1,6 @@
 // === Import Modules ===
 import {
-  auth, db, GoogleAuthProvider, signInWithPopup, signOut,
+  auth, db, GoogleAuthProvider, signInWithPopup,
   doc, getDoc, setDoc, updateDoc
 } from "./firebaseSetup.js";
 import { Game } from "./game.js";
@@ -39,6 +39,18 @@ const skinSel    = document.getElementById("skin");
 const themeSel   = document.getElementById("themeSelect");
 const leaderList = document.getElementById("leaderList");
 
+// Login Gate
+const gateScreen = document.getElementById("loginGate");
+const gateGoogle = document.getElementById("googleLoginGate");
+const gateGuest  = document.getElementById("guestLoginGate");
+const flashOv    = document.getElementById("flashOverlay");
+
+// Quick login bar (in-game)
+const quickGoogle = document.getElementById("googleLoginBtn");
+const quickGuest  = document.getElementById("guestLoginBtn");
+const homeGoogle  = document.getElementById("googleLoginBtnHome");
+const homeGuest   = document.getElementById("guestLoginBtnHome");
+
 // === Audio ===
 const clickSfx = new Audio("./sound/click.mp3");
 const winSfx   = new Audio("./sound/win.mp3");
@@ -46,11 +58,11 @@ const music    = new Audio("./sound/bg.mp3");
 music.loop = true;
 let musicWanted = false;
 
-// === Coin Reward Helpers (works for Google login AND guest) ===
-let rewardGranted = false; // one reward per round
+// === Coins / Rewards ===
+let rewardGranted = false;
 
 function coinBurstFX(text = "+20") {
-  const badge = document.getElementById("playerCoins"); // top bar coin badge
+  const badge = document.getElementById("playerCoins");
   if (!badge) return;
   const r = badge.getBoundingClientRect();
   const fx = document.createElement("div");
@@ -65,12 +77,13 @@ function coinBurstFX(text = "+20") {
 async function grantCoins(amount){
   try{
     if (auth.currentUser) {
-      await updateCoins(amount); // Firebase path (below)
+      await updateCoins(amount);
     } else {
-      // guest coins (local only)
       window.currentCoins = (window.currentCoins || 0) + amount;
-      const pc = document.getElementById("playerCoins");
-      if (pc) pc.textContent = `💰 ${window.currentCoins}`;
+      const topCoin  = document.getElementById("playerCoins");
+      const homeCoin = document.getElementById("playerCoinsHome");
+      if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
+      if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
     }
     coinBurstFX("+" + amount);
   }catch(e){
@@ -78,7 +91,36 @@ async function grantCoins(amount){
   }
 }
 
-// === Board Rendering ===
+// ===== SECTION TOGGLES =====
+function setVisible(afterLogin) {
+  // Gate
+  gateScreen.classList.toggle("hidden", afterLogin);
+
+  // Main UI bits (after login)
+  [modeBar, document.querySelector(".avatars"), scoreEl, msgEl,
+   document.querySelector(".btngrp"), boardEl, document.getElementById("loginBar"),
+   homeScreen].forEach(el => el.classList.toggle("hidden", !afterLogin));
+}
+
+function flashThen(callback){
+  // Divine flash (white/golden) then proceed
+  flashOv.classList.remove("flash-hide");
+  flashOv.classList.add("flash-show");
+  setTimeout(()=>{
+    flashOv.classList.remove("flash-show");
+    flashOv.classList.add("flash-hide");
+    callback && callback();
+  }, 550);
+}
+
+function enterHome(){
+  flashThen(()=>{
+    setVisible(true);
+    showHome(true);
+  });
+}
+
+// ===== Board Rendering =====
 function renderBoard() {
   boardEl.innerHTML = "";
   for (let r = 0; r < 3; r++) {
@@ -94,7 +136,7 @@ function renderBoard() {
 }
 renderBoard();
 
-// === Handle Move ===
+// ===== Handle Move =====
 function handleMove(r, c) {
   if (musicWanted && music.paused) music.play().catch(() => {});
   const result = game.move(r, c, true);
@@ -114,7 +156,7 @@ function handleMove(r, c) {
   }
 }
 
-// === Update UI ===
+// ===== Update UI =====
 function updateBoard() {
   const cells = boardEl.children;
 
@@ -124,50 +166,39 @@ function updateBoard() {
     const val = game.board.grid[r][c];
     const cell = cells[i];
 
-    // reset base class
     cell.className = "cell";
     cell.style.color = "";
     cell.style.textShadow = "";
     cell.textContent = "";
 
-    if (!val) continue; // empty cell → skip drawing
+    if (!val) continue;
 
-    // === Render Skins (X/O/Emoji) ===
+    // Skins
     if (game.skin.startsWith("Classic")) {
       cell.textContent = val;
-      if (val === "X") {
-        cell.style.color = "#00ffff"; // cyan
-        cell.style.textShadow = "0 0 12px #00ffff, 0 0 25px #00cccc";
-      } else {
-        cell.style.color = "#ff66cc"; // pink
-        cell.style.textShadow = "0 0 12px #ff66cc, 0 0 25px #ff3399";
-      }
+      cell.style.color = (val === "X") ? "#00ffff" : "#ff66cc";
+      cell.style.textShadow = (val === "X")
+        ? "0 0 12px #00ffff, 0 0 25px #00cccc"
+        : "0 0 12px #ff66cc, 0 0 25px #ff3399";
     } else if (game.skin === "Fruit") {
-      if (val === "X") {
-        cell.textContent = "🍎";
-        cell.style.textShadow = "0 0 15px #ff3366, 0 0 25px #ff0033";
-      } else {
-        cell.textContent = "🍊";
-        cell.style.textShadow = "0 0 15px #ffaa00, 0 0 25px #ff7700";
-      }
+      cell.textContent = (val === "X") ? "🍎" : "🍊";
+      cell.style.textShadow = (val === "X")
+        ? "0 0 15px #ff3366, 0 0 25px #ff0033"
+        : "0 0 15px #ffaa00, 0 0 25px #ff7700";
     } else if (game.skin === "Runes") {
-      if (val === "X") {
-        cell.textContent = "🐉";
-        cell.style.color = "#00ffff";
-        cell.style.textShadow = "0 0 15px #00ffff, 0 0 30px #00cccc";
-      } else {
-        cell.textContent = "🕊️";
-        cell.style.color = "#ff66cc";
-        cell.style.textShadow = "0 0 15px #ff66cc, 0 0 30px #ff3399";
-      }
+      cell.textContent = (val === "X") ? "🐉" : "🕊️";
+      cell.style.color = (val === "X") ? "#00ffff" : "#ff66cc";
+      cell.style.textShadow = (val === "X")
+        ? "0 0 15px #00ffff, 0 0 30px #00cccc"
+        : "0 0 15px #ff66cc, 0 0 30px #ff3399";
     }
   }
 
-  // Active player badge
+  // Turn badges
   pX.classList.toggle("active", game.turn === "X");
   pO.classList.toggle("active", game.turn === "O");
 
-  // === Winner / Draw messaging (single, non-duplicated block) ===
+  // Winner / Draw
   if (game.winner && game.winner !== "Draw") {
     let winnerName = "";
     if (game.skin === "Classic X / O") {
@@ -184,67 +215,48 @@ function updateBoard() {
     msgEl.classList.remove("draw");
     msgEl.classList.add("show-winner");
 
-    // highlight winning cells
     for (const [r, c] of game.getWinningCells()) {
       const idx = r * 3 + c;
       boardEl.children[idx].classList.add("win-cell");
     }
 
-    // effects + sound
     triggerRuneBurst(game.winner);
     confettiBurst();
     screenShake();
     haptic([40, 40, 80]);
-    if (game.sfxOn) {
-      winSfx.currentTime = 0;
-      winSfx.play().catch(() => {});
-    }
+    if (game.sfxOn) { winSfx.currentTime = 0; winSfx.play().catch(() => {}); }
 
-    // leaderboard (for Player vs CPU) when X wins
     if (game.mode === "Player vs CPU" && game.winner === "X") {
       const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
       const moves = 9 - game.board.emptyCells().length;
-      addLeaderboard({
-        time: elapsed,
-        moves,
-        diff: game.difficulty.toLowerCase(),
-        skin: game.skin.toLowerCase(),
-      });
+      addLeaderboard({ time: elapsed, moves, diff: game.difficulty.toLowerCase(), skin: game.skin.toLowerCase() });
     }
 
-    // coin reward (only once per round)
-    if (!rewardGranted) {
-      rewardGranted = true;
-      grantCoins(20);
-    }
+    if (!rewardGranted) { rewardGranted = true; grantCoins(20); }
 
   } else if (game.winner === "Draw") {
     winnerTxt.textContent = "Draw!";
     msgEl.classList.add("show-winner", "draw");
-    if (!rewardGranted) {
-      rewardGranted = true;
-      grantCoins(5);
-    }
+    if (!rewardGranted) { rewardGranted = true; grantCoins(5); }
+
   } else {
     msgEl.classList.remove("show-winner", "draw");
     winnerTxt.textContent = "";
   }
 
-  // score line
-  scoreEl.textContent =
-    `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
+  scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
-// === Buttons ===
+// ===== Buttons =====
 nextBtn.onclick = () => {
-  rewardGranted = false; // reset round reward
+  rewardGranted = false;
   game.nextRound();
   renderBoard();
   updateBoard();
   game.roundStart = performance.now();
 };
 resetBtn.onclick = () => {
-  rewardGranted = false; // reset round reward
+  rewardGranted = false;
   game.scoreX = game.scoreO = game.scoreD = 0;
   game.resetAll();
   renderBoard();
@@ -268,14 +280,16 @@ musicBtn.onclick = () => {
   window.deferredPrompt = null;
 }));
 
-// === Home Screen ===
+// ===== Home Screen Show/Hide =====
 function showHome(show) {
   homeScreen.classList.toggle("hidden", !show);
-  boardEl.style.display = show ? "none" : "grid";
-  document.querySelector(".btngrp").style.display = show ? "none" : "flex";
-  modeBar.style.display = show ? "none" : "flex";
-  document.querySelector(".avatars").style.display = show ? "none" : "flex";
-  scoreEl.style.display = show ? "none" : "block";
+  boardEl.classList.toggle("hidden", show);
+  document.querySelector(".btngrp").classList.toggle("hidden", show);
+  modeBar.classList.toggle("hidden", show);
+  document.querySelector(".avatars").classList.toggle("hidden", show);
+  scoreEl.classList.toggle("hidden", show);
+  msgEl.classList.toggle("hidden", show);
+  document.getElementById("loginBar").classList.toggle("hidden", show);
 }
 
 startBtn.onclick = () => {
@@ -290,22 +304,23 @@ startBtn.onclick = () => {
 
   if (musicWanted) music.play().catch(() => {});
 
-  rewardGranted = false; // reset at new round
+  rewardGranted = false;
   game.resetAll();
   renderBoard();
   updateBoard();
   showHome(false);
 };
 
-showHome(true);
+// ===== Initial state: show gate only =====
+setVisible(false);
 loadLeaderboard();
 
-// === Haptics ===
+// ===== Haptics =====
 function haptic(pattern) {
   if ("vibrate" in navigator) navigator.vibrate(pattern);
 }
 
-// === Leaderboard (local) ===
+// ===== Leaderboard (local) =====
 function addLeaderboard(entry) {
   const key = "rxo_leader";
   const list = JSON.parse(localStorage.getItem(key) || "[]");
@@ -327,7 +342,7 @@ function loadLeaderboard() {
   });
 }
 
-// === Firebase Login + Coin System ===
+// ===== Firebase Login + Coins =====
 async function loginGoogle() {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
@@ -349,13 +364,13 @@ async function loginGoogle() {
     window.currentCoins = snap.data().coins;
   }
 
-  // Update both coin badges if present
   const topCoin  = document.getElementById("playerCoins");
   const homeCoin = document.getElementById("playerCoinsHome");
   if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
   if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
 }
 
+// coin update for logged user
 async function updateCoins(change) {
   const user = auth.currentUser;
   if (!user) return;
@@ -371,9 +386,24 @@ async function updateCoins(change) {
   if (homeCoin) homeCoin.textContent = `💰 ${coins}`;
 }
 
-// Buttons for login/guest
-document.getElementById("googleLoginBtn").addEventListener("click", loginGoogle);
-document.getElementById("guestLoginBtn").addEventListener("click", () => {
+// ===== Gate buttons =====
+gateGoogle.addEventListener("click", async () => {
+  await loginGoogle();
+  enterHome();
+});
+gateGuest.addEventListener("click", () => {
+  alert("Guest mode: coins not saved!");
+  window.currentCoins = 100;
+  const topCoin  = document.getElementById("playerCoins");
+  const homeCoin = document.getElementById("playerCoinsHome");
+  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
+  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
+  enterHome();
+});
+
+// ===== Quick/Home login mirrors =====
+if (quickGoogle) quickGoogle.addEventListener("click", loginGoogle);
+if (quickGuest)  quickGuest.addEventListener("click", () => {
   alert("Guest mode: coins not saved!");
   window.currentCoins = 100;
   const topCoin  = document.getElementById("playerCoins");
@@ -381,9 +411,12 @@ document.getElementById("guestLoginBtn").addEventListener("click", () => {
   if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
   if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
 });
-
-// Map home-screen login buttons to same actions (optional)
-const glHome = document.getElementById("googleLoginBtnHome");
-const gsHome = document.getElementById("guestLoginBtnHome");
-if (glHome) glHome.addEventListener("click", () => document.getElementById("googleLoginBtn").click());
-if (gsHome) gsHome.addEventListener("click", () => document.getElementById("guestLoginBtn").click());
+if (homeGoogle) homeGoogle.addEventListener("click", loginGoogle);
+if (homeGuest)  homeGuest .addEventListener("click", () => {
+  alert("Guest mode: coins not saved!");
+  window.currentCoins = 100;
+  const topCoin  = document.getElementById("playerCoins");
+  const homeCoin = document.getElementById("playerCoinsHome");
+  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
+  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
+});
