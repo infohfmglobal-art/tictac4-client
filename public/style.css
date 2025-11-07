@@ -1,160 +1,50 @@
-/* ====== LOGIN GATE (Fiery Neon) ====== */
-.gate-screen {
+/* === Intro Splash === */
+.intro-splash {
   position: fixed;
   inset: 0;
+  z-index: 9999;
+  background: #000;
   display: grid;
   place-items: center;
-  z-index: 9999;
   overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1s ease, visibility 1s ease;
 }
-.gate-inner {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  animation: fadeInUp .9s ease both;
-}
-.hero-logo {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(42px, 7vw, 86px);
-  letter-spacing: 2px;
-  margin: 0 0 8px 0;
-  line-height: 1;
-  color: #ffd86b;
-  text-shadow:
-    0 0 10px rgba(255,214,102,.8),
-    0 0 24px rgba(255,165,0,.6),
-    inset 0 0 12px rgba(255,255,255,.45);
-  animation: pulseLogo 2.2s ease-in-out infinite;
-}
-.hero-tagline {
-  margin: 0;
-  font-weight: 700;
-  color: #ffefbf;
-  text-shadow: 0 0 10px rgba(255,255,255,.35), 0 0 24px rgba(255,200,100,.45);
-  letter-spacing: .6px;
-  opacity: .95;
-}
-
-.gate-buttons {
-  display: grid;
-  gap: 12px;
-  margin-top: 22px;
-}
-.gate-bg {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(1200px 800px at 50% 40%, rgba(255,210,120,.25), transparent 60%),
-              radial-gradient(900px 600px at 65% 70%, rgba(255,80,20,.25), transparent 60%),
-              radial-gradient(900px 600px at 35% 70%, rgba(255,160,0,.25), transparent 60%),
-              #000;
-  filter: blur(10px) saturate(130%);
-}
-.gate-bg::before {
-  content:"";
-  position:absolute; inset:-20%;
-  background: conic-gradient(from 0deg,
-    #ff4d00, #ff9a00, #ffd166, #ff4d00);
-  animation: swirl 16s linear infinite;
-  mix-blend-mode: screen;
-  opacity:.22;
-}
-
-/* flash overlay for divine transition */
-.flash-overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,.9), rgba(255,220,120,.75), rgba(255,170,0,.0) 60%);
-  pointer-events: none;
+.intro-splash.hide {
   opacity: 0;
-  transition: opacity .9s ease;
-  z-index: 99999;
+  visibility: hidden;
 }
-.flash-overlay.flash-show { opacity: 1; }
-.flash-overlay.flash-hide { opacity: 0; transition: opacity 700ms ease; }
-
-/* hide helper */
-.hidden { display: none !important; }
-
-/* subtle entrance */
-@keyframes fadeInUp {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-
-/* logo pulse */
-@keyframes pulseLogo {
-  0%   { text-shadow: 0 0 10px rgba(255,214,102,.9), 0 0 24px rgba(255,165,0,.6); }
-  50%  { text-shadow: 0 0 20px rgba(255,240,170,1), 0 0 40px rgba(255,200,80,.8); }
-  100% { text-shadow: 0 0 10px rgba(255,214,102,.9), 0 0 24px rgba(255,165,0,.6); }
-}
-
-/* slow fiery swirl */
-@keyframes swirl {
-  from { transform: rotate(0deg) scale(1.05); }
-  to   { transform: rotate(360deg) scale(1.05); }
-}
-
-/* ===== DRAW glow (optional, used by app.js) ===== */
-.msg.show-winner.draw #winnerText{
-  display:inline-block;
-  padding:8px 14px;
-  border-radius:999px;
-  background: rgba(150, 230, 255, .10);
-  border: 2px solid rgba(100, 220, 255, .45);
-  box-shadow: 0 0 12px rgba(100, 220, 255, .35), inset 0 0 10px rgba(20, 30, 40, .6);
-  animation: drawGlow 1.6s ease-in-out infinite alternate;
-}
-@keyframes drawGlow{
-  0%   { text-shadow: 0 0 8px #76e2ff, 0 0 16px #33ccff; color:#dff7ff; }
-  100% { text-shadow: 0 0 20px #b8f0ff, 0 0 40px #76e2ff; color:#ffffff; }
-}
-
-/* ===== Coin reward float (used by app.js) ===== */
-.coin-fx{
-  position: fixed;
-  pointer-events: none;
-  font-size: 18px;
-  filter: drop-shadow(0 0 6px rgba(255,200,50,.8));
-  animation: coinFloat .9s ease-out forwards;
-  z-index: 9999;
-}
-@keyframes coinFloat{
-  0%   { transform: translateY(0) scale(1);   opacity: 0; }
-  15%  { opacity: 1; }
-  100% { transform: translateY(-48px) scale(1.2); opacity: 0; }
-}
-/* === RuneXO Login Gate Fix === */
-.rune-logo-main {
-  width: 130px;
-  height: auto;
-  margin-bottom: 14px;
-  filter: drop-shadow(0 0 10px rgba(255,220,120,.8)) drop-shadow(0 0 20px rgba(255,150,0,.6));
-  animation: logoFloat 3.2s ease-in-out infinite alternate;
-}
-
-@keyframes logoFloat {
-  from { transform: translateY(0); }
-  to { transform: translateY(-6px); }
-}
-
-/* === FrameWeave Studio footer === */
-.studio-footer {
+.intro-bg {
   position: absolute;
-  bottom: 22px;
-  width: 100%;
-  text-align: center;
-  font-size: 13px;
-  color: #ffd87c;
+  inset: -20%;
+  background: radial-gradient(700px 500px at 50% 40%, rgba(255,230,160,.2), transparent 60%),
+              radial-gradient(700px 500px at 70% 70%, rgba(255,160,60,.15), transparent 60%),
+              #000;
+  mix-blend-mode: screen;
+}
+.intro-logo {
+  width: 140px;
+  height: auto;
+  margin-bottom: 10px;
+  animation: logoFloat 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 12px #ffcc66) drop-shadow(0 0 24px #ff9933);
+}
+.intro-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: clamp(44px, 8vw, 90px);
+  color: #ffd86b;
+  text-shadow: 0 0 15px rgba(255,200,120,.9), 0 0 40px rgba(255,160,40,.8);
+  margin: 0;
+}
+.intro-studio {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #ffeec7;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(255,230,160,.5);
-  opacity: 0.8;
-  animation: fadeIn 2s ease both;
+  margin-top: 8px;
+  opacity: 0.9;
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 0.8; transform: translateY(0); }
-}
-
-/* === Fix for Game UI visibility === */
-.hidden { display: none !important; }
+@keyframes logoFloat { from { transform: translateY(0); } to { transform: translateY(-6px); } }
