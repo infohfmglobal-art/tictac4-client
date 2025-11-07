@@ -87,9 +87,15 @@
     </div>
   </div>
 
-  <!-- 🪄 INSTALL ORB -->
-  <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🪄</div>
+ <!-- 🔮 INSTALL ORB -->
+<div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
-  <script type="module" src="./app.js"></script>
+<!-- Scripts -->
+<script type="module" src="./app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+  }
+</script>
 </body>
 </html>
