@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
 
   <script>
+    // Capture PWA install prompt for later
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -25,18 +26,17 @@
     <h1 class="splash-title glow">RuneXO</h1>
     <p class="splash-tagline">Every Move Shapes Destiny.</p>
     <p class="studio-credit">© FrameWeave Studio LLC</p>
-    <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
   </div>
 
-  <!-- ✨ LOGIN GATE -->
+  <!-- ✨ LOGIN / LAUNCH -->
   <div id="loginGate" class="login-gate hidden">
     <h1 class="login-logo"><span class="glow">Rune</span><span class="spark">XO</span></h1>
     <p class="login-tagline">Every Move Shapes Destiny.</p>
     <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
-    <button id="googleLoginGate" class="login-btn">🔑 Login with Google</button>
+    <button id="googleLoginGate" class="login-btn" disabled>🔑 Login with Google</button>
   </div>
 
-  <!-- ⚡ FLASH OVERLAY -->
+  <!-- ⚡ GOLDEN FLASH OVERLAY -->
   <div id="flashOverlay" class="flash-overlay flash-hide"></div>
 
   <!-- 🏠 HOME SCREEN -->
@@ -44,32 +44,40 @@
     <div class="menu-box">
       <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
 
-      <div class="menu-row"><label>Game Mode</label>
+      <div class="menu-row">
+        <label>Game Mode</label>
         <select id="gameMode">
-          <option>Player vs CPU</option>
-          <option>Player vs Player</option>
+          <option value="cpu" selected>Player vs CPU</option>
+          <option value="pvp">Player vs Player</option>
         </select>
       </div>
 
-      <div class="menu-row"><label>Difficulty</label>
+      <div class="menu-row">
+        <label>Difficulty</label>
         <select id="difficulty">
-          <option>Easy</option>
-          <option>Normal</option>
-          <option>Hard</option>
+          <option value="easy" selected>Easy</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Hard</option>
         </select>
       </div>
 
-      <div class="menu-row"><label>Skin</label>
+      <div class="menu-row">
+        <label>Skin</label>
         <select id="skin">
-          <option>Runes</option>
-          <option>Classic X / O</option>
+          <option value="runes" selected>Runes</option>
+          <option value="classic">Classic X / O</option>
+          <option value="fruit">Fruit</option>
+          <option value="emoji">Emoji</option>
         </select>
       </div>
 
-      <div class="menu-row"><label>Theme</label>
+      <div class="menu-row">
+        <label>Theme</label>
         <select id="themeSelect">
-          <option>Rune</option>
-          <option>Gold</option>
+          <option value="rune" selected>Rune</option>
+          <option value="gold">Gold</option>
+          <option value="blue">Blue</option>
+          <option value="neon">Neon</option>
         </select>
       </div>
 
@@ -82,6 +90,7 @@
   <div id="gameArea" class="hidden">
     <div class="game-container">
       <div class="board" id="gameBoard">
+        <!-- 3x3 grid -->
         <div class="cell" data-index="0"></div>
         <div class="cell" data-index="1"></div>
         <div class="cell" data-index="2"></div>
@@ -92,23 +101,34 @@
         <div class="cell" data-index="7"></div>
         <div class="cell" data-index="8"></div>
       </div>
+
       <div class="controls">
-        <button id="nextRoundBtn">Next Round</button>
-        <button id="resetBtn">Reset All</button>
-        <button id="homeBtn">🏠 Home</button>
-        <button id="musicToggle">🎵 Music ON</button>
-        <button id="sfxToggle">🔈 SFX ON</button>
+        <button id="nextRoundBtn" class="menu-btn">Next Round</button>
+        <button id="resetBtn" class="menu-btn">Reset All</button>
+        <button id="homeBtn" class="menu-btn">🏠 Home</button>
+        <button id="musicBtn" class="menu-btn small">🔈 Music ON</button>
+        <button id="sfxBtn" class="menu-btn small">🔊 SFX ON</button>
       </div>
     </div>
+
+    <!-- confetti canvas -->
+    <canvas id="fxCanvas" class="fx-canvas"></canvas>
   </div>
 
   <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
+  <!-- Audio (created once, controlled in app.js) -->
+  <audio id="bgMusic" src="./sound/bg.mp3" loop preload="auto"></audio>
+  <audio id="clickSfx" src="./sound/click.mp3" preload="auto"></audio>
+  <audio id="winSfx" src="./sound/win.mp3" preload="auto"></audio>
+  <audio id="loseSfx" src="./sound/lose.mp3" preload="auto"></audio>
+
+  <!-- Scripts -->
   <script type="module" src="./app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js");
+      navigator.serviceWorker.register("./sw.js").catch(()=>{});
     }
   </script>
 </body>
