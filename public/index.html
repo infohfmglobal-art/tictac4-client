@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
 
   <script>
-    // Capture PWA install prompt for later
+    // Capture PWA install prompt (don’t show banner automatically)
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -20,7 +20,8 @@
 </head>
 
 <body class="theme-rune">
-  <!-- 🐉 INTRO SPLASH -->
+
+  <!-- 🐉 INTRO SPLASH (3s) -->
   <div id="introSplash" class="intro-splash">
     <img src="./logo-dragon.png" alt="FrameWeave Studio" class="splash-logo" />
     <h1 class="splash-title glow">RuneXO</h1>
@@ -28,12 +29,12 @@
     <p class="studio-credit">© FrameWeave Studio LLC</p>
   </div>
 
-  <!-- ✨ LOGIN / LAUNCH -->
+  <!-- ✨ LOGIN GATE -->
   <div id="loginGate" class="login-gate hidden">
     <h1 class="login-logo"><span class="glow">Rune</span><span class="spark">XO</span></h1>
     <p class="login-tagline">Every Move Shapes Destiny.</p>
     <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
-    <button id="googleLoginGate" class="login-btn" disabled>🔑 Login with Google</button>
+    <button id="googleLoginGate" class="login-btn">🔑 Login with Google</button>
   </div>
 
   <!-- ⚡ GOLDEN FLASH OVERLAY -->
@@ -47,37 +48,37 @@
       <div class="menu-row">
         <label>Game Mode</label>
         <select id="gameMode">
-          <option value="cpu" selected>Player vs CPU</option>
-          <option value="pvp">Player vs Player</option>
+          <option>Player vs CPU</option>
+          <option>Player vs Player</option>
         </select>
       </div>
 
       <div class="menu-row">
         <label>Difficulty</label>
         <select id="difficulty">
-          <option value="easy" selected>Easy</option>
-          <option value="normal">Normal</option>
-          <option value="hard">Hard</option>
+          <option>Easy</option>
+          <option>Normal</option>
+          <option>Hard</option>
         </select>
       </div>
 
       <div class="menu-row">
         <label>Skin</label>
         <select id="skin">
-          <option value="runes" selected>Runes</option>
-          <option value="classic">Classic X / O</option>
-          <option value="fruit">Fruit</option>
-          <option value="emoji">Emoji</option>
+          <option>Runes</option>
+          <option>Classic X / O</option>
+          <option>Fruit</option>
+          <option>Emoji</option>
         </select>
       </div>
 
       <div class="menu-row">
         <label>Theme</label>
         <select id="themeSelect">
-          <option value="rune" selected>Rune</option>
-          <option value="gold">Gold</option>
-          <option value="blue">Blue</option>
-          <option value="neon">Neon</option>
+          <option>Rune</option>
+          <option>Gold</option>
+          <option>Blue</option>
+          <option>Neon</option>
         </select>
       </div>
 
@@ -89,40 +90,31 @@
   <!-- 🎮 GAME AREA -->
   <div id="gameArea" class="hidden">
     <div class="game-container">
-      <div class="board" id="gameBoard">
-        <!-- 3x3 grid -->
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
+      <div class="board" id="gameBoard" aria-label="Tic Tac Toe board" role="grid">
+        <!-- 3x3 cells -->
+        <button class="cell" data-index="0" role="gridcell" aria-label="cell 1"></button>
+        <button class="cell" data-index="1" role="gridcell" aria-label="cell 2"></button>
+        <button class="cell" data-index="2" role="gridcell" aria-label="cell 3"></button>
+        <button class="cell" data-index="3" role="gridcell" aria-label="cell 4"></button>
+        <button class="cell" data-index="4" role="gridcell" aria-label="cell 5"></button>
+        <button class="cell" data-index="5" role="gridcell" aria-label="cell 6"></button>
+        <button class="cell" data-index="6" role="gridcell" aria-label="cell 7"></button>
+        <button class="cell" data-index="7" role="gridcell" aria-label="cell 8"></button>
+        <button class="cell" data-index="8" role="gridcell" aria-label="cell 9"></button>
       </div>
 
       <div class="controls">
-        <button id="nextRoundBtn" class="menu-btn">Next Round</button>
-        <button id="resetBtn" class="menu-btn">Reset All</button>
-        <button id="homeBtn" class="menu-btn">🏠 Home</button>
-        <button id="musicBtn" class="menu-btn small">🔈 Music ON</button>
-        <button id="sfxBtn" class="menu-btn small">🔊 SFX ON</button>
+        <button id="nextRoundBtn">Next Round</button>
+        <button id="resetBtn">Reset All</button>
+        <button id="homeBtn">🏠 Home</button>
+        <button id="musicBtn" class="toggle">🔈 Music ON</button>
+        <button id="sfxBtn" class="toggle">🔊 SFX ON</button>
       </div>
     </div>
-
-    <!-- confetti canvas -->
-    <canvas id="fxCanvas" class="fx-canvas"></canvas>
   </div>
 
   <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
-
-  <!-- Audio (created once, controlled in app.js) -->
-  <audio id="bgMusic" src="./sound/bg.mp3" loop preload="auto"></audio>
-  <audio id="clickSfx" src="./sound/click.mp3" preload="auto"></audio>
-  <audio id="winSfx" src="./sound/win.mp3" preload="auto"></audio>
-  <audio id="loseSfx" src="./sound/lose.mp3" preload="auto"></audio>
 
   <!-- Scripts -->
   <script type="module" src="./app.js"></script>
