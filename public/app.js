@@ -39,8 +39,8 @@ function setCoins(v){
 }
 function addCoins(delta){
   setCoins(coins + delta);
-  coinFloat(`+${delta}`);
-}
+   
+  }
 setCoins(coins); // paint badge if present
 
 // ---------- CONFETTI CANVAS + COIN FLOAT FX ----------
@@ -104,19 +104,6 @@ function confettiBurstAt(elOrXY){
   else if(elOrXY.x!=null){ x = elOrXY.x; y = elOrXY.y; }
   else { ({x,y} = elementCenter(elOrXY)); }
   spawnConfetti(x, y, 140);
-}
-function coinFloat(text="+20"){
-  const badge = document.getElementById("playerCoins");
-  const fx = document.createElement("div");
-  fx.className = "coin-fx";
-  fx.textContent = `💰 ${text}`;
-  document.body.appendChild(fx);
-  const target = badge ? elementCenter(badge) : centerXY();
-  fx.style.left = (target.x - 18) + "px";
-  fx.style.top  = (target.y - 8) + "px";
-  // animate then remove
-  setTimeout(()=> fx.classList.add("rise"), 10);
-  setTimeout(()=> fx.remove(), 1000);
 }
 
 // ---------- SPLASH → LOGIN ----------
