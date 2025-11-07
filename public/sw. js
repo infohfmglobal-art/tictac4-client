@@ -1,5 +1,6 @@
-// === RuneXO Service Worker ===
-const CACHE_NAME = "runexo-v1";
+// === RuneXO Progressive Web App Service Worker ===
+// ⚡ FrameWeave Studio LLC
+const CACHE_NAME = "runexo-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -7,38 +8,60 @@ const ASSETS = [
   "./app.js",
   "./manifest.json",
   "./sound/intro.mp3",
+  "./sound/click.mp3",
   "./logo-dragon.png",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./maskable-icon-512.png"
 ];
 
-// install event
-self.addEventListener("install", (e) => {
-  e.waitUntil(
+// ✅ Install event (cache all assets)
+self.addEventListener("install", (event) => {
+  event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[RuneXO] Caching assets...");
+      console.log("[RuneXO] Caching essential assets...");
       return cache.addAll(ASSETS);
     })
   );
+  self.skipWaiting();
 });
 
-// activate event
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
+// ✅ Activate event (clean old caches)
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      Promise.all(keys.map((key) => {
+        if (key !== CACHE_NAME) {
+          console.log("[RuneXO] Removing old cache:", key);
+          return caches.delete(key);
+        }
+      }))
     )
   );
+  self.clients.claim();
   console.log("[RuneXO] Service Worker activated.");
 });
 
-// fetch event
-self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    caches.match(e.request).then((res) => {
-      return res || fetch(e.request).catch(() => {
-        console.warn("[RuneXO] Offline resource:", e.request.url);
-      });
-    })
+// ✅ Fetch event (network-first for updates, fallback to cache)
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Update cache dynamically
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, networkResponse.clone());
+        });
+        return networkResponse;
+      })
+      .catch(() => {
+        // Offline fallback
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          // fallback to index.html for navigation
+          if (event.request.mode === "navigate") {
+            return caches.match("./index.html");
+          }
+        });
+      })
   );
 });
