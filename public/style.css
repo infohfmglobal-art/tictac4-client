@@ -1,4 +1,4 @@
-/* === BASE RESET === */
+/* === RESET & BASE === */
 * {
   margin: 0;
   padding: 0;
@@ -28,10 +28,10 @@ body {
 }
 
 .splash-logo {
-  width: 180px;
+  width: 200px;
   height: auto;
-  filter: drop-shadow(0 0 30px gold);
-  animation: logoPulse 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 40px gold);
+  animation: logoPulse 2.2s infinite ease-in-out;
 }
 
 .splash-title {
@@ -50,13 +50,14 @@ body {
 
 .studio-credit {
   font-size: 0.8rem;
-  color: #999;
+  color: #aaa;
   margin-top: 10px;
 }
 
 .intro-splash.hide {
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  transform: scale(1.02);
+  transition: opacity 1s ease, transform 1s ease;
   pointer-events: none;
 }
 
@@ -72,6 +73,7 @@ body {
   gap: 1rem;
   text-align: center;
   z-index: 5;
+  opacity: 1;
   transition: opacity 1s ease-in-out;
 }
 
@@ -96,12 +98,12 @@ body {
   background: linear-gradient(90deg, #ffcc33, #ff8800);
   border: none;
   color: #000;
-  padding: 10px 20px;
+  padding: 10px 22px;
   font-size: 1.1rem;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 12px rgba(255, 200, 0, 0.6);
+  box-shadow: 0 0 15px rgba(255, 200, 0, 0.6);
 }
 
 .login-btn:hover {
@@ -137,7 +139,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  opacity: 1;
   transition: opacity 0.8s ease-in-out;
   z-index: 1;
 }
@@ -153,6 +154,7 @@ body {
   box-shadow: 0 0 20px rgba(255, 200, 0, 0.6);
   width: 280px;
   text-align: center;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .menu-logo {
@@ -178,6 +180,7 @@ select {
   padding: 4px 8px;
 }
 
+/* === BUTTONS === */
 .play-btn {
   margin-top: 12px;
   background: linear-gradient(90deg, #ffcc33, #ff9900);
@@ -195,12 +198,68 @@ select {
   transform: scale(1.1);
 }
 
-/* === COINS BADGE === */
 .badge.coin {
   margin-top: 10px;
   font-size: 1rem;
   color: gold;
   text-shadow: 0 0 10px #ffcc33;
+}
+
+/* === GAME AREA === */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 10px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid gold;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: gold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.cell:hover {
+  background: rgba(255, 215, 0, 0.3);
+  transform: scale(1.08);
+}
+
+/* === CONTROL BUTTONS === */
+.controls {
+  margin-top: 20px;
+}
+
+.controls button {
+  margin: 0 10px;
+  padding: 8px 18px;
+  background: gold;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.controls button:hover {
+  background: orange;
+  transform: scale(1.1);
 }
 
 /* === INSTALL ORB === */
@@ -250,69 +309,20 @@ select {
   0%, 100% { box-shadow: 0 0 25px gold, 0 0 50px #ffbb33; }
   50% { box-shadow: 0 0 40px #fff799, 0 0 90px #ffd700; }
 }
-.play-btn {
-  transition: all 0.3s ease;
-  box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
-}
 
-.play-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 204, 0, 0.9), 0 0 25px rgba(255, 180, 0, 0.6);
-}
-/* === GAME AREA === */
-.game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
-  gap: 10px;
-}
-
-.cell {
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 215, 0, 0.1);
-  border: 2px solid gold;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2.5rem;
-  color: gold;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.cell:hover {
-  background: rgba(255, 215, 0, 0.3);
-  transform: scale(1.08);
-}
-
-.controls {
-  margin-top: 20px;
-}
-
-.controls button {
-  margin: 0 10px;
-  padding: 8px 18px;
-  background: gold;
-  color: black;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-  transition: 0.3s;
-}
-
-.controls button:hover {
-  background: orange;
-  transform: scale(1.1);
+/* === RESPONSIVE FIXES === */
+@media (max-width: 600px) {
+  .board {
+    grid-template-columns: repeat(3, 80px);
+    grid-template-rows: repeat(3, 80px);
+    gap: 8px;
+  }
+  .cell {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  .menu-box {
+    width: 85%;
+  }
 }
