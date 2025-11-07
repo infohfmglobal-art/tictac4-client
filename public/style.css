@@ -1,145 +1,103 @@
 body {
   margin: 0;
-  font-family: "Orbitron", sans-serif;
-  background: radial-gradient(circle at center, #000 50%, #0a0500 100%);
+  font-family: 'Orbitron', sans-serif;
+  background: radial-gradient(circle at center, #201400 0%, #000 90%);
   color: #fff;
   overflow: hidden;
+  text-align: center;
 }
 
-/* ========== INTRO SPLASH ========== */
+/* Splash */
 .intro-splash {
   position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at center, #1a1200 20%, #000 80%);
-  z-index: 9999;
-  opacity: 1;
-  transition: opacity 1.2s ease;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at center, #1a1000 0%, #000 80%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 1; transition: opacity 1s ease;
+  z-index: 10;
 }
-.intro-splash.hide {
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-.splash-logo {
-  width: 120px;
-  margin-bottom: 20px;
-  filter: drop-shadow(0 0 25px gold);
-}
-.splash-title {
-  font-size: 3rem;
-  color: gold;
-  text-shadow: 0 0 20px #ffbf00, 0 0 40px #ffaa00;
-}
-.splash-tagline {
-  color: #ddd;
-  font-size: 0.9rem;
-  margin-top: 10px;
-}
+.intro-splash.hide { opacity: 0; pointer-events: none; }
 
-/* ========== LOGIN SCREEN ========== */
-.login-screen {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at center, #000 40%, #1a0d00 100%);
-  opacity: 0;
-  transition: opacity 1s ease;
-  z-index: 99;
+.splash-logo { width: 120px; margin-bottom: 1.2rem; filter: drop-shadow(0 0 15px gold); }
+.splash-title { font-size: 3rem; color: #ffd966; text-shadow: 0 0 25px gold; margin: 0; }
+.splash-tagline { font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem; }
+
+/* Login */
+.login-gate {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100vh; transition: opacity 1s ease; background: radial-gradient(circle at center, #1a1000 0%, #000 90%);
 }
-.login-screen.show {
-  opacity: 1;
-}
-.hidden {
-  display: none !important;
-}
-.login-logo {
-  font-size: 3rem;
-  color: gold;
-  text-shadow: 0 0 20px #ffcc33, 0 0 35px #ffaa00;
-}
-.login-tagline {
-  font-size: 1rem;
-  margin-bottom: 25px;
-  color: #ffdd88;
-}
+.hidden { display: none !important; }
+
+.login-logo { font-size: 3rem; color: gold; text-shadow: 0 0 25px #ffda73; margin-bottom: 0.5rem; }
+.login-tagline { color: #f7e6b5; font-size: 1rem; margin-bottom: 1.5rem; }
+
 .login-btn {
-  background: gold;
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  margin: 8px;
-  cursor: pointer;
+  margin: 0.4rem;
+  padding: 0.8rem 2rem;
   font-size: 1rem;
-  transition: all 0.3s;
-}
-.login-btn:hover {
-  background: #fff6cc;
-}
-
-/* ========== HOME SCREEN (placeholder style) ========== */
-.home-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: radial-gradient(circle at center, #000 40%, #0d0600 100%);
-}
-.menu-box {
-  border: 1px solid gold;
-  border-radius: 15px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 25px gold;
-}
-.menu-logo {
-  text-align: center;
-  color: gold;
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-.menu-btn {
-  width: 100%;
-  background: gold;
   border: none;
-  padding: 10px;
   border-radius: 8px;
   cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(255,215,0,0.4);
+  transition: all 0.3s ease;
 }
-.login-gate {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.login-btn:hover {
+  background: gold;
+  color: #000;
+  box-shadow: 0 0 20px gold;
+}
+
+/* Home */
+.home-screen { padding-top: 2rem; }
+
+.menu-box {
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255,215,0,0.2);
+}
+.menu-logo { font-size: 2rem; color: gold; margin-bottom: 1rem; }
+.menu-row { margin: 0.5rem 0; }
+
+.play-btn {
+  background: gold;
+  color: black;
+  box-shadow: 0 0 20px gold;
+}
+
+/* Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-gap: 10px;
   justify-content: center;
-  background: radial-gradient(circle at center, #000 40%, #1a0d00 100%);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 1s ease;
-  z-index: 100;
+  margin-top: 2rem;
 }
-
-.login-gate.show {
-  opacity: 1;
-  visibility: visible;
+.cell {
+  width: 100px; height: 100px;
+  background: rgba(255,255,255,0.1);
+  font-size: 2.5rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
 }
+.cell:hover { background: rgba(255,255,255,0.2); }
 
+.msg { font-size: 1.5rem; margin-top: 1rem; color: gold; }
+
+/* Flash Overlay */
 .flash-overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, #fff7e6 0%, #ffdf80 50%, rgba(255,215,0,0) 100%);
-  opacity: 0;
-  pointer-events: none;
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at center, #fff5d9, #fff);
+  opacity: 0; pointer-events: none;
   transition: opacity 0.6s ease;
-  z-index: 99999;
+  z-index: 99;
 }
 .flash-show { opacity: 1; }
 .flash-hide { opacity: 0; }
