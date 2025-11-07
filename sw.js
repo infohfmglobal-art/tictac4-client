@@ -1,9 +1,37 @@
-self.addEventListener("install", () => {
-  self.skipWaiting();
+// === RuneXO Service Worker ===
+const CACHE_NAME = "runexo-v1";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./app.js",
+  "./manifest.json",
+  "./logo-dragon.png",
+  "./icon-192.png",
+  "./icon-512.png",
+  // audio
+  "./sound/bg.mp3",
+  "./sound/click.mp3",
+  "./sound/win.mp3",
+  "./sound/lose.mp3"
+];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
 });
 
-self.addEventListener("activate", () => {
-  clients.claim();
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
 });
 
-self.addEventListener("fetch", () => {});
+self.addEventListener("fetch", (e) => {
+  e.respondWith(
+    caches.match(e.request).then((res) => res || fetch(e.request))
+  );
+});
