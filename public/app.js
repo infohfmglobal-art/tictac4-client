@@ -433,3 +433,16 @@ window.addEventListener("DOMContentLoaded", () => {
     splash.classList.add("hide");
   }, 2600); // 2.6s fade duration
 });
+// === Fade out RuneXO intro splash ===
+document.addEventListener("readystatechange", () => {
+  if (document.readyState === "complete") {
+    const splash = document.getElementById("introSplash");
+    if (splash) {
+      setTimeout(() => {
+        splash.classList.add("hide");
+        // ensure it's completely removed after fade
+        setTimeout(() => splash.remove(), 1200);
+      }, 2600);
+    }
+  }
+});
