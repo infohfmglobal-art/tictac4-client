@@ -130,8 +130,7 @@ function updateBoard() {
     cell.style.textShadow = "";
     cell.textContent = "";
 
-    // empty cell → skip drawing
-    if (!val) continue;
+    if (!val) continue; // empty cell → skip drawing
 
     // === Render Skins (X/O/Emoji) ===
     if (game.skin.startsWith("Classic")) {
@@ -168,80 +167,64 @@ function updateBoard() {
   pX.classList.toggle("active", game.turn === "X");
   pO.classList.toggle("active", game.turn === "O");
 
- // === Winner / Draw messaging ===
-if (game.winner && game.winner !== "Draw") {
-  let winnerName = "";
+  // === Winner / Draw messaging (single, non-duplicated block) ===
+  if (game.winner && game.winner !== "Draw") {
+    let winnerName = "";
+    if (game.skin === "Classic X / O") {
+      winnerName = (game.winner === "X") ? "❌ X Wins!" : "🟣 O Wins!";
+    } else if (game.skin === "Fruit") {
+      winnerName = (game.winner === "X") ? "🍎 Apple Wins!" : "🍊 Orange Wins!";
+    } else if (game.skin === "Runes") {
+      winnerName = (game.winner === "X") ? "🐉 Dragon Wins!" : "🕊️ Phoenix Wins!";
+    } else {
+      winnerName = `${game.winner} Wins!`;
+    }
 
-  if (game.skin === "Classic X / O") {
-    winnerName = (game.winner === "X") ? "❌ X Wins!" : "🟣 O Wins!";
-  } else if (game.skin === "Fruit") {
-    winnerName = (game.winner === "X") ? "🍎 Apple Wins!" : "🍊 Orange Wins!";
-  } else if (game.skin === "Runes") {
-    winnerName = (game.winner === "X") ? "🐉 Dragon Wins!" : "🕊️ Phoenix Wins!";
-  } else {
-    winnerName = `${game.winner} Wins!`;
-  }
+    winnerTxt.textContent = winnerName;
+    msgEl.classList.remove("draw");
+    msgEl.classList.add("show-winner");
 
-  winnerTxt.textContent = winnerName;
-  msgEl.classList.remove("draw");
-  msgEl.classList.add("show-winner");
+    // highlight winning cells
+    for (const [r, c] of game.getWinningCells()) {
+      const idx = r * 3 + c;
+      boardEl.children[idx].classList.add("win-cell");
+    }
 
-  // highlight winning cells
-  for (const [r, c] of game.getWinningCells()) {
-    const idx = r * 3 + c;
-    boardEl.children[idx].classList.add("win-cell");
-  }
+    // effects + sound
+    triggerRuneBurst(game.winner);
+    confettiBurst();
+    screenShake();
+    haptic([40, 40, 80]);
+    if (game.sfxOn) {
+      winSfx.currentTime = 0;
+      winSfx.play().catch(() => {});
+    }
 
-  // === effects + sound ===
-  triggerRuneBurst(game.winner);
-  confettiBurst();
-  screenShake();
-  haptic([40, 40, 80]);
-  if (game.sfxOn) {
-    winSfx.currentTime = 0;
-    winSfx.play().catch(() => {});
-  }
+    // leaderboard (for Player vs CPU) when X wins
+    if (game.mode === "Player vs CPU" && game.winner === "X") {
+      const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
+      const moves = 9 - game.board.emptyCells().length;
+      addLeaderboard({
+        time: elapsed,
+        moves,
+        diff: game.difficulty.toLowerCase(),
+        skin: game.skin.toLowerCase(),
+      });
+    }
 
-  // === leaderboard (for Player vs CPU) ===
-  if (game.mode === "Player vs CPU" && game.winner === "X") {
-    const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
-    const moves = 9 - game.board.emptyCells().length;
-    addLeaderboard({
-      time: elapsed,
-      moves,
-      diff: game.difficulty.toLowerCase(),
-      skin: game.skin.toLowerCase(),
-    });
-  }
-
- // coin reward (only once per round)
-if (!rewardGranted) {
-  rewardGranted = true;
-  grantCoins(20);
-}
-
-} else if (game.winner === "Draw") {
-  winnerTxt.textContent = "Draw!";
-  msgEl.classList.add("show-winner", "draw");
-
-  if (!rewardGranted) {
-    rewardGranted = true;
-    grantCoins(5);
-  }
-} else {
-  msgEl.classList.remove("show-winner", "draw");
-  winnerTxt.textContent = "";
-}
-
-
-// 🔥 coin reward for a win (once per round)
-if (!rewardGranted) { rewardGranted = true; grantCoins(20); }
+    // coin reward (only once per round)
+    if (!rewardGranted) {
+      rewardGranted = true;
+      grantCoins(20);
+    }
 
   } else if (game.winner === "Draw") {
     winnerTxt.textContent = "Draw!";
-    msgEl.classList.add("show-winner", "draw");  // draw glow style
-    if (!rewardGranted) { rewardGranted = true; grantCoins(5); }
-
+    msgEl.classList.add("show-winner", "draw");
+    if (!rewardGranted) {
+      rewardGranted = true;
+      grantCoins(5);
+    }
   } else {
     msgEl.classList.remove("show-winner", "draw");
     winnerTxt.textContent = "";
@@ -388,7 +371,7 @@ async function updateCoins(change) {
   if (homeCoin) homeCoin.textContent = `💰 ${coins}`;
 }
 
-// buttons for login/guest
+// Buttons for login/guest
 document.getElementById("googleLoginBtn").addEventListener("click", loginGoogle);
 document.getElementById("guestLoginBtn").addEventListener("click", () => {
   alert("Guest mode: coins not saved!");
@@ -399,7 +382,7 @@ document.getElementById("guestLoginBtn").addEventListener("click", () => {
   if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
 });
 
-// (optional) map home-screen login buttons to same actions if you want them active on home
+// Map home-screen login buttons to same actions (optional)
 const glHome = document.getElementById("googleLoginBtnHome");
 const gsHome = document.getElementById("guestLoginBtnHome");
 if (glHome) glHome.addEventListener("click", () => document.getElementById("googleLoginBtn").click());
