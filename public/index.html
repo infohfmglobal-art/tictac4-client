@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>RuneXO</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./splash.css">
 
   <script>
-    // PWA install capture
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -20,58 +19,47 @@
 </head>
 
 <body class="theme-rune">
-  <!-- Splash -->
-  <div id="splash-screen">
-    <img src="./logo-dragon.png" class="splash-logo" alt="RuneXO">
-    <div class="splash-title">RUNEXO</div>
+
+  <!-- ✨ Intro Splash with Dragon Logo -->
+  <div id="introSplash" class="intro-splash">
+    <div class="intro-inner">
+      <img src="./logo-dragon.png" alt="RuneXO Logo" class="intro-logo">
+      <h1 class="intro-title"><span>Rune</span><span>XO</span></h1>
+      <p class="intro-studio">© FrameWeave Studio LLC</p>
+    </div>
+    <div class="intro-bg"></div>
   </div>
 
-  <!-- ===== LOGIN GATE ===== -->
-  <section id="loginGate" class="gate-screen">
-    <div class="gate-inner">
-      <img src="./logo-dragon.png" alt="RuneXO Logo" class="rune-logo-main">
-      <h1 class="logo-title hero-logo">
-        <span class="glow">Rune</span><span class="spark">XO</span>
-      </h1>
-      <p class="hero-tagline">Every Move Shapes Destiny.</p>
+  <!-- === Rest of your original working HTML === -->
 
-      <div class="gate-buttons">
-        <button id="guestLoginGate"  class="menu-btn bubble primary">🔥 Play as Guest</button>
-        <button id="googleLoginGate" class="menu-btn bubble">💫 Login with Google</button>
-      </div>
-    </div>
+  <header class="hero">
+    <h1 class="logo-title"><span class="glow">Rune</span><span class="spark">XO</span></h1>
+    <p class="tagline">Every Move Shapes Destiny.</p>
+  </header>
 
-    <div class="gate-bg"></div>
-    <div class="studio-footer">© FrameWeave Studio LLC</div>
-  </section>
-
-  <!-- Flash Overlay -->
-  <div id="flashOverlay" class="flash-overlay"></div>
-
-  <!-- ===== Game UI ===== -->
-  <div id="modeBar" class="topbar hidden">
+  <div id="modeBar" class="topbar">
     <span id="modeBadge" class="badge">Mode: PvC</span>
     <span id="diffBadge" class="badge">Difficulty: Easy</span>
     <span id="skinBadge" class="badge">Skin: Runes</span>
-    <span id="playerCoins" class="badge coin">💰 0</span>
   </div>
 
-  <div class="avatars hidden">
+  <div class="avatars">
     <div id="pX" class="avatar active">🐉 Dragon</div>
     <div id="pO" class="avatar">🕊️ Phoenix</div>
   </div>
 
-  <div id="score" class="score hidden">Score – X: 0 | O: 0 | D: 0</div>
-  <div id="msg" class="msg hidden"><span id="winnerText"></span></div>
+  <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
+  <div id="msg" class="msg"><span id="winnerText"></span></div>
 
-  <div id="loginBar" class="login-bar hidden">
+  <div id="loginBar" class="login-bar">
     <button id="googleLoginBtn" class="btn bubble">Login with Google</button>
     <button id="guestLoginBtn" class="btn bubble secondary">Play as Guest</button>
+    <span id="playerCoins" class="badge coin">💰 0</span>
   </div>
 
-  <div id="board" class="board hidden"></div>
+  <div id="board" class="board"></div>
 
-  <div class="btngrp hidden">
+  <div class="btngrp">
     <button id="homeBtn"  class="btn">Home</button>
     <button id="nextBtn"  class="btn">Next Round</button>
     <button id="resetBtn" class="btn red">Reset All</button>
@@ -80,50 +68,22 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- ===== HOME MENU ===== -->
-  <div id="homeScreen" class="home-screen hidden">
+  <div id="homeScreen" class="home-screen">
     <div class="home-inner">
-      <h2 class="menu-logo">
-        <span class="glow">Rune</span><span class="spark">XO</span>
-      </h2>
+      <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
 
       <div class="menu-box">
-        <div class="menu-row">
-          <label>Game Mode</label>
-          <select id="gameMode">
-            <option>Player vs CPU</option>
-            <option>Player vs Player</option>
-            <option disabled>Online Multiplayer • Coming Soon</option>
-          </select>
+        <div class="menu-row"><label>Game Mode</label>
+          <select id="gameMode"><option>Player vs CPU</option><option>Player vs Player</option></select>
         </div>
-
-        <div class="menu-row">
-          <label>Difficulty</label>
-          <select id="difficulty">
-            <option>Easy</option>
-            <option>Normal</option>
-            <option>Hard</option>
-          </select>
+        <div class="menu-row"><label>Difficulty</label>
+          <select id="difficulty"><option>Easy</option><option>Normal</option><option>Hard</option></select>
         </div>
-
-        <div class="menu-row">
-          <label>Skin</label>
-          <select id="skin">
-            <option>Runes</option>
-            <option>Classic X / O</option>
-            <option>Fruit</option>
-          </select>
+        <div class="menu-row"><label>Skin</label>
+          <select id="skin"><option>Runes</option><option>Classic X / O</option><option>Fruit</option></select>
         </div>
-
-        <div class="menu-row">
-          <label>Theme</label>
-          <select id="themeSelect">
-            <option>Rune</option>
-            <option>Gold</option>
-            <option>Blue</option>
-            <option>Neon</option>
-            <option>Classic</option>
-          </select>
+        <div class="menu-row"><label>Theme</label>
+          <select id="themeSelect"><option>Rune</option><option>Gold</option><option>Blue</option><option>Neon</option></select>
         </div>
 
         <button id="startBtn" class="menu-btn play-btn">Play</button>
@@ -147,7 +107,6 @@
   <canvas id="runeParticles"></canvas>
 
   <script type="module" src="./app.js"></script>
-  <script type="module" src="./splash.js"></script>
   <script type="module" src="./runes.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
