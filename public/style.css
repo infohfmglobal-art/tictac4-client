@@ -250,3 +250,12 @@ select {
   0%, 100% { box-shadow: 0 0 25px gold, 0 0 50px #ffbb33; }
   50% { box-shadow: 0 0 40px #fff799, 0 0 90px #ffd700; }
 }
+.play-btn {
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+}
+
+.play-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.9), 0 0 25px rgba(255, 180, 0, 0.6);
+}
