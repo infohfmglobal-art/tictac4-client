@@ -111,3 +111,37 @@ select{ background:#111; color:var(--gold); border:1px solid #ffcc33; border-rad
 
 /* Ensure canvas sits above UI but below alerts */
 #fxCanvas{ position:fixed; inset:0; pointer-events:none; z-index:50; }
+/* === PLAYER INFO + LOGOUT === */
+.player-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 10px 15px;
+  text-align: right;
+  font-family: 'Orbitron', sans-serif;
+  color: #ffd700;
+  box-shadow: 0 0 12px #ffcc33;
+}
+
+.player-info span {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+#logoutBtn {
+  background: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+#logoutBtn:hover {
+  background: #ff6347;
+}
