@@ -92,6 +92,46 @@ function startGame() {
     homeScreen.classList.add("hidden");
     if (gameArea) gameArea.classList.remove("hidden");
   }, 600);
+// === SIMPLE GAME BOARD LOGIC ===
+document.addEventListener("DOMContentLoaded", () => {
+  const board = document.getElementById("gameBoard");
+  const cells = board ? board.querySelectorAll(".cell") : [];
+  let currentPlayer = "X";
+
+  cells.forEach(cell => {
+    cell.addEventListener("click", () => {
+      if (cell.textContent !== "") return;
+      cell.textContent = currentPlayer;
+      cell.style.textShadow = "0 0 10px gold";
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+    });
+  });
+
+  const resetBtn = document.getElementById("resetBtn");
+  const nextRoundBtn = document.getElementById("nextRoundBtn");
+  const homeBtn = document.getElementById("homeBtn");
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      cells.forEach(c => (c.textContent = ""));
+      currentPlayer = "X";
+    });
+  }
+
+  if (nextRoundBtn) {
+    nextRoundBtn.addEventListener("click", () => {
+      cells.forEach(c => (c.textContent = ""));
+      currentPlayer = "X";
+    });
+  }
+
+  if (homeBtn) {
+    homeBtn.addEventListener("click", () => {
+      document.getElementById("gameArea").classList.add("hidden");
+      document.getElementById("homeScreen").classList.remove("hidden");
+    });
+  }
+});
 
   // sound feedback
   const clickSound = new Audio("./sound/click.mp3");
