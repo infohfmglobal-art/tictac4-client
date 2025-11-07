@@ -105,3 +105,19 @@ select { background:#111; color:gold; border:1px solid #ffcc33; border-radius:6p
   .cell { width:86px; height:86px; font-size:2.1rem; }
   .menu-box { width:85%; }
 }
+#musicToggle, #sfxToggle {
+  margin: 0 6px;
+  background: #111;
+  border: 1px solid gold;
+  color: gold;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#musicToggle:hover, #sfxToggle:hover {
+  background: gold;
+  color: black;
+  transform: scale(1.05);
+}
