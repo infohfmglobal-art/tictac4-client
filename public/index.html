@@ -9,10 +9,17 @@
   <link rel="icon" href="./icon-512.png" />
   <link rel="stylesheet" href="./style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
-</head>
-<body class="theme-rune">
 
-  <!-- Intro Splash -->
+  <script>
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
+</head>
+
+<body class="theme-rune">
+  <!-- Splash -->
   <div id="introSplash" class="intro-splash">
     <img src="./logo-dragon.png" alt="FrameWeave Studio" class="splash-logo" />
     <h1 class="splash-title">RuneXO</h1>
@@ -23,53 +30,64 @@
   <div id="loginGate" class="login-gate hidden">
     <h1 class="login-logo">RuneXO</h1>
     <p class="login-tagline">Every Move Shapes Destiny.</p>
-    <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
-    <button id="googleLoginGate" class="login-btn">🔑 Login with Google</button>
+    <div class="gate-buttons">
+      <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
+      <button id="googleLoginGate" class="login-btn secondary">🔑 Login with Google</button>
+    </div>
+    <small class="hint">(Google login temporarily disabled)</small>
   </div>
 
-  <!-- Flash overlay -->
   <div id="flashOverlay" class="flash-overlay flash-hide"></div>
 
-  <!-- Home / Game -->
+  <!-- Home -->
   <div id="homeScreen" class="home-screen hidden">
     <div class="menu-box">
       <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
 
-      <div class="menu-row"><label>Game Mode</label>
-        <select id="gameMode">
-          <option>Player vs CPU</option>
-          <option>Player vs Player</option>
-        </select>
-      </div>
-      <div class="menu-row"><label>Difficulty</label>
-        <select id="difficulty">
-          <option>Easy</option>
-          <option>Normal</option>
-          <option>Hard</option>
-        </select>
-      </div>
-      <div class="menu-row"><label>Skin</label>
-        <select id="skin">
-          <option>Runes</option>
-          <option>Classic X / O</option>
-          <option>Fruit</option>
-        </select>
-      </div>
-      <div class="menu-row"><label>Theme</label>
-        <select id="themeSelect">
-          <option>Rune</option>
-          <option>Gold</option>
-          <option>Blue</option>
-          <option>Neon</option>
-        </select>
-      </div>
+      <div class="menu-row"><label>Game Mode</label><select id="gameMode">
+        <option>Player vs CPU</option><option>Player vs Player</option></select></div>
+      <div class="menu-row"><label>Difficulty</label><select id="difficulty">
+        <option>Easy</option><option>Normal</option><option>Hard</option></select></div>
+      <div class="menu-row"><label>Skin</label><select id="skin">
+        <option>Runes</option><option>Classic X / O</option><option>Fruit</option></select></div>
+      <div class="menu-row"><label>Theme</label><select id="themeSelect">
+        <option>Rune</option><option>Gold</option><option>Blue</option><option>Neon</option></select></div>
 
       <button id="startBtn" class="menu-btn play-btn">Play</button>
-      <span id="playerCoins" class="badge coin">💰 0</span>
+      <div class="menu-coins"><span id="playerCoinsHome" class="badge coin">💰 0</span></div>
     </div>
+  </div>
 
-    <div id="board" class="board hidden"></div>
-    <p id="msg" class="msg hidden"><span id="winnerText"></span></p>
+  <!-- Game -->
+  <div id="modeBar" class="topbar hidden">
+    <span id="modeBadge" class="badge">Mode: PvC</span>
+    <span id="diffBadge" class="badge">Difficulty: Easy</span>
+    <span id="skinBadge" class="badge">Skin: Runes</span>
+  </div>
+
+  <div class="avatars hidden">
+    <div id="pX" class="avatar active">🐉 Dragon</div>
+    <div id="pO" class="avatar">🕊️ Phoenix</div>
+  </div>
+
+  <div id="score" class="score hidden">Score – X: 0 | O: 0 | D: 0</div>
+  <div id="msg" class="msg hidden"><span id="winnerText"></span></div>
+
+  <div id="loginBar" class="login-bar hidden">
+    <button id="googleLoginBtn" class="btn bubble secondary">Login with Google</button>
+    <button id="guestLoginBtn" class="btn bubble">Play as Guest</button>
+    <span id="playerCoins" class="badge coin">💰 0</span>
+  </div>
+
+  <div id="board" class="board hidden"></div>
+
+  <div class="btngrp hidden">
+    <button id="homeBtn"  class="btn">Home</button>
+    <button id="nextBtn"  class="btn">Next Round</button>
+    <button id="resetBtn" class="btn red">Reset All</button>
+    <button id="sfxBtn"   class="btn small">SFX: On</button>
+    <button id="musicBtn" class="btn small">Music: Off</button>
+    <button id="installBtn" class="btn small">Install App</button>
   </div>
 
   <script type="module" src="./app.js"></script>
