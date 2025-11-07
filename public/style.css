@@ -259,3 +259,60 @@ select {
   transform: scale(1.05);
   box-shadow: 0 0 15px rgba(255, 204, 0, 0.9), 0 0 25px rgba(255, 180, 0, 0.6);
 }
+/* === GAME AREA === */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 10px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid gold;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  color: gold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.cell:hover {
+  background: rgba(255, 215, 0, 0.3);
+  transform: scale(1.08);
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+.controls button {
+  margin: 0 10px;
+  padding: 8px 18px;
+  background: gold;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  transition: 0.3s;
+}
+
+.controls button:hover {
+  background: orange;
+  transform: scale(1.1);
+}
