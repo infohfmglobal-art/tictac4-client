@@ -371,9 +371,6 @@ homeBtn.onclick = () => {
   homeScreen.classList.remove("hidden");
 };
 
-const musicBtn = document.getElementById("musicBtn");
-const sfxBtn   = document.getElementById("sfxBtn");
-
 musicBtn.onclick = () => {
   musicOn = !musicOn;
   musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
