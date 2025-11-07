@@ -1,12 +1,22 @@
 {
   "name": "RuneXO",
   "short_name": "RuneXO",
+  "description": "Every Move Shapes Destiny — the magical TicTacToe by FrameWeave Studio LLC.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#090806",
-  "theme_color": "#ffdb7a",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#ffd700",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
