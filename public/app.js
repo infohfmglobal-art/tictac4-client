@@ -420,3 +420,8 @@ if (homeGuest)  homeGuest .addEventListener("click", () => {
   if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
   if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
 });
+// Intro splash fade out
+window.addEventListener("load", () => {
+  const splash = document.getElementById("introSplash");
+  if (splash) setTimeout(() => splash.classList.add("hide"), 2600);
+});
