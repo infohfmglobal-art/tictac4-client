@@ -14,7 +14,9 @@
 .intro-splash.hide {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
+
 .intro-bg {
   position: absolute;
   inset: -20%;
