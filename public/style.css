@@ -123,4 +123,22 @@ select{
 .rune-alert.hidden{display:none}
 .rune-alert-box{
   width:min(420px, 92vw);
-  background:rgba(26,18,10,.96); border:1px solid #6b4a12; border-radius:18
+  background:rgba(26,18,10,.96); border:1px solid #6b4a12; border-radius:18px;
+  box-shadow:var(--glow); padding:16px;
+  text-align:center;
+}
+.rune-alert-box h3{margin:.2rem 0 .4rem; color:#ffe06a; text-shadow:var(--glow)}
+
+/* ============== Leaderboard ============== */
+.leader-modal{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.5)}
+.leader-modal.hidden{display:none}
+.leader-box{
+  width:min(520px, 94vw);
+  background:#1b140a; border:1px solid #6b4a12; border-radius:18px; padding:12px; box-shadow:var(--glow)
+}
+.leader-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+.leader-list{display:grid; gap:6px; max-height:50vh; overflow:auto}
+.leader-item{
+  display:flex; justify-content:space-between; align-items:center; padding:8px 10px;
+  border:1px solid #3a2a11; border-radius:10px; background:#120c06;
+}
