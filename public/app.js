@@ -239,7 +239,8 @@ const SKINS = {
   "Runes":         { P1: "🐉", P2: "🪽" },
   "Classic X / O": { P1: "X",  P2: "O"  },
   "Fruit":         { P1: "🍎", P2: "🍌" },
-  "Emoji":         { P1: "😎", P2: "🤖" }
+  "Emoji":         { P1: "😎", P2: "🤖" },
+  "Phoenix":       { P1: "🔥", P2: "🕊️" } // NEW skin: fire + white bird
 };
 
 function initGame(){
