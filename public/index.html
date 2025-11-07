@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>RuneXO</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./splash.css">
@@ -20,30 +20,34 @@
 </head>
 
 <body class="theme-rune">
-  <!-- Splash -->
+  <!-- Splash (unchanged) -->
   <div id="splash-screen">
     <img src="./logo-dragon.png" class="splash-logo" alt="RuneXO">
     <div class="splash-title">RUNEXO</div>
   </div>
 
-  <!-- Header -->
-  <header class="hero">
-    <h1 class="logo-title">
-      <span class="glow">Rune</span><span class="spark">XO</span>
-    </h1>
-    <p class="tagline">Battle of Dragon 🐉 vs Phoenix 🕊️ — Tap & Win!</p>
-    <div class="rune-orbs">
-      <span class="orb o1">✨</span>
-      <span class="orb o2">💫</span>
-      <span class="orb o3">🔮</span>
-      <span class="orb o4">✨</span>
-      <span class="orb o5">💫</span>
-      <span class="orb o6">🔮</span>
-    </div>
-  </header>
+  <!-- ===== LOGIN GATE (Fiery Neon) ===== -->
+  <section id="loginGate" class="gate-screen">
+    <div class="gate-inner">
+      <h1 class="logo-title hero-logo">
+        <span class="glow">Rune</span><span class="spark">XO</span>
+      </h1>
+      <p class="hero-tagline">Every Move Shapes Destiny.</p>
 
-  <!-- Top status bar -->
-  <div id="modeBar" class="topbar">
+      <div class="gate-buttons">
+        <button id="guestLoginGate"  class="menu-btn bubble primary">🔥 Play as Guest</button>
+        <button id="googleLoginGate" class="menu-btn bubble">💫 Login with Google</button>
+      </div>
+    </div>
+    <!-- animated fiery gradient backdrop -->
+    <div class="gate-bg"></div>
+  </section>
+
+  <!-- White/Gold flash transition layer -->
+  <div id="flashOverlay" class="flash-overlay"></div>
+
+  <!-- ===== Top status bar (appears after login) ===== -->
+  <div id="modeBar" class="topbar hidden">
     <span id="modeBadge" class="badge">Mode: PvC</span>
     <span id="diffBadge" class="badge">Difficulty: Easy</span>
     <span id="skinBadge" class="badge">Skin: Runes</span>
@@ -51,26 +55,26 @@
   </div>
 
   <!-- Avatars -->
-  <div class="avatars">
+  <div class="avatars hidden">
     <div id="pX" class="avatar active">🐉 Dragon</div>
     <div id="pO" class="avatar">🕊️ Phoenix</div>
   </div>
 
   <!-- Score + message -->
-  <div id="score" class="score">Score – X: 0 | O: 0 | D: 0</div>
-  <div id="msg" class="msg"><span id="winnerText"></span></div>
+  <div id="score" class="score hidden">Score – X: 0 | O: 0 | D: 0</div>
+  <div id="msg" class="msg hidden"><span id="winnerText"></span></div>
 
-  <!-- Login bar (for in-game quick login) -->
-  <div id="loginBar" class="login-bar">
+  <!-- Quick login bar inside game (keep, appears after login) -->
+  <div id="loginBar" class="login-bar hidden">
     <button id="googleLoginBtn" class="btn bubble">Login with Google</button>
     <button id="guestLoginBtn" class="btn bubble secondary">Play as Guest</button>
   </div>
 
   <!-- Board -->
-  <div id="board" class="board"></div>
+  <div id="board" class="board hidden"></div>
 
   <!-- Buttons -->
-  <div class="btngrp">
+  <div class="btngrp hidden">
     <button id="homeBtn"  class="btn">Home</button>
     <button id="nextBtn"  class="btn">Next Round</button>
     <button id="resetBtn" class="btn red">Reset All</button>
@@ -79,8 +83,8 @@
     <button id="installBtn" class="btn small">Install App</button>
   </div>
 
-  <!-- HOME SCREEN -->
-  <div id="homeScreen" class="home-screen">
+  <!-- ===== HOME SCREEN (after login) ===== -->
+  <div id="homeScreen" class="home-screen hidden">
     <div class="home-inner">
       <h2 class="menu-logo">
         <span class="glow">Rune</span><span class="spark">XO</span>
@@ -92,6 +96,7 @@
           <select id="gameMode">
             <option>Player vs CPU</option>
             <option>Player vs Player</option>
+            <option disabled>Online Multiplayer • Coming Soon</option>
           </select>
         </div>
 
@@ -142,7 +147,7 @@
     </div>
   </div>
 
-  <!-- Canvas for effects -->
+  <!-- FX canvas (optional) -->
   <canvas id="runeParticles"></canvas>
 
   <script type="module" src="./app.js"></script>
