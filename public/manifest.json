@@ -1,14 +1,13 @@
 {
-  "name": "RuneXO - Every Move Shapes Destiny",
+  "name": "RuneXO - Battle of Wits",
   "short_name": "RuneXO",
-  "description": "Every Move Shapes Destiny — the magical Tic Tac Toe game by FrameWeave Studio LLC.",
+  "description": "A mystical Tic-Tac-Toe duel — play as Dragon 🐉 or Phoenix 🕊️. Every move shapes destiny.",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait-primary",
   "background_color": "#000000",
   "theme_color": "#ffd700",
+  "orientation": "portrait-primary",
   "scope": "./",
-  "id": "runexo.app",
   "icons": [
     {
       "src": "./icon-192.png",
