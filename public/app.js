@@ -59,6 +59,7 @@ googleBtn.addEventListener("click", () => {
   alert("Google Login coming soon ✨ (Phase 2)");
   showHome();
 });
+
 // === INSTALL ORB HANDLER ===
 installOrb.addEventListener("click", async () => {
   const prompt = window.deferredPrompt;
@@ -73,7 +74,6 @@ installOrb.addEventListener("click", async () => {
 
 // === HOME → GAME START HANDLER ===
 const startBtn = document.getElementById("startBtn");
-
 if (startBtn) {
   startBtn.addEventListener("click", () => {
     console.log("▶️ Play button clicked!");
@@ -83,36 +83,18 @@ if (startBtn) {
 
 function startGame() {
   const homeScreen = document.getElementById("homeScreen");
-  const gameArea = document.getElementById("gameArea"); // adjust if your game div ID is different
+  const gameArea = document.getElementById("gameArea");
 
-  // Fade home screen out smoothly
+  // fade home out
   homeScreen.classList.add("fade-out");
+
   setTimeout(() => {
     homeScreen.classList.add("hidden");
     if (gameArea) gameArea.classList.remove("hidden");
   }, 600);
 
-  // Sound feedback
+  // sound feedback
   const clickSound = new Audio("./sound/click.mp3");
   clickSound.volume = 0.7;
   clickSound.play().catch(() => {});
-}
-
-// === HOME → GAME START HANDLER ===
-const startBtn = document.getElementById("startBtn");
-if (startBtn) {
-  startBtn.addEventListener("click", () => startGame());
-}
-
-function startGame() {
-  const homeScreen = document.getElementById("homeScreen");
-  const gameArea   = document.getElementById("gameArea");
-
-  homeScreen.classList.add("fade-out");
-  setTimeout(() => {
-    homeScreen.classList.add("hidden");
-    gameArea.classList.remove("hidden");
-  }, 600);
-
-  new Audio("./sound/click.mp3").play().catch(() => {});
 }
