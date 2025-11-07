@@ -1,10 +1,11 @@
 /* ----------------------------------------
-   RuneXO – Phase 1.1
+   RuneXO – Phase 1.1 (Stable Build)
    Adds:
    - Confetti burst (canvas overlay)
    - Coin +X floating animation
    - Local coins (guest mode) + badge update
    - CPU Easy/Normal/Hard (minimax already)
+   - Logout (back to Login)
 -----------------------------------------*/
 
 // ---------- AUDIO ----------
@@ -39,11 +40,10 @@ function setCoins(v){
 }
 function addCoins(delta){
   setCoins(coins + delta);
-   
-  }
+}
 setCoins(coins); // paint badge if present
 
-// ---------- CONFETTI CANVAS + COIN FLOAT FX ----------
+// ---------- CONFETTI CANVAS ----------
 let fxCanvas, fxCtx, fxW, fxH, particles = [];
 
 function setupFxCanvas(){
@@ -60,6 +60,7 @@ function setupFxCanvas(){
   window.addEventListener("resize", resize);
   requestAnimationFrame(tickParticles);
 }
+
 function spawnConfetti(x, y, count=120){
   for(let i=0;i<count;i++){
     particles.push({
@@ -70,10 +71,11 @@ function spawnConfetti(x, y, count=120){
       life: 60 + Math.random()*30,
       size: 4 + Math.random()*4,
       opacity: 1,
-      hue: Math.floor(30 + Math.random()*60) // warm palette
+      hue: Math.floor(30 + Math.random()*60)
     });
   }
 }
+
 function tickParticles(){
   if(!fxCtx){ requestAnimationFrame(tickParticles); return; }
   fxCtx.clearRect(0,0,fxW,fxH);
@@ -91,28 +93,23 @@ function tickParticles(){
   particles = particles.filter(p=> p.life>0 && p.y<fxH+40);
   requestAnimationFrame(tickParticles);
 }
-function centerXY(){
-  return { x: window.innerWidth/2, y: window.innerHeight/2 };
-}
-function elementCenter(el){
-  const r = el.getBoundingClientRect();
-  return { x: r.left + r.width/2, y: r.top + r.height/2 };
-}
+
 function confettiBurstAt(elOrXY){
   let x, y;
-  if(!elOrXY){ ({x,y} = centerXY()); }
+  if(!elOrXY){ ({x,y} = {x:window.innerWidth/2, y:window.innerHeight/2}); }
   else if(elOrXY.x!=null){ x = elOrXY.x; y = elOrXY.y; }
-  else { ({x,y} = elementCenter(elOrXY)); }
+  else {
+    const r = elOrXY.getBoundingClientRect();
+    x = r.left + r.width/2; y = r.top + r.height/2;
+  }
   spawnConfetti(x, y, 140);
 }
 
 // ---------- SPLASH → LOGIN ----------
 window.addEventListener("DOMContentLoaded", () => {
   setupFxCanvas();
-
   const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
-
   setTimeout(() => {
     splash.classList.add("hide");
     setTimeout(() => loginGate.classList.remove("hidden"), 900);
@@ -138,7 +135,6 @@ function showHome(){
   goldenFlashThen(() => {
     document.getElementById("loginGate").classList.add("hidden");
     homeScreen.classList.remove("hidden");
-
     setTimeout(() => {
       installOrb.classList.remove("hidden");
       installOrb.classList.add("show");
@@ -148,7 +144,7 @@ function showHome(){
 }
 
 guestBtn.addEventListener("click", () => {
-  if (coins === 0) setCoins(200); // welcome bonus once
+  if (coins === 0) setCoins(200);
   alert("Guest mode activated! 🪄 Coins are saved locally.");
   showHome();
 });
@@ -190,10 +186,10 @@ const resetBtn = document.getElementById("resetBtn");
 const homeBtn = document.getElementById("homeBtn");
 const musicBtn = document.getElementById("musicBtn");
 const sfxBtn = document.getElementById("sfxBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
 let board, current, running, againstCPU;
 
-// Skins
 const SKINS = {
   "Runes": { P1: "🐉", P2: "🪽" },
   "Classic X / O": { P1: "X", P2: "O" },
@@ -202,9 +198,7 @@ const SKINS = {
 };
 
 function initGame(){
-  // Theme swap hook (future palette switch)
   document.body.className = `theme-${themeSelect.value.toLowerCase()}`;
-
   board = Array(9).fill(null);
   current = "P1";
   running = true;
@@ -216,7 +210,6 @@ function initGame(){
     c.disabled = false;
   });
 
-  // attach once idempotently
   cells.forEach((cell) => { cell.onclick = () => onCell(cell); });
 }
 
@@ -234,7 +227,6 @@ function onCell(cell){
   if(result) return endRound(result, cell);
 
   current = (current === "P1") ? "P2" : "P1";
-
   if(running && againstCPU && current === "P2"){
     setTimeout(cpuMove, 350);
   }
@@ -293,31 +285,28 @@ function checkResult(){
   if(board.every(Boolean)) return { draw:true };
   return null;
 }
+
 function endRound(res, lastCell){
   running = false;
   cells.forEach(c=>c.onclick = null);
 
   if(res.winner){
-    // highlight win line
     for(const line of LINES){
       const [a,b,c] = line;
       if(board[a] && board[a]===board[b] && board[a]===board[c]){
         [a,b,c].forEach(i=> cells[i].classList.add("win"));
       }
     }
-    // confetti at winning cell (fallback center)
     confettiBurstAt(lastCell || undefined);
-
     if(res.winner === "P1"){
       playSfx(audio.win);
-      addCoins(20); // reward
+      addCoins(20);
       alert("You win! +20 coins 🎉");
     } else {
       playSfx(audio.lose);
       alert("CPU wins!");
     }
   } else {
-    // draw: small confetti in center + small coin
     confettiBurstAt();
     addCoins(5);
     alert("Draw! +5 coins");
@@ -357,7 +346,6 @@ homeBtn.onclick = () => {
   gameArea.classList.add("hidden");
   homeScreen.classList.remove("hidden");
 };
-
 musicBtn.onclick = () => {
   musicOn = !musicOn;
   musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
@@ -366,4 +354,12 @@ musicBtn.onclick = () => {
 sfxBtn.onclick = () => {
   sfxOn = !sfxOn;
   sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
+};
+
+// ---------- LOGOUT ----------
+logoutBtn.onclick = () => {
+  stopBg();
+  localStorage.removeItem("guestPlayer");
+  document.getElementById("homeScreen").classList.add("hidden");
+  document.getElementById("loginGate").classList.remove("hidden");
 };
