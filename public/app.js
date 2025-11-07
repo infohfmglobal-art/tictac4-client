@@ -114,3 +114,21 @@ function startGame() {
   clickSound.volume = 0.7;
   clickSound.play().catch(() => {});
 }
+// === HOME → GAME START HANDLER ===
+const startBtn = document.getElementById("startBtn");
+if (startBtn) {
+  startBtn.addEventListener("click", () => startGame());
+}
+
+function startGame() {
+  const homeScreen = document.getElementById("homeScreen");
+  const gameArea   = document.getElementById("gameArea");
+
+  homeScreen.classList.add("fade-out");
+  setTimeout(() => {
+    homeScreen.classList.add("hidden");
+    gameArea.classList.remove("hidden");
+  }, 600);
+
+  new Audio("./sound/click.mp3").play().catch(() => {});
+}
