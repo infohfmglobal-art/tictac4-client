@@ -1,32 +1,54 @@
-// runes.js
-export function triggerRuneBurst(winner="X"){
-  // lightweight glow; safe no-op if not needed
-  document.body.classList.add("burst");
-  setTimeout(()=>document.body.classList.remove("burst"), 400);
-}
-export function confettiBurst(){
-  // simple emoji confetti
-  const n = 24;
-  for(let i=0;i<n;i++){
-    const s=document.createElement("div");
-    s.textContent = ["✨","🎉","💫","⭐"][i%4];
-    s.style.position="fixed";
-    s.style.left = (Math.random()*100)+"vw";
-    s.style.top  = "-40px";
-    s.style.fontSize = (18+Math.random()*12)+"px";
-    s.style.transition="transform 1s linear, opacity 1s linear";
-    document.body.appendChild(s);
+// Lightweight FX helpers (no external libs)
+
+export function triggerRuneBurst(winner){
+  // Make 12 glowing particles that fade
+  for (let i=0;i<12;i++){
+    const p=document.createElement('div');
+    p.textContent = winner==='X' ? '✨' : '💫';
+    p.style.position='fixed';
+    p.style.left = (window.innerWidth/2 + (Math.random()*120-60))+'px';
+    p.style.top  = (window.innerHeight/2 + (Math.random()*80-40))+'px';
+    p.style.pointerEvents='none';
+    p.style.opacity='1';
+    p.style.transition='transform .8s ease, opacity .8s ease';
+    document.body.appendChild(p);
     requestAnimationFrame(()=>{
-      s.style.transform = `translateY(${window.innerHeight+80}px) rotate(${(Math.random()*360)|0}deg)`;
-      s.style.opacity="0";
+      p.style.transform = `translate(${(Math.random()*300-150)}px, ${(Math.random()*240-120)}px) scale(1.6)`;
+      p.style.opacity='0';
     });
-    setTimeout(()=>s.remove(), 1100);
+    setTimeout(()=>p.remove(),850);
   }
 }
+
+export function confettiBurst(){
+  for (let i=0;i<18;i++){
+    const c=document.createElement('div');
+    c.style.position='fixed';
+    c.style.width='6px'; c.style.height='10px';
+    c.style.left = (window.innerWidth/2)+'px';
+    c.style.top  = (window.innerHeight/2)+'px';
+    c.style.background = `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`;
+    c.style.transform = 'translate(-50%, -50%)';
+    c.style.pointerEvents='none';
+    c.style.opacity='1';
+    c.style.transition='transform .9s cubic-bezier(.1,.8,.2,1), opacity .9s';
+    document.body.appendChild(c);
+    const dx=(Math.random()*500-250), dy=(Math.random()*400-180);
+    requestAnimationFrame(()=>{
+      c.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random()*360}deg)`;
+      c.style.opacity='0';
+    });
+    setTimeout(()=>c.remove(),950);
+  }
+}
+
 export function screenShake(){
-  const b=document.body;
-  b.style.transition="transform 0.12s";
-  b.style.transform="translateX(6px)";
-  setTimeout(()=>{ b.style.transform="translateX(-6px)"; }, 120);
-  setTimeout(()=>{ b.style.transform="none"; }, 240);
+  const dur=300;
+  const el=document.body;
+  el.style.transition='transform .05s';
+  let n=0;
+  const id=setInterval(()=>{
+    el.style.transform=`translate(${(Math.random()*6-3)}px, ${(Math.random()*6-3)}px)`;
+    if (n++>dur/50){ clearInterval(id); el.style.transform=''; }
+  },50);
 }
