@@ -123,3 +123,38 @@
   15%  { opacity: 1; }
   100% { transform: translateY(-48px) scale(1.2); opacity: 0; }
 }
+/* === RuneXO Login Gate Fix === */
+.rune-logo-main {
+  width: 130px;
+  height: auto;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 10px rgba(255,220,120,.8)) drop-shadow(0 0 20px rgba(255,150,0,.6));
+  animation: logoFloat 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes logoFloat {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+/* === FrameWeave Studio footer === */
+.studio-footer {
+  position: absolute;
+  bottom: 22px;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: #ffd87c;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(255,230,160,.5);
+  opacity: 0.8;
+  animation: fadeIn 2s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 0.8; transform: translateY(0); }
+}
+
+/* === Fix for Game UI visibility === */
+.hidden { display: none !important; }
