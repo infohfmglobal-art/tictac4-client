@@ -98,22 +98,6 @@ function startGame() {
   clickSound.play().catch(() => {});
 }
 
-// === GAME LOGIC START ===
-function startGame() {
-  const homeScreen = document.getElementById("homeScreen");
-  const gameArea = document.getElementById("gameArea"); // or your actual game div ID
-
-  // hide home screen
-  homeScreen.classList.add("hidden");
-
-  // show the game board
-  if (gameArea) gameArea.classList.remove("hidden");
-
-  // Optional: play click sound
-  const clickSound = new Audio("./sound/click.mp3");
-  clickSound.volume = 0.7;
-  clickSound.play().catch(() => {});
-}
 // === HOME → GAME START HANDLER ===
 const startBtn = document.getElementById("startBtn");
 if (startBtn) {
