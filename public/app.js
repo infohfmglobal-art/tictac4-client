@@ -425,3 +425,11 @@ window.addEventListener("load", () => {
   const splash = document.getElementById("introSplash");
   if (splash) setTimeout(() => splash.classList.add("hide"), 2600);
 });
+// === Intro splash fade out ===
+window.addEventListener("DOMContentLoaded", () => {
+  const splash = document.getElementById("introSplash");
+  if (!splash) return;
+  setTimeout(() => {
+    splash.classList.add("hide");
+  }, 2600); // 2.6s fade duration
+});
