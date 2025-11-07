@@ -1,11 +1,11 @@
 /* ----------------------------------------
-   RuneXO – Phase 1.1 (Stable Build)
-   Adds:
-   - Confetti burst (canvas overlay)
-   - Coin +X floating animation
-   - Local coins (guest mode) + badge update
-   - CPU Easy/Normal/Hard (minimax already)
-   - Logout (back to Login)
+   RuneXO – Phase 1.2 (Final Pack)
+   - 4 Skins uniform
+   - Music OFF by default, SFX ON by default
+   - Short intro, splash 3s
+   - Confetti + coin rewards
+   - Guest name prompt
+   - Leaderboard modal (Top 5 by coins)
 -----------------------------------------*/
 
 // ---------- AUDIO ----------
@@ -18,19 +18,21 @@ const audio = {
 audio.bg.loop = true;
 [audio.click, audio.win, audio.lose].forEach(a => (a.preload = "auto"));
 
-let musicOn = true;
-let sfxOn = true;
+// Player preferences
+let musicOn = false;  // OFF by default
+let sfxOn = true;     // ON by default
 
 function playSfx(a){ if(sfxOn){ a.currentTime = 0; a.play().catch(()=>{}); } }
 function ensureBgPlaying(){
   if(musicOn && audio.bg.paused){
-    audio.bg.volume = 0.45;
+    audio.bg.volume = 0.42;
     audio.bg.play().catch(()=>{});
   }
 }
 function stopBg(){ audio.bg.pause(); }
 
-// ---------- COINS (LOCAL) ----------
+// ---------- COINS + PLAYER ----------
+let playerName = localStorage.getItem("rxo_player") || "Guest Player";
 let coins = Number(localStorage.getItem("rxo_coins") || "0");
 function setCoins(v){
   coins = Math.max(0, Number(v||0));
@@ -38,28 +40,21 @@ function setCoins(v){
   const badge = document.getElementById("playerCoins");
   if (badge) badge.textContent = `💰 ${coins}`;
 }
-function addCoins(delta){
-  setCoins(coins + delta);
+function addCoins(delta){ setCoins(coins + delta); }
+setCoins(coins);
+updatePlayerInfo();
+
+function updatePlayerInfo(){
+  const nm = document.getElementById("playerName");
+  if (nm) nm.textContent = playerName;
 }
-setCoins(coins); // paint badge if present
 
 // ---------- CONFETTI CANVAS ----------
-let fxCanvas, fxCtx, fxW, fxH, particles = [];
-
-function setupFxCanvas(){
-  fxCanvas = document.createElement("canvas");
-  fxCanvas.id = "fxCanvas";
-  fxCanvas.style.position = "fixed";
-  fxCanvas.style.inset = "0";
-  fxCanvas.style.pointerEvents = "none";
-  fxCanvas.style.zIndex = "50";
-  document.body.appendChild(fxCanvas);
-  fxCtx = fxCanvas.getContext("2d");
-  const resize = ()=>{ fxW = fxCanvas.width = window.innerWidth; fxH = fxCanvas.height = window.innerHeight; };
-  resize();
-  window.addEventListener("resize", resize);
-  requestAnimationFrame(tickParticles);
-}
+const fxCanvas = document.getElementById("fxCanvas");
+const fxCtx = fxCanvas.getContext("2d");
+let fxW, fxH, particles = [];
+function resizeFx(){ fxW = fxCanvas.width = innerWidth; fxH = fxCanvas.height = innerHeight; }
+resizeFx(); addEventListener("resize", resizeFx);
 
 function spawnConfetti(x, y, count=120){
   for(let i=0;i<count;i++){
@@ -75,41 +70,43 @@ function spawnConfetti(x, y, count=120){
     });
   }
 }
-
 function tickParticles(){
-  if(!fxCtx){ requestAnimationFrame(tickParticles); return; }
   fxCtx.clearRect(0,0,fxW,fxH);
   particles.forEach(p=>{
     p.life--;
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += p.g;
+    p.x += p.vx; p.y += p.vy; p.vy += p.g;
     p.opacity = Math.max(0, p.life/90);
-    fxCtx.fillStyle = `hsla(${p.hue}, 100%, 60%, ${p.opacity})`;
-    fxCtx.beginPath();
-    fxCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-    fxCtx.fill();
+    fxCtx.fillStyle = `hsla(${p.hue},100%,60%,${p.opacity})`;
+    fxCtx.beginPath(); fxCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); fxCtx.fill();
   });
-  particles = particles.filter(p=> p.life>0 && p.y<fxH+40);
+  particles = particles.filter(p => p.life>0 && p.y<fxH+40);
   requestAnimationFrame(tickParticles);
 }
+requestAnimationFrame(tickParticles);
 
-function confettiBurstAt(elOrXY){
+function elementCenter(el){
+  const r = el.getBoundingClientRect();
+  return { x: r.left + r.width/2, y: r.top + r.height/2 };
+}
+function confettiAt(elOrCenter){
   let x, y;
-  if(!elOrXY){ ({x,y} = {x:window.innerWidth/2, y:window.innerHeight/2}); }
-  else if(elOrXY.x!=null){ x = elOrXY.x; y = elOrXY.y; }
-  else {
-    const r = elOrXY.getBoundingClientRect();
-    x = r.left + r.width/2; y = r.top + r.height/2;
-  }
+  if (!elOrCenter) { x = innerWidth/2; y = innerHeight/2; }
+  else if (elOrCenter.x!=null) { x = elOrCenter.x; y = elOrCenter.y; }
+  else { ({x,y} = elementCenter(elOrCenter)); }
   spawnConfetti(x, y, 140);
 }
 
 // ---------- SPLASH → LOGIN ----------
 window.addEventListener("DOMContentLoaded", () => {
-  setupFxCanvas();
   const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
+  const bell = document.getElementById("introBell");
+
+  // gentle, short
+  setTimeout(() => {
+    if (bell) { bell.volume = 0.35; bell.play().catch(()=>{}); }
+  }, 500);
+
   setTimeout(() => {
     splash.classList.add("hide");
     setTimeout(() => loginGate.classList.remove("hidden"), 900);
@@ -123,36 +120,50 @@ const googleBtn = document.getElementById("googleLoginGate");
 const homeScreen = document.getElementById("homeScreen");
 const installOrb = document.getElementById("installOrb");
 
-function goldenFlashThen(callback){
+function goldenFlashThen(cb){
   flashOverlay.classList.add("flash-show");
   setTimeout(() => {
     flashOverlay.classList.remove("flash-show");
     flashOverlay.classList.add("flash-hide");
-    if(callback) callback();
-  }, 650);
-}
-function showHome(){
-  goldenFlashThen(() => {
-    document.getElementById("loginGate").classList.add("hidden");
-    homeScreen.classList.remove("hidden");
-    setTimeout(() => {
-      installOrb.classList.remove("hidden");
-      installOrb.classList.add("show");
-    }, 1000);
-  });
-  ensureBgPlaying();
+    if(cb) cb();
+  }, 600);
 }
 
 guestBtn.addEventListener("click", () => {
-  if (coins === 0) setCoins(200);
-  alert("Guest mode activated! 🪄 Coins are saved locally.");
+  // Ask guest name once
+  const existing = localStorage.getItem("rxo_player");
+  if (!existing) {
+    const name = prompt("Enter your player name:", "Rune Warrior");
+    playerName = (name && name.trim()) ? name.trim() : "Guest Player";
+    localStorage.setItem("rxo_player", playerName);
+  } else {
+    playerName = existing;
+  }
+  updatePlayerInfo();
+  if (coins === 0) setCoins(200); // welcome bonus
   showHome();
 });
+
 googleBtn.addEventListener("click", () => {
   alert("Google Login coming soon ✨ (Phase 2)");
   if (coins === 0) setCoins(200);
   showHome();
 });
+
+function showHome(){
+  goldenFlashThen(() => {
+    document.getElementById("loginGate").classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    updatePlayerInfo();
+    setCoins(coins);
+    // reveal orb after a moment
+    setTimeout(() => {
+      installOrb.classList.remove("hidden");
+      installOrb.classList.add("show");
+    }, 1000);
+  });
+  // music remains OFF until player turns ON
+}
 
 // ---------- INSTALL ORB ----------
 installOrb.addEventListener("click", async () => {
@@ -165,6 +176,10 @@ installOrb.addEventListener("click", async () => {
 
 // ---------- HOME → GAME ----------
 const startBtn = document.getElementById("startBtn");
+const leaderBtn = document.getElementById("leaderBtn");
+const leaderModal = document.getElementById("leaderModal");
+const closeLeader = document.getElementById("closeLeader");
+
 const gameArea = document.getElementById("gameArea");
 const themeSelect = document.getElementById("themeSelect");
 const modeSel = document.getElementById("gameMode");
@@ -172,11 +187,41 @@ const diffSel = document.getElementById("difficulty");
 const skinSel = document.getElementById("skin");
 
 startBtn.addEventListener("click", () => {
+  document.body.className = `theme-${themeSelect.value.toLowerCase()}`;
   homeScreen.classList.add("hidden");
   gameArea.classList.remove("hidden");
   initGame();
-  ensureBgPlaying();
 });
+
+leaderBtn.addEventListener("click", showLeaderboard);
+closeLeader.addEventListener("click", () => leaderModal.classList.add("hidden"));
+
+// ---------- LEADERBOARD (local Top 5 by coins) ----------
+function showLeaderboard(){
+  const listEl = document.getElementById("leaderList");
+  const currentName = localStorage.getItem("rxo_player") || "Guest Player";
+  const currentCoins = Number(localStorage.getItem("rxo_coins") || "0");
+
+  // Read stored table
+  const table = JSON.parse(localStorage.getItem("rxo_lb") || "[]");
+  // Update/Insert current player row
+  const existing = table.find(r => r.name === currentName);
+  if (existing) existing.coins = currentCoins; else table.push({ name: currentName, coins: currentCoins });
+
+  table.sort((a,b) => b.coins - a.coins);
+  const top = table.slice(0,5);
+  localStorage.setItem("rxo_lb", JSON.stringify(top));
+
+  // Render
+  listEl.innerHTML = "";
+  top.forEach((r, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${i+1}. ${r.name} — ${r.coins} coins`;
+    listEl.appendChild(li);
+  });
+
+  leaderModal.classList.remove("hidden");
+}
 
 // ---------- GAME STATE ----------
 const boardEl = document.getElementById("gameBoard");
@@ -191,14 +236,13 @@ const logoutBtn = document.getElementById("logoutBtn");
 let board, current, running, againstCPU;
 
 const SKINS = {
-  "Runes": { P1: "🐉", P2: "🪽" },
-  "Classic X / O": { P1: "X", P2: "O" },
-  "Fruit": { P1: "🍎", P2: "🍌" },
-  "Emoji": { P1: "😎", P2: "🤖" }
+  "Runes":         { P1: "🐉", P2: "🪽" },
+  "Classic X / O": { P1: "X",  P2: "O"  },
+  "Fruit":         { P1: "🍎", P2: "🍌" },
+  "Emoji":         { P1: "😎", P2: "🤖" }
 };
 
 function initGame(){
-  document.body.className = `theme-${themeSelect.value.toLowerCase()}`;
   board = Array(9).fill(null);
   current = "P1";
   running = true;
@@ -207,10 +251,12 @@ function initGame(){
   cells.forEach(c=>{
     c.textContent = "";
     c.classList.remove("win");
-    c.disabled = false;
+    c.onclick = () => onCell(c);
   });
 
-  cells.forEach((cell) => { cell.onclick = () => onCell(cell); });
+  // show current prefs
+  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔈 Music OFF";
+  sfxBtn.textContent   = sfxOn   ? "🔊 SFX ON"   : "🔈 SFX OFF";
 }
 
 function onCell(cell){
@@ -227,8 +273,55 @@ function onCell(cell){
   if(result) return endRound(result, cell);
 
   current = (current === "P1") ? "P2" : "P1";
+
   if(running && againstCPU && current === "P2"){
     setTimeout(cpuMove, 350);
+  }
+}
+
+const LINES = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]
+];
+
+function staticWinner(arr){
+  for(const [a,b,c] of LINES){
+    if(arr[a] && arr[a]===arr[b] && arr[a]===arr[c]) return arr[a];
+  }
+  return null;
+}
+
+function checkResult(){
+  const w = staticWinner(board);
+  if(w){ return { winner:w }; }
+  if(board.every(Boolean)) return { draw:true };
+  return null;
+}
+
+function endRound(res, lastCell){
+  running = false;
+  // mark win
+  if(res.winner){
+    for(const [a,b,c] of LINES){
+      if(board[a] && board[a]===board[b] && board[a]===board[c]){
+        [a,b,c].forEach(i => cells[i].classList.add("win"));
+      }
+    }
+    confettiAt(lastCell || null);
+
+    if(res.winner === "P1"){
+      playSfx(audio.win);
+      addCoins(20);
+      setTimeout(()=> alert("You win! +20 coins 🎉"), 50);
+    } else {
+      playSfx(audio.lose);
+      setTimeout(()=> alert("CPU wins!"), 50);
+    }
+  } else {
+    confettiAt(null);
+    addCoins(5);
+    setTimeout(()=> alert("Draw! +5 coins"), 50);
   }
 }
 
@@ -268,52 +361,6 @@ function findBest(player){
   return null;
 }
 
-const LINES = [
-  [0,1,2],[3,4,5],[6,7,8],
-  [0,3,6],[1,4,7],[2,5,8],
-  [0,4,8],[2,4,6]
-];
-function staticWinner(arr){
-  for(const [a,b,c] of LINES){
-    if(arr[a] && arr[a]===arr[b] && arr[a]===arr[c]) return arr[a];
-  }
-  return null;
-}
-function checkResult(){
-  const w = staticWinner(board);
-  if(w){ return { winner:w }; }
-  if(board.every(Boolean)) return { draw:true };
-  return null;
-}
-
-function endRound(res, lastCell){
-  running = false;
-  cells.forEach(c=>c.onclick = null);
-
-  if(res.winner){
-    for(const line of LINES){
-      const [a,b,c] = line;
-      if(board[a] && board[a]===board[b] && board[a]===board[c]){
-        [a,b,c].forEach(i=> cells[i].classList.add("win"));
-      }
-    }
-    confettiBurstAt(lastCell || undefined);
-    if(res.winner === "P1"){
-      playSfx(audio.win);
-      addCoins(20);
-      alert("You win! +20 coins 🎉");
-    } else {
-      playSfx(audio.lose);
-      alert("CPU wins!");
-    }
-  } else {
-    confettiBurstAt();
-    addCoins(5);
-    alert("Draw! +5 coins");
-  }
-}
-
-// ---------- MINIMAX ----------
 function minimax(state, player){
   const avail = state.map((v,i)=> v? null : i).filter(v=>v!==null);
   const w = staticWinner(state);
@@ -342,24 +389,29 @@ function minimax(state, player){
 // ---------- CONTROLS ----------
 nextRoundBtn.onclick = () => initGame();
 resetBtn.onclick = () => initGame();
+
 homeBtn.onclick = () => {
   gameArea.classList.add("hidden");
   homeScreen.classList.remove("hidden");
+  stopBg(); // stop music when back home (player choice again)
 };
+
 musicBtn.onclick = () => {
   musicOn = !musicOn;
-  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-  if(musicOn) ensureBgPlaying(); else stopBg();
+  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔈 Music OFF";
+  if (musicOn) ensureBgPlaying(); else stopBg();
 };
 sfxBtn.onclick = () => {
   sfxOn = !sfxOn;
   sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
 };
 
-// ---------- LOGOUT ----------
 logoutBtn.onclick = () => {
+  localStorage.removeItem("rxo_player");
+  playerName = "Guest Player";
+  updatePlayerInfo();
   stopBg();
-  localStorage.removeItem("guestPlayer");
-  document.getElementById("homeScreen").classList.add("hidden");
+  // back to login
+  homeScreen.classList.add("hidden");
   document.getElementById("loginGate").classList.remove("hidden");
 };
