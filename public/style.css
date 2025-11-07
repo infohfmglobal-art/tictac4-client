@@ -91,3 +91,23 @@ select{ background:#111; color:var(--gold); border:1px solid #ffcc33; border-rad
 @keyframes logoPulse{ 0%,100%{ transform:scale(1); filter:drop-shadow(0 0 15px var(--gold)); } 50%{ transform:scale(1.05); filter:drop-shadow(0 0 35px #ffd700);} }
 @keyframes orbPulse{ 0%,100%{ box-shadow:0 0 25px gold,0 0 50px #ffbb33;} 50%{ box-shadow:0 0 40px #fff799,0 0 90px #ffd700;} }
 @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+/* === FX: coin floating === */
+.coin-fx{
+  position: fixed;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  font-weight: 800;
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffcc33, 0 0 24px #ff8c00;
+  opacity: 0.95;
+  z-index: 60;
+  transition: transform 900ms ease-out, opacity 900ms ease-out;
+  pointer-events: none;
+}
+.coin-fx.rise{
+  transform: translate(-50%,-130%);
+  opacity: 0;
+}
+
+/* Ensure canvas sits above UI but below alerts */
+#fxCanvas{ position:fixed; inset:0; pointer-events:none; z-index:50; }
