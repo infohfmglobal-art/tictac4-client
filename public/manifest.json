@@ -1,12 +1,14 @@
 {
-  "name": "RuneXO",
+  "name": "RuneXO - Every Move Shapes Destiny",
   "short_name": "RuneXO",
-  "description": "Every Move Shapes Destiny — the magical TicTacToe by FrameWeave Studio LLC.",
+  "description": "Every Move Shapes Destiny — the magical Tic Tac Toe game by FrameWeave Studio LLC.",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "background_color": "#000000",
   "theme_color": "#ffd700",
+  "scope": "./",
+  "id": "runexo.app",
   "icons": [
     {
       "src": "./icon-192.png",
@@ -17,6 +19,28 @@
       "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "./maskable-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshot-home.png",
+      "type": "image/png",
+      "sizes": "1080x1920",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "./screenshot-game.png",
+      "type": "image/png",
+      "sizes": "1080x1920",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["games", "puzzle", "strategy", "offline"],
+  "lang": "en"
 }
