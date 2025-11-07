@@ -88,24 +88,28 @@
   </div>
 <!-- 🎮 GAME AREA -->
 <div id="gameArea" class="hidden">
-  <div class="game-board">
-    <div class="cell" data-cell="0"></div>
-    <div class="cell" data-cell="1"></div>
-    <div class="cell" data-cell="2"></div>
-    <div class="cell" data-cell="3"></div>
-    <div class="cell" data-cell="4"></div>
-    <div class="cell" data-cell="5"></div>
-    <div class="cell" data-cell="6"></div>
-    <div class="cell" data-cell="7"></div>
-    <div class="cell" data-cell="8"></div>
-  </div>
+  <div class="game-container">
+    <div class="board" id="gameBoard">
+      <!-- 3x3 grid -->
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
+    </div>
 
-  <div class="game-controls">
-    <button id="nextRound" class="menu-btn">Next Round</button>
-    <button id="resetAll" class="menu-btn">Reset All</button>
-    <button id="homeBtn" class="menu-btn">🏠 Home</button>
+    <div class="controls">
+      <button id="nextRoundBtn">Next Round</button>
+      <button id="resetBtn">Reset All</button>
+      <button id="homeBtn">🏠 Home</button>
+    </div>
   </div>
 </div>
+
  <!-- 🔮 INSTALL ORB -->
 <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
