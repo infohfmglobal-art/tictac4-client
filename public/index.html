@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
 
   <script>
-    // Capture PWA install prompt (don’t show banner automatically)
+    // Capture PWA install prompt
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -27,6 +27,8 @@
     <h1 class="splash-title glow">RuneXO</h1>
     <p class="splash-tagline">Every Move Shapes Destiny.</p>
     <p class="studio-credit">© FrameWeave Studio LLC</p>
+    <!-- Optional short bell -->
+    <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
   </div>
 
   <!-- ✨ LOGIN GATE -->
@@ -38,21 +40,28 @@
   </div>
 
   <!-- ⚡ GOLDEN FLASH OVERLAY -->
-  <div id="flashOverlay" class="flash-overlay flash-hide"></div>
+  <div id="flashOverlay" class="flash-overlay"></div>
 
   <!-- 🏠 HOME SCREEN -->
   <div id="homeScreen" class="home-screen hidden">
-  <div class="menu-box">
-    <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
-    ...
-  </div>
+    <div class="topbar">
+      <div id="playerInfo" class="player-info">
+        <span id="playerName">Guest Player</span>
+        <span id="playerCoins" class="badge coin">💰 0</span>
+        <button id="logoutBtn" class="mini-btn">Logout</button>
+      </div>
+    </div>
 
-  <!-- PLAYER INFO + LOGOUT -->
-  <div id="playerInfo" class="player-info">
-    <span id="playerName">Guest Player</span>
-    <button id="logoutBtn">Logout</button>
-  </div>
-</div>
+    <div class="menu-box">
+      <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
+
+      <div class="menu-row">
+        <label>Game Mode</label>
+        <select id="gameMode">
+          <option>Player vs CPU</option>
+          <option>Player vs Player</option>
+        </select>
+      </div>
 
       <div class="menu-row">
         <label>Difficulty</label>
@@ -84,32 +93,45 @@
       </div>
 
       <button id="startBtn" class="menu-btn play-btn">Play</button>
-      <span id="playerCoins" class="badge coin">💰 0</span>
+      <button id="leaderBtn" class="menu-btn secondary">🏆 Leaderboard</button>
+    </div>
+  </div>
+
+  <!-- 🏆 LEADERBOARD POPUP -->
+  <div id="leaderModal" class="modal hidden">
+    <div class="modal-card">
+      <h3 class="leader-title">🏆 Top Players</h3>
+      <ol id="leaderList" class="leader-list"></ol>
+      <button id="closeLeader" class="menu-btn close">Close</button>
     </div>
   </div>
 
   <!-- 🎮 GAME AREA -->
   <div id="gameArea" class="hidden">
-    <div class="game-container">
-      <div class="board" id="gameBoard" aria-label="Tic Tac Toe board" role="grid">
-        <!-- 3x3 cells -->
-        <button class="cell" data-index="0" role="gridcell" aria-label="cell 1"></button>
-        <button class="cell" data-index="1" role="gridcell" aria-label="cell 2"></button>
-        <button class="cell" data-index="2" role="gridcell" aria-label="cell 3"></button>
-        <button class="cell" data-index="3" role="gridcell" aria-label="cell 4"></button>
-        <button class="cell" data-index="4" role="gridcell" aria-label="cell 5"></button>
-        <button class="cell" data-index="5" role="gridcell" aria-label="cell 6"></button>
-        <button class="cell" data-index="6" role="gridcell" aria-label="cell 7"></button>
-        <button class="cell" data-index="7" role="gridcell" aria-label="cell 8"></button>
-        <button class="cell" data-index="8" role="gridcell" aria-label="cell 9"></button>
+    <div class="hud">
+      <div class="hud-left">
+        <button id="homeBtn" class="mini-btn">🏠 Home</button>
+        <button id="nextRoundBtn" class="mini-btn">Next Round</button>
+        <button id="resetBtn" class="mini-btn red">Reset</button>
       </div>
+      <div class="hud-right">
+        <button id="sfxBtn" class="mini-btn">🔊 SFX ON</button>
+        <button id="musicBtn" class="mini-btn">🔈 Music OFF</button>
+      </div>
+    </div>
 
-      <div class="controls">
-        <button id="nextRoundBtn">Next Round</button>
-        <button id="resetBtn">Reset All</button>
-        <button id="homeBtn">🏠 Home</button>
-        <button id="musicBtn" class="toggle">🔈 Music ON</button>
-        <button id="sfxBtn" class="toggle">🔊 SFX ON</button>
+    <div class="game-container">
+      <div class="board" id="gameBoard">
+        <!-- 3x3 grid -->
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
       </div>
     </div>
   </div>
@@ -117,11 +139,13 @@
   <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
-  <!-- Scripts -->
+  <!-- FX Canvas (confetti) -->
+  <canvas id="fxCanvas" class="fx-canvas"></canvas>
+
   <script type="module" src="./app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(()=>{});
+      navigator.serviceWorker.register("./sw.js");
     }
   </script>
 </body>
