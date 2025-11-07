@@ -93,48 +93,64 @@ function startGame() {
     if (gameArea) gameArea.classList.remove("hidden");
   }, 600);
 // === SIMPLE GAME BOARD LOGIC ===
-document.addEventListener("DOMContentLoaded", () => {
+function initGameBoard() {
   const board = document.getElementById("gameBoard");
-  const cells = board ? board.querySelectorAll(".cell") : [];
+  if (!board) return;
+
+  const cells = board.querySelectorAll(".cell");
   let currentPlayer = "X";
 
+  // Attach listeners once
   cells.forEach(cell => {
     cell.addEventListener("click", () => {
       if (cell.textContent !== "") return;
       cell.textContent = currentPlayer;
       cell.style.textShadow = "0 0 10px gold";
+      cell.style.color = "gold";
+
+      // Simple switch between players
       currentPlayer = currentPlayer === "X" ? "O" : "X";
     });
   });
 
+  // Reset, Next Round, Home Buttons
   const resetBtn = document.getElementById("resetBtn");
   const nextRoundBtn = document.getElementById("nextRoundBtn");
   const homeBtn = document.getElementById("homeBtn");
 
   if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
+    resetBtn.onclick = () => {
       cells.forEach(c => (c.textContent = ""));
       currentPlayer = "X";
-    });
+    };
   }
 
   if (nextRoundBtn) {
-    nextRoundBtn.addEventListener("click", () => {
+    nextRoundBtn.onclick = () => {
       cells.forEach(c => (c.textContent = ""));
       currentPlayer = "X";
-    });
+    };
   }
 
   if (homeBtn) {
-    homeBtn.addEventListener("click", () => {
+    homeBtn.onclick = () => {
       document.getElementById("gameArea").classList.add("hidden");
       document.getElementById("homeScreen").classList.remove("hidden");
-    });
+    };
   }
-});
+}
 
-  // sound feedback
-  const clickSound = new Audio("./sound/click.mp3");
-  clickSound.volume = 0.7;
-  clickSound.play().catch(() => {});
+// Initialize only when Play is clicked
+function startGame() {
+  const homeScreen = document.getElementById("homeScreen");
+  const gameArea = document.getElementById("gameArea");
+
+  homeScreen.classList.add("fade-out");
+  setTimeout(() => {
+    homeScreen.classList.add("hidden");
+    gameArea.classList.remove("hidden");
+    initGameBoard(); // ✅ Initialize after board is visible
+  }, 600);
+
+  new Audio("./sound/click.mp3").play().catch(() => {});
 }
