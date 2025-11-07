@@ -61,6 +61,7 @@ let musicWanted = false;
 // === Coins / Rewards ===
 let rewardGranted = false;
 
+// === Coin FX ===
 function coinBurstFX(text = "+20") {
   const badge = document.getElementById("playerCoins");
   if (!badge) return;
@@ -91,19 +92,15 @@ async function grantCoins(amount){
   }
 }
 
-// ===== SECTION TOGGLES =====
+// === Section Toggles ===
 function setVisible(afterLogin) {
-  // Gate
   gateScreen.classList.toggle("hidden", afterLogin);
-
-  // Main UI bits (after login)
   [modeBar, document.querySelector(".avatars"), scoreEl, msgEl,
    document.querySelector(".btngrp"), boardEl, document.getElementById("loginBar"),
    homeScreen].forEach(el => el.classList.toggle("hidden", !afterLogin));
 }
 
 function flashThen(callback){
-  // Divine flash (white/golden) then proceed
   flashOv.classList.remove("flash-hide");
   flashOv.classList.add("flash-show");
   setTimeout(()=>{
@@ -120,7 +117,7 @@ function enterHome(){
   });
 }
 
-// ===== Board Rendering =====
+// === Board Rendering ===
 function renderBoard() {
   boardEl.innerHTML = "";
   for (let r = 0; r < 3; r++) {
@@ -136,7 +133,7 @@ function renderBoard() {
 }
 renderBoard();
 
-// ===== Handle Move =====
+// === Handle Move ===
 function handleMove(r, c) {
   if (musicWanted && music.paused) music.play().catch(() => {});
   const result = game.move(r, c, true);
@@ -156,24 +153,20 @@ function handleMove(r, c) {
   }
 }
 
-// ===== Update UI =====
+// === Update UI ===
 function updateBoard() {
   const cells = boardEl.children;
-
   for (let i = 0; i < cells.length; i++) {
     const r = Math.floor(i / 3);
     const c = i % 3;
     const val = game.board.grid[r][c];
     const cell = cells[i];
-
     cell.className = "cell";
     cell.style.color = "";
     cell.style.textShadow = "";
     cell.textContent = "";
-
     if (!val) continue;
 
-    // Skins
     if (game.skin.startsWith("Classic")) {
       cell.textContent = val;
       cell.style.color = (val === "X") ? "#00ffff" : "#ff66cc";
@@ -194,11 +187,9 @@ function updateBoard() {
     }
   }
 
-  // Turn badges
   pX.classList.toggle("active", game.turn === "X");
   pO.classList.toggle("active", game.turn === "O");
 
-  // Winner / Draw
   if (game.winner && game.winner !== "Draw") {
     let winnerName = "";
     if (game.skin === "Classic X / O") {
@@ -214,40 +205,33 @@ function updateBoard() {
     winnerTxt.textContent = winnerName;
     msgEl.classList.remove("draw");
     msgEl.classList.add("show-winner");
-
     for (const [r, c] of game.getWinningCells()) {
       const idx = r * 3 + c;
       boardEl.children[idx].classList.add("win-cell");
     }
-
     triggerRuneBurst(game.winner);
     confettiBurst();
     screenShake();
     haptic([40, 40, 80]);
     if (game.sfxOn) { winSfx.currentTime = 0; winSfx.play().catch(() => {}); }
-
     if (game.mode === "Player vs CPU" && game.winner === "X") {
       const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
       const moves = 9 - game.board.emptyCells().length;
       addLeaderboard({ time: elapsed, moves, diff: game.difficulty.toLowerCase(), skin: game.skin.toLowerCase() });
     }
-
     if (!rewardGranted) { rewardGranted = true; grantCoins(20); }
-
   } else if (game.winner === "Draw") {
     winnerTxt.textContent = "Draw!";
     msgEl.classList.add("show-winner", "draw");
     if (!rewardGranted) { rewardGranted = true; grantCoins(5); }
-
   } else {
     msgEl.classList.remove("show-winner", "draw");
     winnerTxt.textContent = "";
   }
-
   scoreEl.textContent = `Score – X: ${game.scoreX} | O: ${game.scoreO} | D: ${game.scoreD}`;
 }
 
-// ===== Buttons =====
+// === Buttons ===
 nextBtn.onclick = () => {
   rewardGranted = false;
   game.nextRound();
@@ -280,7 +264,7 @@ musicBtn.onclick = () => {
   window.deferredPrompt = null;
 }));
 
-// ===== Home Screen Show/Hide =====
+// === Home Screen ===
 function showHome(show) {
   homeScreen.classList.toggle("hidden", !show);
   boardEl.classList.toggle("hidden", show);
@@ -297,13 +281,10 @@ startBtn.onclick = () => {
   game.difficulty = difficulty.value;
   game.skin = skinSel.value;
   document.body.className = `theme-${themeSel.value.toLowerCase()}`;
-
   modeBadge.textContent = `Mode: ${game.mode === "Player vs CPU" ? "PvC" : "PvP"}`;
   diffBadge.textContent = `Difficulty: ${game.difficulty}`;
   skinBadge.textContent = `Skin: ${game.skin}`;
-
   if (musicWanted) music.play().catch(() => {});
-
   rewardGranted = false;
   game.resetAll();
   renderBoard();
@@ -311,16 +292,27 @@ startBtn.onclick = () => {
   showHome(false);
 };
 
-// ===== Initial state: show gate only =====
+// === Intro Splash ===
+window.addEventListener("load", () => {
+  const splash = document.getElementById("introSplash");
+  if (splash) {
+    setTimeout(() => {
+      splash.classList.add("hide");
+      setTimeout(() => splash.remove(), 1000);
+    }, 2500);
+  }
+});
+
+// === Init ===
 setVisible(false);
 loadLeaderboard();
 
-// ===== Haptics =====
+// === Haptics ===
 function haptic(pattern) {
   if ("vibrate" in navigator) navigator.vibrate(pattern);
 }
 
-// ===== Leaderboard (local) =====
+// === Leaderboard ===
 function addLeaderboard(entry) {
   const key = "rxo_leader";
   const list = JSON.parse(localStorage.getItem(key) || "[]");
@@ -341,108 +333,3 @@ function loadLeaderboard() {
     leaderList.appendChild(li);
   });
 }
-
-// ===== Firebase Login + Coins =====
-async function loginGoogle() {
-  const provider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, provider);
-  const user = result.user;
-  const ref = doc(db, "players", user.uid);
-  const snap = await getDoc(ref);
-
-  if (!snap.exists()) {
-    await setDoc(ref, {
-      name: user.displayName,
-      email: user.email,
-      coins: 200,
-      wins: 0,
-      createdAt: Date.now(),
-    });
-    alert(`Welcome ${user.displayName}! 🎉 You've received 200 coins.`);
-    window.currentCoins = 200;
-  } else {
-    window.currentCoins = snap.data().coins;
-  }
-
-  const topCoin  = document.getElementById("playerCoins");
-  const homeCoin = document.getElementById("playerCoinsHome");
-  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
-  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
-}
-
-// coin update for logged user
-async function updateCoins(change) {
-  const user = auth.currentUser;
-  if (!user) return;
-  const ref = doc(db, "players", user.uid);
-  const snap = await getDoc(ref);
-  const coins = (snap.data().coins || 0) + change;
-  await updateDoc(ref, { coins });
-  window.currentCoins = coins;
-
-  const topCoin  = document.getElementById("playerCoins");
-  const homeCoin = document.getElementById("playerCoinsHome");
-  if (topCoin)  topCoin.textContent  = `💰 ${coins}`;
-  if (homeCoin) homeCoin.textContent = `💰 ${coins}`;
-}
-
-// ===== Gate buttons =====
-gateGoogle.addEventListener("click", async () => {
-  await loginGoogle();
-  enterHome();
-});
-gateGuest.addEventListener("click", () => {
-  alert("Guest mode: coins not saved!");
-  window.currentCoins = 100;
-  const topCoin  = document.getElementById("playerCoins");
-  const homeCoin = document.getElementById("playerCoinsHome");
-  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
-  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
-  enterHome();
-});
-
-// ===== Quick/Home login mirrors =====
-if (quickGoogle) quickGoogle.addEventListener("click", loginGoogle);
-if (quickGuest)  quickGuest.addEventListener("click", () => {
-  alert("Guest mode: coins not saved!");
-  window.currentCoins = 100;
-  const topCoin  = document.getElementById("playerCoins");
-  const homeCoin = document.getElementById("playerCoinsHome");
-  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
-  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
-});
-if (homeGoogle) homeGoogle.addEventListener("click", loginGoogle);
-if (homeGuest)  homeGuest .addEventListener("click", () => {
-  alert("Guest mode: coins not saved!");
-  window.currentCoins = 100;
-  const topCoin  = document.getElementById("playerCoins");
-  const homeCoin = document.getElementById("playerCoinsHome");
-  if (topCoin)  topCoin.textContent  = `💰 ${window.currentCoins}`;
-  if (homeCoin) homeCoin.textContent = `💰 ${window.currentCoins}`;
-});
-// Intro splash fade out
-window.addEventListener("load", () => {
-  const splash = document.getElementById("introSplash");
-  if (splash) setTimeout(() => splash.classList.add("hide"), 2600);
-});
-// === Intro splash fade out ===
-window.addEventListener("DOMContentLoaded", () => {
-  const splash = document.getElementById("introSplash");
-  if (!splash) return;
-  setTimeout(() => {
-    splash.classList.add("hide");
-  }, 2600); // 2.6s fade duration
-});
-// === Fade out RuneXO intro splash ===
-document.addEventListener("readystatechange", () => {
-  if (document.readyState === "complete") {
-    const splash = document.getElementById("introSplash");
-    if (splash) {
-      setTimeout(() => {
-        splash.classList.add("hide");
-        // ensure it's completely removed after fade
-        setTimeout(() => splash.remove(), 1200);
-      }, 2600);
-    }
-  }
-});
