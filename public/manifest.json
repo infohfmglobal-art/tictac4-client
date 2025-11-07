@@ -1,12 +1,12 @@
 {
   "name": "RuneXO",
   "short_name": "RuneXO",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#06000f",
-  "theme_color": "#ffd86e",
+  "background_color": "#090806",
+  "theme_color": "#ffdb7a",
   "icons": [
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-mono.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
