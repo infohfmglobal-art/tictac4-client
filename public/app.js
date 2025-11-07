@@ -168,48 +168,71 @@ function updateBoard() {
   pX.classList.toggle("active", game.turn === "X");
   pO.classList.toggle("active", game.turn === "O");
 
-  // === Winner / Draw messaging ===
-  if (game.winner && game.winner !== "Draw") {
-    let winnerName = "";
+ // === Winner / Draw messaging ===
+if (game.winner && game.winner !== "Draw") {
+  let winnerName = "";
 
-    if (game.skin === "Classic X / O") {
-      winnerName = (game.winner === "X") ? "❌ X Wins!" : "🟣 O Wins!";
-    } else if (game.skin === "Fruit") {
-      winnerName = (game.winner === "X") ? "🍎 Apple Wins!" : "🍊 Orange Wins!";
-    } else if (game.skin === "Runes") {
-      winnerName = (game.winner === "X") ? "🐉 Dragon Wins!" : "🕊️ Phoenix Wins!";
-    } else {
-      winnerName = `${game.winner} Wins!`;
-    }
+  if (game.skin === "Classic X / O") {
+    winnerName = (game.winner === "X") ? "❌ X Wins!" : "🟣 O Wins!";
+  } else if (game.skin === "Fruit") {
+    winnerName = (game.winner === "X") ? "🍎 Apple Wins!" : "🍊 Orange Wins!";
+  } else if (game.skin === "Runes") {
+    winnerName = (game.winner === "X") ? "🐉 Dragon Wins!" : "🕊️ Phoenix Wins!";
+  } else {
+    winnerName = `${game.winner} Wins!`;
+  }
 
-    winnerTxt.textContent = winnerName;
-    msgEl.classList.remove("draw");          // ensure draw style removed
-    msgEl.classList.add("show-winner");
+  winnerTxt.textContent = winnerName;
+  msgEl.classList.remove("draw");
+  msgEl.classList.add("show-winner");
 
-    // highlight winning cells
-    for (const [r, c] of game.getWinningCells()) {
-      const idx = r * 3 + c;
-      boardEl.children[idx].classList.add("win-cell");
-    }
+  // highlight winning cells
+  for (const [r, c] of game.getWinningCells()) {
+    const idx = r * 3 + c;
+    boardEl.children[idx].classList.add("win-cell");
+  }
 
-    // celebration
-triggerRuneBurst(game.winner);
-confettiBurst();
-screenShake();
-haptic([40, 40, 80]);
-if (game.sfxOn) { winSfx.currentTime = 0; winSfx.play().catch(() => {}); }
+  // === effects + sound ===
+  triggerRuneBurst(game.winner);
+  confettiBurst();
+  screenShake();
+  haptic([40, 40, 80]);
+  if (game.sfxOn) {
+    winSfx.currentTime = 0;
+    winSfx.play().catch(() => {});
+  }
 
-// leaderboard record for PvC when X (player) wins
-if (game.mode === "Player vs CPU" && game.winner === "X") {
-  const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
-  const moves = 9 - game.board.emptyCells().length;
-  addLeaderboard({
-    time: elapsed,
-    moves,
-    diff: game.difficulty.toLowerCase(),
-    skin: game.skin.toLowerCase()
-  });
+  // === leaderboard (for Player vs CPU) ===
+  if (game.mode === "Player vs CPU" && game.winner === "X") {
+    const elapsed = ((performance.now() - game.roundStart) / 1000).toFixed(2);
+    const moves = 9 - game.board.emptyCells().length;
+    addLeaderboard({
+      time: elapsed,
+      moves,
+      diff: game.difficulty.toLowerCase(),
+      skin: game.skin.toLowerCase(),
+    });
+  }
+
+  // === coin reward (once per round) ===
+  if (!rewardGranted) {
+    rewardGranted = true;
+    grantCoins(20);
+  }
+
+} else if (game.winner === "Draw") {
+  winnerTxt.textContent = "Draw!";
+  msgEl.classList.add("show-winner", "draw");
+
+  if (!rewardGranted) {
+    rewardGranted = true;
+    grantCoins(5);
+  }
+} else {
+  msgEl.classList.remove("show-winner", "draw");
+  winnerTxt.textContent = "";
 }
+
 
 // 🔥 coin reward for a win (once per round)
 if (!rewardGranted) { rewardGranted = true; grantCoins(20); }
