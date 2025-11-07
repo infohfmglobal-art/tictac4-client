@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="./style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
 </head>
-
 <body class="theme-rune">
+
   <!-- Intro Splash -->
   <div id="introSplash" class="intro-splash">
     <img src="./logo-dragon.png" alt="FrameWeave Studio" class="splash-logo" />
@@ -20,75 +20,56 @@
   </div>
 
   <!-- Login Gate -->
-  <div id="loginGate" class="login-gate">
+  <div id="loginGate" class="login-gate hidden">
     <h1 class="login-logo">RuneXO</h1>
     <p class="login-tagline">Every Move Shapes Destiny.</p>
     <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
     <button id="googleLoginGate" class="login-btn">🔑 Login with Google</button>
   </div>
 
-  <!-- Flash overlay for golden transition -->
+  <!-- Flash overlay -->
   <div id="flashOverlay" class="flash-overlay flash-hide"></div>
 
-  <!-- Game HUD -->
-  <div id="modeBar" class="hidden">
-    <span id="modeBadge">Mode: PvC</span>
-    <span id="diffBadge">Difficulty: Easy</span>
-    <span id="skinBadge">Skin: Classic X / O</span>
-    <span id="playerCoins" class="badge coin">💰 100</span>
-  </div>
-
-  <!-- Player Avatars -->
-  <div class="avatars hidden">
-    <div id="pX" class="avatar active">X</div>
-    <div id="pO" class="avatar">O</div>
-  </div>
-
-  <!-- Score and Messages -->
-  <div id="score" class="score hidden">Score – X: 0 | O: 0 | D: 0</div>
-  <div id="msg" class="msg hidden"><span id="winnerText"></span></div>
-
-  <!-- Game Board -->
-  <div id="board" class="board hidden"></div>
-
-  <!-- Button Bar -->
-  <div class="btngrp hidden">
-    <button id="homeBtn" class="btn">Home</button>
-    <button id="nextBtn" class="btn">Next Round</button>
-    <button id="resetBtn" class="btn red">Reset All</button>
-    <button id="sfxBtn" class="btn small">SFX: On</button>
-    <button id="musicBtn" class="btn small">Music: Off</button>
-    <button id="installBtn" class="btn small">Install App</button>
-  </div>
-
-  <!-- Home Screen -->
+  <!-- Home / Game -->
   <div id="homeScreen" class="home-screen hidden">
     <div class="menu-box">
       <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
+
       <div class="menu-row"><label>Game Mode</label>
-        <select id="gameMode"><option>Player vs CPU</option><option>Player vs Player</option></select>
+        <select id="gameMode">
+          <option>Player vs CPU</option>
+          <option>Player vs Player</option>
+        </select>
       </div>
       <div class="menu-row"><label>Difficulty</label>
-        <select id="difficulty"><option>Easy</option><option>Normal</option><option>Hard</option></select>
+        <select id="difficulty">
+          <option>Easy</option>
+          <option>Normal</option>
+          <option>Hard</option>
+        </select>
       </div>
       <div class="menu-row"><label>Skin</label>
-        <select id="skin"><option>Runes</option><option>Classic X / O</option><option>Fruit</option></select>
+        <select id="skin">
+          <option>Runes</option>
+          <option>Classic X / O</option>
+          <option>Fruit</option>
+        </select>
       </div>
       <div class="menu-row"><label>Theme</label>
-        <select id="themeSelect"><option>Rune</option><option>Gold</option><option>Blue</option><option>Neon</option></select>
+        <select id="themeSelect">
+          <option>Rune</option>
+          <option>Gold</option>
+          <option>Blue</option>
+          <option>Neon</option>
+        </select>
       </div>
+
       <button id="startBtn" class="menu-btn play-btn">Play</button>
-      <span id="playerCoinsHome" class="badge coin">💰 0</span>
-
-      <!-- Leaderboard -->
-      <h3>Top 10 Fastest Wins</h3>
-      <ul id="leaderList"></ul>
-
-      <!-- Home Login Buttons -->
-      <button id="googleLoginBtnHome" class="login-btn small">🔑 Login with Google</button>
-      <button id="guestLoginBtnHome" class="login-btn small">🔥 Play as Guest</button>
-      <button id="installBtn2" class="btn small">Install App</button>
+      <span id="playerCoins" class="badge coin">💰 0</span>
     </div>
+
+    <div id="board" class="board hidden"></div>
+    <p id="msg" class="msg hidden"><span id="winnerText"></span></p>
   </div>
 
   <script type="module" src="./app.js"></script>
