@@ -134,7 +134,7 @@ function showAlert(title, text, onOk){
 }
 
 // === SPLASH → LOGIN ===
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
   const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
 
