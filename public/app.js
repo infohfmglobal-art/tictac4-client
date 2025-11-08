@@ -155,3 +155,38 @@ function checkWinner(){
   const L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   return L.some(([a,b,c]) => board[a] && board[a]===board[b] && board[a]===board[c]);
 }
+// === HOME → GAME (Fixed timing) ===
+function safeInitGame(){
+  const boardEl = document.getElementById("gameBoard");
+  if (!boardEl || boardEl.offsetParent === null) {
+    setTimeout(safeInitGame, 300);
+    return;
+  }
+  initGame();
+}
+
+startBtn.addEventListener("click", () => {
+  homeScreen.classList.add("hidden");
+  gameArea.classList.remove("hidden");
+  setTimeout(() => safeInitGame(), 400);
+});
+
+homeBtn.addEventListener("click", () => {
+  gameArea.classList.add("hidden");
+  homeScreen.classList.remove("hidden");
+  stopBg();
+});
+
+nextRoundBtn.addEventListener("click", initGame);
+resetBtn.addEventListener("click", initGame);
+
+musicBtn.addEventListener("click", () => {
+  musicOn = !musicOn;
+  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
+  if (musicOn) ensureBg(); else stopBg();
+});
+
+sfxBtn.addEventListener("click", () => {
+  sfxOn = !sfxOn;
+  sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
+});
