@@ -120,39 +120,36 @@ function showAlert(title, text, onOk){
   runeOk.onclick = ()=>{ runeAlert.classList.add("hidden"); onOk && onOk(); };
 }
 
-// ===== SPLASH → LOGIN =====
+// === SPLASH → LOGIN (final) ===
 window.addEventListener("load", () => {
-  setupFxCanvas();
-
-  const splash    = document.getElementById("introSplash");
+  const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
 
-  // Short intro bell (trimmed feel)
+  // play intro bell
   setTimeout(() => {
-    if (audio.intro) {
-      audio.intro.currentTime = 0;
-      audio.intro.volume = 0.45;
-      audio.intro.play().catch(()=>{});
-      // stop after 1.5s to feel short
-      setTimeout(()=> audio.intro.pause(), 1500);
+    const introSound = document.getElementById("introBell");
+    if (introSound) {
+      introSound.volume = 0.6;
+      introSound.currentTime = 0;
+      introSound.play().catch(() => {});
+      setTimeout(() => introSound.pause(), 1500);
     }
   }, 200);
 
-  // 3s splash, then fade to login
-setTimeout(() => {
-  splash.classList.add("fade-out");
-  splash.style.pointerEvents = "none";
+  // splash → login gate
   setTimeout(() => {
-    splash.style.display = "none";
-    loginGate.classList.remove("hidden");
-    loginGate.style.display = "flex";
-
-    // 🧩 Hide game area & controls until user starts
-    document.getElementById("gameArea").classList.add("hidden");
-    document.querySelector(".topbar").style.display = "none";
-  }, 800);
-}, 3000);
+    splash.classList.add("fade-out");
+    splash.style.pointerEvents = "none";
+    setTimeout(() => {
+      splash.style.display = "none";
+      loginGate.classList.remove("hidden");
+      loginGate.style.display = "flex";
+      document.getElementById("gameArea").classList.add("hidden");
+      document.querySelector(".topbar").style.display = "none";
+    }, 800);
+  }, 3000);
 });
+
 
 // ===== LOGIN → HOME =====
 const flashOverlay = document.getElementById("flashOverlay");
@@ -209,8 +206,9 @@ const skinSel     = document.getElementById("skin");
 startBtn.addEventListener("click", () => {
   homeScreen.classList.add("hidden");
   const gameArea = document.getElementById("gameArea");
-  gameArea.classList.remove("hidden");
-  document.querySelector(".topbar").style.display = "flex"; // ✅ show buttons now
+  const topbar = document.querySelector(".topbar");
+  if (gameArea) gameArea.classList.remove("hidden");
+  if (topbar) topbar.style.display = "flex";
   initGame();
 });
 
