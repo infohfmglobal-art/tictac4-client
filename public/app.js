@@ -139,15 +139,19 @@ window.addEventListener("load", () => {
   }, 200);
 
   // 3s splash, then fade to login
+setTimeout(() => {
+  splash.classList.add("fade-out");
+  splash.style.pointerEvents = "none";
   setTimeout(() => {
-    splash.classList.add("fade-out");
-    splash.style.pointerEvents = "none";
-    setTimeout(() => {
-      splash.style.display = "none";
-      loginGate.classList.remove("hidden");
-      loginGate.style.display = "flex";
-    }, 900);
-  }, 3000);
+    splash.style.display = "none";
+    loginGate.classList.remove("hidden");
+    loginGate.style.display = "flex";
+
+    // 🧩 Hide game area & controls until user starts
+    document.getElementById("gameArea").classList.add("hidden");
+    document.querySelector(".topbar").style.display = "none";
+  }, 800);
+}, 3000);
 });
 
 // ===== LOGIN → HOME =====
@@ -204,7 +208,9 @@ const skinSel     = document.getElementById("skin");
 
 startBtn.addEventListener("click", () => {
   homeScreen.classList.add("hidden");
+  const gameArea = document.getElementById("gameArea");
   gameArea.classList.remove("hidden");
+  document.querySelector(".topbar").style.display = "flex"; // ✅ show buttons now
   initGame();
 });
 
