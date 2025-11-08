@@ -135,30 +135,29 @@ function showAlert(title, text, onOk){
 
 // === SPLASH → LOGIN ===
 window.addEventListener("load", () => {
+  setupXCanvas(); // only if defined elsewhere safely
   const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
 
-  // play short intro bell (make sure /sound/intro.mp3 exists)
+  // play intro bell (short file recommended)
   setTimeout(() => {
-    try {
-      const introSound = document.getElementById("introBell");
-      introSound.volume = 0.6;
-      introSound.currentTime = 0;
-      introSound.play().catch(() => {});
-    } catch (e) {
-      console.warn("Intro bell skipped:", e);
+    if (audio.intro) {
+      audio.intro.currentTime = 0;
+      audio.intro.volume = 0.5;
+      audio.intro.play().catch(() => {});
     }
-  }, 300);
+  }, 200);
 
-  // fade out splash and show login
+  // show splash for 2.5s, then fade and unlock
   setTimeout(() => {
     splash.classList.add("fade-out");
+    splash.style.pointerEvents = "none"; // ensure no block
     setTimeout(() => {
       splash.style.display = "none";
       loginGate.classList.remove("hidden");
       loginGate.style.display = "flex";
-    }, 1000);
-  }, 3000);
+    }, 800);
+  }, 2500);
 });
 
 // ===== LOGIN → HOME =====
