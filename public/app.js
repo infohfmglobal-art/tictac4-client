@@ -1,4 +1,4 @@
-// === RuneXO – Final Polished Sequence ===
+// === RuneXO – Final Stable Edition ===
 
 // === INTRO SPLASH ===
 window.addEventListener("DOMContentLoaded", () => {
@@ -8,27 +8,21 @@ window.addEventListener("DOMContentLoaded", () => {
   const home  = document.getElementById("homeScreen");
   const game  = document.getElementById("gameArea");
 
-  // Ensure all other sections are hidden initially
   login.classList.add("hidden");
   home.classList.add("hidden");
   game.classList.add("hidden");
 
-  // Play bell softly
-  setTimeout(() => { 
-    if (bell) { 
-      bell.volume = 0.4; 
-      bell.play().catch(()=>{}); 
-    }
-  }, 200);
+  // Play short intro bell
+  setTimeout(() => { if (bell) { bell.volume = 0.4; bell.play().catch(()=>{}); }}, 200);
 
-  // Fade out intro after 2.5s, show login only
+  // Fade out splash and show login
   setTimeout(() => {
     intro.classList.add("fade-out");
     setTimeout(() => {
       intro.style.display = "none";
       login.classList.remove("hidden");
       login.style.display = "flex";
-    }, 900);
+    }, 800);
   }, 2500);
 });
 
@@ -63,6 +57,7 @@ function showHome(){
 
 guestBtn.onclick = () => showHome();
 googleBtn.onclick = () => showHome();
+
 logoutBtn.onclick = () => {
   homeScreen.classList.add("hidden");
   document.getElementById("loginGate").classList.remove("hidden");
@@ -94,25 +89,19 @@ function playSfx(a){ if(sfxOn){ a.currentTime=0; a.play().catch(()=>{}); }}
 function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume=0.4; audio.bg.play().catch(()=>{});} }
 function stopBg(){ audio.bg.pause(); }
 
-// Play button → show game grid
 startBtn.onclick = () => {
   homeScreen.classList.add("hidden");
-  homeScreen.style.display = "none";
   gameArea.classList.remove("hidden");
-  gameArea.style.display = "flex";
   initGame();
-};
-
-// Back home
-homeBtn.onclick = () => {
-  gameArea.classList.add("hidden");
-  gameArea.style.display = "none";
-  homeScreen.classList.remove("hidden");
-  homeScreen.style.display = "flex";
   stopBg();
 };
 
-// Toggle music/SFX
+homeBtn.onclick = () => {
+  gameArea.classList.add("hidden");
+  homeScreen.classList.remove("hidden");
+  stopBg();
+};
+
 musicBtn.onclick = () => {
   musicOn = !musicOn;
   musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
@@ -124,15 +113,45 @@ sfxBtn.onclick = () => {
 };
 
 
-// === SIMPLE GAME ===
+// === SIMPLE GAME GRID ===
+let board = Array(9).fill(null);
+let current = "X";
+
 function initGame(){
+  board = Array(9).fill(null);
+  current = "X";
   cells.forEach(c=>{
     c.textContent = "";
-    c.onclick = ()=>{
-      if(!c.textContent){
-        c.textContent = "X";
-        playSfx(audio.click);
-      }
-    };
+    c.style.color = "gold";
+    c.onclick = ()=> handleMove(c);
   });
+}
+
+function handleMove(cell){
+  const idx = Number(cell.dataset.index);
+  if(board[idx]) return;
+  board[idx] = current;
+  cell.textContent = current;
+  playSfx(audio.click);
+
+  if(checkWinner()){
+    playSfx(audio.win);
+    alert(`🎉 ${current} Wins!`);
+    initGame();
+    return;
+  }
+
+  if(board.every(v=>v)) {
+    playSfx(audio.draw);
+    alert("😎 It's a draw!");
+    initGame();
+    return;
+  }
+
+  current = current === "X" ? "O" : "X";
+}
+
+function checkWinner(){
+  const L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return L.some(([a,b,c]) => board[a] && board[a]===board[b] && board[a]===board[c]);
 }
