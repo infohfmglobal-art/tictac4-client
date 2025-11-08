@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
 
   <script>
-    // Capture PWA install prompt
+    // Capture PWA install event
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -20,7 +20,8 @@
 </head>
 
 <body class="theme-rune">
-  <!-- 🐉 INTRO SPLASH (3s) -->
+
+  <!-- 🐉 INTRO SPLASH -->
   <div id="introSplash" class="intro-splash">
     <img src="./logo-dragon.png" alt="FrameRift Studio" class="splash-logo"/>
     <h1 class="splash-title glow">RuneXO</h1>
@@ -39,10 +40,10 @@
     </div>
   </div>
 
-  <!-- ⚡ GOLDEN FLASH OVERLAY -->
-  <div id="flashOverlay" class="flash-overlay"></div>
+  <!-- ⚡ GOLDEN FLASH -->
+  <div id="flashOverlay" class="flash-overlay flash-hide"></div>
 
-  <!-- 🏠 HOME SCREEN -->
+  <!-- 🏠 HOME -->
   <div id="homeScreen" class="home-screen hidden">
     <div class="menu-box">
       <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
@@ -98,13 +99,13 @@
     </div>
   </div>
 
-  <!-- 🎮 GAME AREA -->
+  <!-- 🎮 GAME -->
   <div id="gameArea" class="hidden">
     <div class="topbar">
       <div class="left-controls">
         <button id="homeBtn">🏠 Home</button>
         <button id="nextRoundBtn">Next Round</button>
-        <button id="resetBtn">Reset All</button>
+        <button id="resetBtn">Reset</button>
       </div>
       <div class="right-controls">
         <button id="sfxBtn">🔊 SFX ON</button>
@@ -127,7 +128,7 @@
     </div>
   </div>
 
-  <!-- 💎 RUNE ALERT (cinematic popup) -->
+  <!-- ⚙️ ALERT -->
   <div id="runeAlert" class="rune-alert hidden">
     <div class="rune-card">
       <div class="rune-title" id="runeTitle">Title</div>
@@ -136,26 +137,8 @@
     </div>
   </div>
 
-  <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
-  <!-- Scripts -->
-  <script defer src="./app.js"></script>
-  <script>
-    // Safe SW registration (won’t block app)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', async () => {
-        try {
-          const res = await fetch('./sw.js', { cache: 'no-store' });
-          if (res.ok) {
-            await navigator.serviceWorker.register('./sw.js');
-            console.log('Service Worker registered ✅');
-          }
-        } catch (e) {
-          console.warn('Service Worker registration skipped.', e);
-        }
-      });
-    }
-  </script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
