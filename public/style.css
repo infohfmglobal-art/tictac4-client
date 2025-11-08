@@ -3,7 +3,7 @@
 body{background:radial-gradient(circle at 50% 30%,#000 0%,#1a0f00 100%);color:#ffd700;overflow:hidden;height:100vh}
 
 /* ===== UTIL ===== */
-.hidden{display:none !important}
+.hidden{display:none}
 .fade-out{opacity:0;transition:opacity 1s ease-in-out}
 
 /* ===== SPLASH ===== */
@@ -23,12 +23,12 @@ body{background:radial-gradient(circle at 50% 30%,#000 0%,#1a0f00 100%);color:#f
 .login-btn:hover{transform:scale(1.05);box-shadow:0 0 22px rgba(255,200,0,1)}
 
 /* ===== FLASH ===== */
-.flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fff8e1 0%,#ffd54f 30%,transparent 70%);opacity:0;transition:opacity .5s ease-out;pointer-events:none;z-index:15}
-.flash-overlay.flash-show{opacity:1}
+.flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fff8e1 0%,#ffd54f 30%,transparent 70%);opacity:0;transition:opacity .55s ease;pointer-events:none;z-index:15}
+.flash-show{opacity:1}
 
 /* ===== HOME ===== */
 .home-screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;z-index:1}
-.menu-box{background:rgba(20,10,0,.8);padding:18px;border-radius:16px;box-shadow:0 0 20px rgba(255,200,0,.6);width:min(340px,92vw);text-align:center}
+.menu-box{background:rgba(20,10,0,.82);padding:18px;border-radius:16px;box-shadow:0 0 20px rgba(255,200,0,.6);width:min(340px,92vw);text-align:center}
 .menu-logo{font-size:2.3rem;color:#ffd700;text-shadow:0 0 15px #ffcc33,0 0 35px #fff5b0;margin-bottom:14px}
 .menu-row{display:flex;justify-content:space-between;align-items:center;margin:8px 0;color:#ffd700}
 select{background:#111;color:gold;border:1px solid #ffcc33;border-radius:8px;padding:6px 10px}
@@ -75,7 +75,7 @@ select{background:#111;color:gold;border:1px solid #ffcc33;border-radius:8px;pad
 @keyframes logoPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 15px gold)}50%{transform:scale(1.05);filter:drop-shadow(0 0 35px #ffd700)}}
 @keyframes orbPulse{0%,100%{box-shadow:0 0 25px gold,0 0 50px #ffbb33}50%{box-shadow:0 0 40px #fff799,0 0 90px #ffd700}}
 
-/* ===== THEMES ===== */
+/* ===== THEMES (hook) ===== */
 body.theme-rune{--accent:#ffd700}
 body.theme-gold{--accent:#ffd700}
 body.theme-blue{--accent:#00aaff}
