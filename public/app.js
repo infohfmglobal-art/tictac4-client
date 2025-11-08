@@ -135,11 +135,10 @@ function showAlert(title, text, onOk){
 
 // === SPLASH → LOGIN ===
 window.addEventListener("load", () => {
-  setupXCanvas(); // only if defined elsewhere safely
   const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
 
-  // play intro bell (short file recommended)
+  // play intro bell
   setTimeout(() => {
     if (audio.intro) {
       audio.intro.currentTime = 0;
@@ -148,14 +147,19 @@ window.addEventListener("load", () => {
     }
   }, 200);
 
-  // show splash for 2.5s, then fade and unlock
+  // show splash for 2.5s, then fade out + show login
   setTimeout(() => {
     splash.classList.add("fade-out");
-    splash.style.pointerEvents = "none"; // ensure no block
+    splash.style.pointerEvents = "none";
     setTimeout(() => {
       splash.style.display = "none";
       loginGate.classList.remove("hidden");
       loginGate.style.display = "flex";
+
+      // ✅ Re-initialize logic here
+      if (typeof setupXCanvas === "function") setupXCanvas();
+      if (typeof initGame === "function") initGame();
+
     }, 800);
   }, 2500);
 });
