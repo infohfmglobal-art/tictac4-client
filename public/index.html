@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>RuneXO</title>
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./icon-192.png" />
-  <link rel="stylesheet" href="./style.css" />
+
+  <link rel="manifest" href="./manifest.json"/>
+  <link rel="icon" href="./icon-512.png"/>
+  <link rel="stylesheet" href="./style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
+
+  <script>
+    // Capture PWA install
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
 </head>
+
 <body class="theme-rune">
-  <!-- SPLASH -->
-  <div id="introSplash" class="splash">
-    <img src="./logo-dragon.png" alt="FrameWeave Studio" class="splash-logo" />
-    <h1 class="brand"><span class="glow">Rune</span><span class="spark">XO</span></h1>
-    <p class="tag">Every Move Shapes Destiny.</p>
-    <small>© FrameWeave Studio LLC</small>
+  <!-- 🐉 INTRO SPLASH (3s) -->
+  <div id="introSplash" class="intro-splash">
+    <img src="./logo-dragon.png" alt="FrameRift Studio" class="splash-logo"/>
+    <h1 class="splash-title glow">RuneXO</h1>
+    <p class="splash-tagline">Every Move Shapes Destiny.</p>
+    <p class="studio-credit">© FrameRift Studio LLC</p>
+    <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
   </div>
 
-  <!-- LOGIN -->
-  <section id="loginGate" class="login hidden">
-    <h1 class="brand brand-small"><span class="glow">Rune</span><span class="spark">XO</span></h1>
-    <p class="tag">Every Move Shapes Destiny.</p>
-    <div class="login-btns">
-      <button id="guestLoginGate" class="btn primary">🔥 Play as Guest</button>
-      <button id="googleLoginGate" class="btn">🔐 Login with Google</button>
+  <!-- ✨ LOGIN GATE -->
+  <div id="loginGate" class="login-gate hidden">
+    <h1 class="login-logo"><span class="glow">Rune</span><span class="spark">XO</span></h1>
+    <p class="login-tagline">Every Move Shapes Destiny.</p>
+    <div class="gate-btns">
+      <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
+      <button id="googleLoginGate" class="login-btn">🔑 Login with Google</button>
     </div>
-  </section>
+  </div>
 
-  <!-- FLASH -->
+  <!-- ⚡ GOLDEN FLASH OVERLAY -->
   <div id="flashOverlay" class="flash-overlay flash-hide"></div>
 
-  <!-- HOME / MENU -->
-  <section id="homeScreen" class="home hidden">
-    <div class="playerbar">
-      <span id="playerName" class="playername">Guest Player</span>
-      <span id="playerCoins" class="coins">💰 0</span>
-      <button id="leaderBtn" class="btn small">🏆 Leaderboard</button>
-      <button id="logoutBtn" class="btn small danger">Logout</button>
-    </div>
-
-    <div class="menu">
+  <!-- 🏠 HOME SCREEN -->
+  <div id="homeScreen" class="home-screen hidden">
+    <div class="menu-box">
       <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
 
       <div class="menu-row">
@@ -66,7 +71,6 @@
           <option>Classic X / O</option>
           <option>Fruit</option>
           <option>Emoji</option>
-          <option>Phoenix</option>
         </select>
       </div>
 
@@ -80,70 +84,68 @@
         </select>
       </div>
 
-      <div class="menu-actions">
-        <button id="startBtn" class="btn primary big">Play</button>
+      <button id="startBtn" class="menu-btn play-btn">Play</button>
+
+      <div class="home-footer">
+        <span id="playerCoins" class="badge coin">💰 0</span>
+        <button id="logoutBtn" class="tiny-ghost hidden">Logout</button>
+      </div>
+
+      <div class="leader-wrap">
+        <h3 class="leader-title">Top 10 Fastest Wins</h3>
+        <ul id="leaderList" class="leader-list"></ul>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- GAME AREA -->
-  <section id="gameArea" class="game hidden">
-    <div class="board" id="gameBoard">
-      <button class="cell" data-index="0"></button>
-      <button class="cell" data-index="1"></button>
-      <button class="cell" data-index="2"></button>
-      <button class="cell" data-index="3"></button>
-      <button class="cell" data-index="4"></button>
-      <button class="cell" data-index="5"></button>
-      <button class="cell" data-index="6"></button>
-      <button class="cell" data-index="7"></button>
-      <button class="cell" data-index="8"></button>
-    </div>
-
-    <!-- HUD (bottom center + right) -->
-    <div class="hud">
-      <div class="hud-left">
-        <button id="homeBtn" class="btn small">🏠 Home</button>
-        <button id="nextRoundBtn" class="btn small">🔁 Next Round</button>
-        <button id="resetBtn" class="btn small">♻️ Reset</button>
+  <!-- 🎮 GAME AREA -->
+  <div id="gameArea" class="hidden">
+    <div class="topbar">
+      <div class="left-controls">
+        <button id="homeBtn">🏠 Home</button>
+        <button id="nextRoundBtn">Next Round</button>
+        <button id="resetBtn">Reset All</button>
       </div>
-      <div class="hud-right">
-        <button id="musicBtn" class="btn small">🔈 Music ON</button>
-        <button id="sfxBtn" class="btn small">🔊 SFX ON</button>
+      <div class="right-controls">
+        <button id="sfxBtn">🔊 SFX ON</button>
+        <button id="musicBtn">🔇 Music OFF</button>
       </div>
     </div>
-  </section>
 
-  <!-- RUNE ALERT (replaces browser alert) -->
+    <div class="game-container">
+      <div class="board" id="gameBoard">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🎉 FX canvas (confetti) is injected by app.js -->
+
+  <!-- 💎 RUNE ALERT (cinematic popup) -->
   <div id="runeAlert" class="rune-alert hidden">
-    <div class="rune-alert-box">
-      <h3 id="runeAlertTitle">Title</h3>
-      <p id="runeAlertMsg">Message</p>
-      <button id="runeAlertOk" class="btn primary">OK</button>
+    <div class="rune-card">
+      <div class="rune-title" id="runeTitle">Title</div>
+      <div class="rune-text" id="runeText">Message</div>
+      <button id="runeOk" class="menu-btn small">Ok</button>
     </div>
   </div>
 
-  <!-- SIMPLE LEADERBOARD MODAL -->
-  <div id="leaderModal" class="leader-modal hidden">
-    <div class="leader-box">
-      <div class="leader-head">
-        <h3>🏆 Leaderboard</h3>
-        <button id="leaderClose" class="btn small">✖</button>
-      </div>
-      <div id="leaderList" class="leader-list"></div>
-      <div class="leader-foot">
-        <button id="leaderLogout" class="btn small danger">Logout</button>
-      </div>
-    </div>
-  </div>
+  <!-- 🔮 INSTALL ORB -->
+  <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
-  <script src="./app.js"></script>
+  <script type="module" src="./app.js"></script>
   <script>
-    // PWA install prompt (optional)
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      window.deferredPrompt = e;
-    });
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
   </script>
 </body>
 </html>
