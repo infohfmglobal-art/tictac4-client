@@ -9,8 +9,9 @@
   <link rel="icon" href="./icon-512.png"/>
   <link rel="stylesheet" href="./style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
+
   <script>
-    // Capture PWA install
+    // PWA install capture (for Install Orb)
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -21,10 +22,10 @@
 <body class="theme-rune">
   <!-- 🐉 INTRO SPLASH (3s) -->
   <div id="introSplash" class="intro-splash">
-    <img src="./logo-dragon.png" alt="FrameRift Studio" class="splash-logo"/>
+    <img src="./logo-dragon.png" alt="FrameWeave Studio LLC" class="splash-logo"/>
     <h1 class="splash-title glow">RuneXO</h1>
     <p class="splash-tagline">Every Move Shapes Destiny.</p>
-    <p class="studio-credit">© FrameRift Studio LLC</p>
+    <p class="studio-credit">© FrameWeave Studio LLC</p>
     <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
   </div>
 
@@ -97,7 +98,7 @@
     </div>
   </div>
 
-  <!-- 🎮 GAME AREA -->
+  <!-- 🎮 GAME AREA (kept hidden until Play) -->
   <div id="gameArea" class="hidden">
     <div class="topbar">
       <div class="left-controls">
@@ -113,43 +114,33 @@
 
     <div class="game-container">
       <div class="board" id="gameBoard">
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
+        <div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div>
       </div>
     </div>
   </div>
 
-  <!-- 💎 RUNE ALERT (cinematic popup) -->
+  <!-- 💎 RUNE ALERT (cinematic popup; replaces window.alert) -->
   <div id="runeAlert" class="rune-alert hidden">
     <div class="rune-card">
-      <div class="rune-title" id="runeTitle">Title</div>
+      <div class="rune-title" id="runeTitle">RuneXO</div>
       <div class="rune-text" id="runeText">Message</div>
       <button id="runeOk" class="menu-btn small">Ok</button>
     </div>
   </div>
 
-  <!-- 🔮 INSTALL ORB -->
+  <!-- 🔮 INSTALL ORB (appears after home shows) -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
+  <!-- Scripts -->
+  <script type="module" src="./app.js"></script>
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async () => {
-        try {
-          await navigator.serviceWorker.register("./sw.js");
-          console.log("SW registered");
-        } catch (e) {
-          console.warn("SW failed", e);
-        }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(()=>{});
       });
     }
   </script>
-  <script type="module" src="./app.js"></script>
 </body>
 </html>
