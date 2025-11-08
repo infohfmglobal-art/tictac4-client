@@ -143,9 +143,22 @@
 
   <script type="module" src="./app.js"></script>
   <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js");
-    }
-  </script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        // ✅ Check if the file exists before registering to prevent 404
+        const res = await fetch('/sw.js', { cache: 'no-store' });
+        if (res.ok) {
+          await navigator.serviceWorker.register('/sw.js');
+          console.log('Service Worker registered ✅');
+        } else {
+          console.warn('Service Worker file not found, skipping registration.');
+        }
+      } catch (e) {
+        console.warn('Service Worker registration skipped.', e);
+      }
+    });
+  }
+</script>
 </body>
 </html>
