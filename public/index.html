@@ -5,25 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>RuneXO</title>
 
-  <link rel="icon" href="./icon-512.png"/>
   <link rel="manifest" href="./manifest.json"/>
+  <link rel="icon" href="./icon-512.png"/>
   <link rel="stylesheet" href="./style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
-
-  <script>
-    // PWA install hook (optional)
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      window.deferredPrompt = e;
-    });
-  </script>
 </head>
 
 <body class="theme-rune">
-  <!-- 🐉 SPLASH -->
+  <!-- 🐉 INTRO SPLASH -->
   <div id="introSplash" class="intro-splash">
-    <img src="./logo-dragon.png" alt="FRAMEWEAVE STUDIO" class="splash-logo"/>
-    <h1 class="splash-title glow">RuneXO</h1>
+    <img src="./logo-dragon.png" alt="FrameWeave Studio" class="splash-logo"/>
+    <h1 class="splash-title">RuneXO</h1>
     <p class="splash-tagline">Every Move Shapes Destiny.</p>
     <p class="studio-credit">© FrameRift Studio LLC</p>
     <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
@@ -31,7 +23,7 @@
 
   <!-- ✨ LOGIN -->
   <div id="loginGate" class="login-gate hidden">
-    <h1 class="login-logo"><span class="glow">Rune</span><span class="spark">XO</span></h1>
+    <h1 class="login-logo">Rune<span class="spark">XO</span></h1>
     <p class="login-tagline">Every Move Shapes Destiny.</p>
     <div class="gate-btns">
       <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
@@ -45,7 +37,7 @@
   <!-- 🏠 HOME -->
   <div id="homeScreen" class="home-screen hidden">
     <div class="menu-box">
-      <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
+      <h2 class="menu-logo">Rune<span class="spark">XO</span></h2>
 
       <div class="menu-row">
         <label>Game Mode</label>
@@ -69,8 +61,8 @@
         <select id="skin">
           <option>Runes</option>
           <option>Classic X / O</option>
+          <option>Fruit</option>
           <option>Emoji</option>
-          <option>Phoenix</option>
         </select>
       </div>
 
@@ -87,13 +79,7 @@
       <button id="startBtn" class="menu-btn play-btn">Play</button>
 
       <div class="home-footer">
-        <span id="playerCoins" class="badge coin">💰 0</span>
-        <button id="logoutBtn" class="tiny-ghost hidden">Logout</button>
-      </div>
-
-      <div class="leader-wrap">
-        <h3 class="leader-title">Top 10 Fastest Wins</h3>
-        <ul id="leaderList" class="leader-list"></ul>
+        <button id="logoutBtn" class="tiny-ghost">Logout</button>
       </div>
     </div>
   </div>
@@ -120,18 +106,6 @@
       </div>
     </div>
   </div>
-
-  <!-- 💎 RUNE ALERT -->
-  <div id="runeAlert" class="rune-alert hidden">
-    <div class="rune-card">
-      <div class="rune-title" id="runeTitle">Title</div>
-      <div class="rune-text" id="runeText">Message</div>
-      <button id="runeOk" class="menu-btn small">Ok</button>
-    </div>
-  </div>
-
-  <!-- 🔮 INSTALL ORB -->
-  <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
   <script type="module" src="./app.js"></script>
 </body>
