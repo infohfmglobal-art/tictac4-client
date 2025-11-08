@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>RuneXO</title>
 
-  <link rel="manifest" href="./manifest.json"/>
+  <link rel="manifest" href="./manifest.json?v=106"/>
   <link rel="icon" href="./icon-512.png"/>
-  <link rel="stylesheet" href="./style.css"/>
+  <link rel="stylesheet" href="./style.css?v=106"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
 
   <script>
-    // PWA install capture (for Install Orb)
+    // PWA install capture (needed for the orb)
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -22,7 +22,7 @@
 <body class="theme-rune">
   <!-- 🐉 INTRO SPLASH (3s) -->
   <div id="introSplash" class="intro-splash">
-    <img src="./logo-dragon.png" alt="FrameWeave Studio LLC" class="splash-logo"/>
+    <img src="./logo-dragon.png" alt="FrameWeave Studio" class="splash-logo"/>
     <h1 class="splash-title glow">RuneXO</h1>
     <p class="splash-tagline">Every Move Shapes Destiny.</p>
     <p class="studio-credit">© FrameWeave Studio LLC</p>
@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <!-- 🎮 GAME AREA (kept hidden until Play) -->
+  <!-- 🎮 GAME AREA -->
   <div id="gameArea" class="hidden">
     <div class="topbar">
       <div class="left-controls">
@@ -114,31 +114,53 @@
 
     <div class="game-container">
       <div class="board" id="gameBoard">
-        <div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div>
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
       </div>
     </div>
   </div>
 
-  <!-- 💎 RUNE ALERT (cinematic popup; replaces window.alert) -->
+  <!-- 💎 RUNE ALERT (cinematic popup) -->
   <div id="runeAlert" class="rune-alert hidden">
     <div class="rune-card">
-      <div class="rune-title" id="runeTitle">RuneXO</div>
+      <div class="rune-title" id="runeTitle">Title</div>
       <div class="rune-text" id="runeText">Message</div>
       <button id="runeOk" class="menu-btn small">Ok</button>
     </div>
   </div>
 
-  <!-- 🔮 INSTALL ORB (appears after home shows) -->
+  <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
-  <!-- Scripts -->
-  <script type="module" src="./app.js"></script>
+  <!-- Load app AFTER SW decision, with version to bust cache -->
   <script>
+    function loadApp(){ const s=document.createElement('script'); s.type='module'; s.src='./app.js?v=106'; document.body.appendChild(s); }
+
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(()=>{});
+      window.addEventListener('load', async () => {
+        try {
+          const r = await fetch('./sw.js?v=106', {cache:'no-store'});
+          if (r.ok) {
+            await navigator.serviceWorker.register('./sw.js?v=106');
+          }
+        } catch(e) {}
+        loadApp();
+      });
+    } else {
+      loadApp();
+    }
+
+    // auto-refresh if a new SW takes control
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        location.reload();
       });
     }
   </script>
