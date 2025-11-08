@@ -141,29 +141,36 @@
   <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
-  <script type="module" src="./app.js"></script>
   <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        // ✅ Check if the file exists before registering to prevent 404
-        const res = await fetch('/sw.js', { cache: 'no-store' });
-        if (res.ok) {
-          await navigator.serviceWorker.register('/sw.js');
-          console.log('Service Worker registered ✅');
-        } else {
-          console.warn('Service Worker file not found, skipping registration.');
-        }
-      } catch (e) {
-        console.warn('Service Worker registration skipped.', e);
+async function loadApp() {
+  await import('./app.js');
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const res = await fetch('/sw.js', { cache: 'no-store' });
+      if (res.ok) {
+        await navigator.serviceWorker.register('/sw.js');
+        console.log('Service Worker registered ✅');
+      } else {
+        console.warn('Service Worker file not found, skipping registration.');
       }
-    });
-  }
-</script>
-  <script>
+    } catch (e) {
+      console.warn('Service Worker registration skipped.', e);
+    } finally {
+      // Load app.js after registration attempt finishes
+      loadApp();
+    }
+  });
+} else {
+  // Fallback for browsers without SW
+  loadApp();
+}
+
 if (navigator.serviceWorker) {
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    console.log("New version detected — refreshing...");
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('New version detected — refreshing...');
     window.location.reload();
   });
 }
