@@ -1,3 +1,25 @@
+/* Utility: force-hide when .hidden is applied */
+.hidden { display: none !important; }
+
+/* Fade-out helper used by splash */
+.fade-out { opacity: 0; transition: opacity 0.9s ease; }
+
+/* Minimal pieces used by the flow (yours already looked good) */
+.intro-splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0700;color:#ffd700;z-index:50}
+.login-gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#000 0%,#1a0f00 100%);z-index:30;transition:opacity .3s}
+.flash-overlay{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle,#fff8e1 0%,#ffd54f 30%,transparent 70%);opacity:0;transition:opacity .5s;z-index:40}
+.flash-overlay.show{opacity:1}
+
+.home-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:20}
+.menu-box{width:min(340px,92vw);background:rgba(20,10,0,.8);padding:18px;border-radius:16px;color:#ffd700;text-align:center;box-shadow:0 0 18px rgba(255,200,0,.6)}
+.menu-row{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
+.play-btn{margin-top:10px;padding:10px 20px;border-radius:10px;border:0;background:linear-gradient(90deg,#ffcc33,#ff9900);cursor:pointer}
+
+.topbar{position:fixed;top:8px;left:0;right:0;display:flex;justify-content:space-between;padding:0 10px;z-index:60}
+.board{display:grid;grid-template-columns:repeat(3,110px);grid-template-rows:repeat(3,110px);gap:12px;margin-left:40px;margin-top:84px}
+.cell{width:110px;height:110px;border:2px solid gold;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2.6rem;color:gold;background:rgba(255,215,0,.08);cursor:pointer}
+.cell.win{box-shadow:0 0 18px 6px rgba(255,230,120,.9), inset 0 0 12px rgba(255,230,140,.9)}
+
 /* ===== BASE ===== */
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;user-select:none}
 body{background:radial-gradient(circle at 50% 30%,#000 0%,#1a0f00 100%);color:#ffd700;height:100vh;overflow:hidden}
