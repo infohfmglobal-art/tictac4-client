@@ -110,23 +110,36 @@ function staticWinner(arr){
   return null;
 }
 
-// ====== SPLASH → LOGIN ======
+// ====== SPLASH → LOGIN (FIXED SEQUENCE) ======
 window.addEventListener("DOMContentLoaded", () => {
-  // hide all except splash
-  [loginGate, homeScreen, gameArea].forEach(el => el.classList.add("hidden"));
+  // Step 1: hide everything except splash
+  loginGate.classList.add("hidden");
+  homeScreen.classList.add("hidden");
+  gameArea.classList.add("hidden");
 
-  // small intro bell
-  setTimeout(()=> audio.intro && audio.intro.play().catch(()=>{}), 250);
+  // Step 2: small delay + intro bell
+  setTimeout(() => {
+    if (audio.intro) {
+      audio.intro.currentTime = 0;
+      audio.intro.volume = 0.4;
+      audio.intro.play().catch(() => {});
+    }
+  }, 250);
 
-  // fade to login
-  setTimeout(()=>{
+  // Step 3: fade out splash after 2.5s, then show only login
+  setTimeout(() => {
     splash.classList.add("fade-out");
-    setTimeout(()=>{
+    splash.style.pointerEvents = "none";
+    setTimeout(() => {
       splash.style.display = "none";
       loginGate.classList.remove("hidden");
+      loginGate.style.display = "flex";
+      homeScreen.classList.add("hidden");
+      gameArea.classList.add("hidden");
     }, 900);
-  }, 2000);
+  }, 2500);
 });
+
 
 // ====== LOGIN → HOME ======
 function goldenFlashThen(cb){
