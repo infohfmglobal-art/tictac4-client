@@ -1,14 +1,14 @@
 {
   "name": "RuneXO",
   "short_name": "RuneXO",
-  "description": "Every Move Shapes Destiny — by FrameRift Studio LLC.",
+  "description": "Every Move Shapes Destiny — FrameRift Studio LLC",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#ffd700",
   "icons": [
-    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {"src":"./icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"./icon-512.png","sizes":"512x512","type":"image/png"}
   ]
 }
