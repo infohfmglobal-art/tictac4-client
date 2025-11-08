@@ -22,13 +22,25 @@ const audio = {
 audio.bg.loop = true;
 [audio.click, audio.win, audio.lose, audio.draw].forEach(a => (a.preload = "auto"));
 
+// ✅ Fallback if draw sound is missing
+fetch('./sound/draw.mp3', { cache: 'no-store' })
+  .then(r => { if (!r.ok) audio.draw = audio.win; })
+  .catch(() => { audio.draw = audio.win; });
+
 // default: player choice — OFF at start
 let musicOn = false;
 let sfxOn = true;
 
-function playSfx(a){ if(sfxOn){ a.currentTime = 0; a.play().catch(()=>{}); } }
-function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume = 0.4; audio.bg.play().catch(()=>{}); } }
-function stopBg(){ audio.bg.pause(); }
+function playSfx(a) {
+  if (sfxOn) { a.currentTime = 0; a.play().catch(() => {}); }
+}
+function ensureBg() {
+  if (musicOn && audio.bg.paused) {
+    audio.bg.volume = 0.4;
+    audio.bg.play().catch(() => {});
+  }
+}
+function stopBg() { audio.bg.pause(); }
 
 // ===== COINS (LOCAL) =====
 let coins = Number(localStorage.getItem("rxo_coins") || "0");
