@@ -1,5 +1,5 @@
-// === RuneXO Service Worker ===
-const CACHE_NAME = "runexo-v1.2";
+// RuneXO SW – simple offline cache
+const CACHE_NAME = "runexo-v1.3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,32 +9,28 @@ const ASSETS = [
   "./logo-dragon.png",
   "./icon-192.png",
   "./icon-512.png",
-  "./sound/intro.mp3",
   "./sound/bg.mp3",
   "./sound/click.mp3",
   "./sound/win.mp3",
   "./sound/lose.mp3",
-  "./sound/draw.mp3"
+  "./sound/draw.mp3",
+  "./sound/intro.mp3"
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
 });
 
 self.addEventListener("activate", (e) => {
-  e.waitUntil(caches.keys().then((keys) =>
-    Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-  ));
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
 });
 
 self.addEventListener("fetch", (e) => {
   e.respondWith(
-    caches.match(e.request).then((res) => res || fetch(e.request).catch(() => undefined))
+    caches.match(e.request).then(res => res || fetch(e.request))
   );
-});
-// === Auto-update detection ===
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
 });
