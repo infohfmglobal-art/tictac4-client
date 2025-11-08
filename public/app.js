@@ -139,24 +139,8 @@ function initGame(){
   running = true;
   cells.forEach(c=>{
     c.textContent = "";
-    
+    c.onclick = ()=>handleMove(c);
   });
-}
-
-function showRuneAlert(title, text) {
-  const alertBox = document.getElementById("runeAlert");
-  const titleEl = document.getElementById("runeTitle");
-  const textEl = document.getElementById("runeText");
-  const okBtn = document.getElementById("runeOk");
-
-  titleEl.textContent = title;
-  textEl.textContent = text;
-  alertBox.classList.remove("hidden");
-
-  okBtn.onclick = () => {
-    alertBox.classList.add("hidden");
-    initGame();
-  };
 }
 
 function handleMove(cell) {
@@ -182,7 +166,6 @@ function handleMove(cell) {
     return;
   }
 
-  // Switch to CPU
   current = current === "X" ? "O" : "X";
   if (current === "O") {
     setTimeout(cpuMove, 600);
@@ -246,4 +229,3 @@ function showRuneAlert(title, text) {
 // === BUTTONS ===
 nextRoundBtn.onclick = initGame;
 resetBtn.onclick = initGame;
-
