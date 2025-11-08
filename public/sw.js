@@ -1,6 +1,7 @@
+// ✅ RuneXO Service Worker v1.0.6 — Frameweave Studio LLC
+
 const CACHE_NAME = "runexo-v106";
 const ASSETS = [
-  "./",
   "./index.html",
   "./app.js",
   "./style.css",
@@ -8,16 +9,15 @@ const ASSETS = [
   "./icon-192.png",
   "./icon-512.png",
   "./sound/intro.mp3",
-  "./sound/bg.mp3",
   "./sound/click.mp3",
   "./sound/win.mp3",
-  "./sound/lose.mp3",
-  "./sound/draw.mp3"
+  "./sound/draw.mp3",
+  "./sound/lose.mp3"
 ];
 
 // INSTALL — Precache core assets
-self.addEventListener("install", (e) => {
-  e.waitUntil(
+self.addEventListener("install", (event) => {
+  event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS);
     })
@@ -25,35 +25,37 @@ self.addEventListener("install", (e) => {
   self.skipWaiting();
 });
 
-// ACTIVATE — Clear old cache versions
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
+// ACTIVATE — Clear old caches
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      )
     )
   );
   self.clients.claim();
 });
 
-// FETCH — Online-first strategy, with safe caching
-self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    fetch(e.request)
+// FETCH — Network-first, then cache fallback
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+
+  event.respondWith(
+    fetch(event.request)
       .then((response) => {
-        // ✅ Only cache fully loaded, valid responses
-        if (response.ok && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        if (!response || response.status !== 200 || response.type !== "basic") {
+          return response;
         }
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() => caches.match(event.request))
   );
 });
 
-// MESSAGE — Allow skipWaiting from new service worker updates
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
+// ✅ Log on load for confirmation
+console.log("✅ RuneXO Service Worker v1.0.6 active — Frameweave Studio LLC");
