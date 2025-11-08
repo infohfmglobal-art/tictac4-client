@@ -143,32 +143,107 @@ function initGame(){
   });
 }
 
-function handleMove(cell){
-  if(!running) return;
+function showRuneAlert(title, text) {
+  const alertBox = document.getElementById("runeAlert");
+  const titleEl = document.getElementById("runeTitle");
+  const textEl = document.getElementById("runeText");
+  const okBtn = document.getElementById("runeOk");
+
+  titleEl.textContent = title;
+  textEl.textContent = text;
+  alertBox.classList.remove("hidden");
+
+  okBtn.onclick = () => {
+    alertBox.classList.add("hidden");
+    initGame();
+  };
+}
+
+function handleMove(cell) {
+  if (!running) return;
   const idx = Number(cell.dataset.index);
-  if(board[idx]) return;
+  if (board[idx]) return;
+
   board[idx] = current;
   cell.textContent = current;
   playSfx(audio.click);
-  if(checkWinner()){
+
+  if (checkWinner()) {
     playSfx(audio.win);
-    alert(`🏆 ${current} wins!`);
+    showRuneAlert("Victory", "🏆 You win!");
     running = false;
     return;
   }
-  if(board.every(v=>v)){
+
+  if (board.every(v => v)) {
     playSfx(audio.draw);
-    alert(`🤝 Draw!`);
+    showRuneAlert("Draw", "🤝 It’s a draw!");
     running = false;
     return;
   }
+
+  // Switch to CPU
   current = current === "X" ? "O" : "X";
+  if (current === "O") {
+    setTimeout(cpuMove, 600);
+  }
 }
 
-function checkWinner(){
+// === CPU MOVE (Simple Random AI) ===
+function cpuMove() {
+  const empty = board
+    .map((v, i) => (v ? null : i))
+    .filter(v => v !== null);
+
+  if (empty.length === 0) return;
+  const move = empty[Math.floor(Math.random() * empty.length)];
+  board[move] = "O";
+
+  const cpuCell = cells[move];
+  cpuCell.textContent = "O";
+  playSfx(audio.click);
+
+  if (checkWinner()) {
+    playSfx(audio.lose);
+    showRuneAlert("CPU Wins", "💀 The machine claims victory!");
+    running = false;
+    return;
+  }
+
+  if (board.every(v => v)) {
+    playSfx(audio.draw);
+    showRuneAlert("Draw", "🤝 It’s a draw!");
+    running = false;
+    return;
+  }
+
+  current = "X";
+}
+
+// === WIN CHECK ===
+function checkWinner() {
   const L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  return L.some(([a,b,c])=> board[a] && board[a]===board[b] && board[a]===board[c]);
+  return L.some(([a,b,c]) => board[a] && board[a] === board[b] && board[a] === board[c]);
 }
 
+// === THEMED ALERT ===
+function showRuneAlert(title, text) {
+  const alertBox = document.getElementById("runeAlert");
+  const titleEl = document.getElementById("runeTitle");
+  const textEl = document.getElementById("runeText");
+  const okBtn = document.getElementById("runeOk");
+
+  titleEl.textContent = title;
+  textEl.textContent = text;
+  alertBox.classList.remove("hidden");
+
+  okBtn.onclick = () => {
+    alertBox.classList.add("hidden");
+    initGame();
+  };
+}
+
+// === BUTTONS ===
 nextRoundBtn.onclick = initGame;
 resetBtn.onclick = initGame;
+
