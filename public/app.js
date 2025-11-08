@@ -113,7 +113,7 @@ sfxBtn.onclick = () => {
 };
 
 
-// === SIMPLE GAME GRID ===
+ === Home === SIMPLE GAME GRID ===
 let board = Array(9).fill(null);
 let current = "X";
 
@@ -155,38 +155,52 @@ function checkWinner(){
   const L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   return L.some(([a,b,c]) => board[a] && board[a]===board[b] && board[a]===board[c]);
 }
-// === HOME → GAME (Fixed timing) ===
-function safeInitGame(){
-  const boardEl = document.getElementById("gameBoard");
-  if (!boardEl || boardEl.offsetParent === null) {
-    setTimeout(safeInitGame, 300);
-    return;
+// === HOME → GAME (Final guaranteed load with DOMContentLoaded) ===
+document.addEventListener("DOMContentLoaded", () => {
+
+  function safeInitGame(){
+    const boardEl = document.getElementById("gameBoard");
+    if (!boardEl || boardEl.offsetParent === null) {
+      console.warn("Waiting for game board to render...");
+      setTimeout(safeInitGame, 300);
+      return;
+    }
+    initGame();
+    console.log("✅ Game initialized");
   }
-  initGame();
-}
 
-startBtn.addEventListener("click", () => {
-  homeScreen.classList.add("hidden");
-  gameArea.classList.remove("hidden");
-  setTimeout(() => safeInitGame(), 400);
-});
+  const startBtn = document.getElementById("startBtn");
+  const homeBtn = document.getElementById("homeBtn");
+  const nextRoundBtn = document.getElementById("nextRoundBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const musicBtn = document.getElementById("musicBtn");
+  const sfxBtn = document.getElementById("sfxBtn");
 
-homeBtn.addEventListener("click", () => {
-  gameArea.classList.add("hidden");
-  homeScreen.classList.remove("hidden");
-  stopBg();
-});
+  startBtn.addEventListener("click", () => {
+    console.log("🎮 Play button clicked");
+    homeScreen.classList.add("hidden");
+    gameArea.classList.remove("hidden");
+    setTimeout(() => safeInitGame(), 400);
+  });
 
-nextRoundBtn.addEventListener("click", initGame);
-resetBtn.addEventListener("click", initGame);
+  homeBtn.addEventListener("click", () => {
+    gameArea.classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    stopBg();
+  });
 
-musicBtn.addEventListener("click", () => {
-  musicOn = !musicOn;
-  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-  if (musicOn) ensureBg(); else stopBg();
-});
+  nextRoundBtn.addEventListener("click", initGame);
+  resetBtn.addEventListener("click", initGame);
 
-sfxBtn.addEventListener("click", () => {
-  sfxOn = !sfxOn;
-  sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
+  musicBtn.addEventListener("click", () => {
+    musicOn = !musicOn;
+    musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
+    if (musicOn) ensureBg(); else stopBg();
+  });
+
+  sfxBtn.addEventListener("click", () => {
+    sfxOn = !sfxOn;
+    sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
+  });
+
 });
