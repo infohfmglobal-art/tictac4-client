@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
 
   <script>
-    // Capture PWA install
+    // Capture PWA install prompt
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
@@ -40,7 +40,7 @@
   </div>
 
   <!-- ⚡ GOLDEN FLASH OVERLAY -->
-  <div id="flashOverlay" class="flash-overlay flash-hide"></div>
+  <div id="flashOverlay" class="flash-overlay"></div>
 
   <!-- 🏠 HOME SCREEN -->
   <div id="homeScreen" class="home-screen hidden">
@@ -127,8 +127,6 @@
     </div>
   </div>
 
-  <!-- 🎉 FX canvas (confetti) is injected by app.js -->
-
   <!-- 💎 RUNE ALERT (cinematic popup) -->
   <div id="runeAlert" class="rune-alert hidden">
     <div class="rune-card">
@@ -141,39 +139,23 @@
   <!-- 🔮 INSTALL ORB -->
   <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
 
+  <!-- Scripts -->
+  <script defer src="./app.js"></script>
   <script>
-async function loadApp() {
-  await import('./app.js');
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const res = await fetch('/sw.js', { cache: 'no-store' });
-      if (res.ok) {
-        await navigator.serviceWorker.register('/sw.js');
-        console.log('Service Worker registered ✅');
-      } else {
-        console.warn('Service Worker file not found, skipping registration.');
-      }
-    } catch (e) {
-      console.warn('Service Worker registration skipped.', e);
-    } finally {
-      // Load app.js after registration attempt finishes
-      loadApp();
+    // Safe SW registration (won’t block app)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          const res = await fetch('./sw.js', { cache: 'no-store' });
+          if (res.ok) {
+            await navigator.serviceWorker.register('./sw.js');
+            console.log('Service Worker registered ✅');
+          }
+        } catch (e) {
+          console.warn('Service Worker registration skipped.', e);
+        }
+      });
     }
-  });
-} else {
-  // Fallback for browsers without SW
-  loadApp();
-}
-
-if (navigator.serviceWorker) {
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('New version detected — refreshing...');
-    window.location.reload();
-  });
-}
-</script>
+  </script>
 </body>
 </html>
