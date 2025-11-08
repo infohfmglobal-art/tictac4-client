@@ -84,3 +84,7 @@ body.theme-neon{--accent:#39ff14}
   display: none !important;
   opacity: 0 !important;
 }
+#gameArea.hidden {
+  display: none !important;
+  opacity: 0 !important;
+}
