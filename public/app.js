@@ -1,26 +1,22 @@
-// === RuneXO – FINAL CPU EDITION ===
+// === RuneXO – FINAL FIXED EDITION (Splash → Login → Home → Game CPU) ===
 
 // === INTRO SPLASH ===
 window.addEventListener("DOMContentLoaded", () => {
   const intro = document.getElementById("introSplash");
   const login = document.getElementById("loginGate");
-  const bell = document.getElementById("introBell");
   const home = document.getElementById("homeScreen");
   const game = document.getElementById("gameArea");
+  const bell = document.getElementById("introBell");
 
+  // Hide everything except splash
   login.classList.add("hidden");
   home.classList.add("hidden");
   game.classList.add("hidden");
 
   // Play intro bell
-  setTimeout(() => {
-    if (bell) {
-      bell.volume = 0.4;
-      bell.play().catch(() => {});
-    }
-  }, 200);
+  setTimeout(() => { if (bell) { bell.volume = 0.4; bell.play().catch(()=>{}); }}, 200);
 
-  // Fade splash → login
+  // Fade to login after 2.5s
   setTimeout(() => {
     intro.classList.add("fade-out");
     setTimeout(() => {
@@ -31,6 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }, 2500);
 });
 
+
 // === LOGIN → HOME ===
 const flashOverlay = document.getElementById("flashOverlay");
 const guestBtn = document.getElementById("guestLoginGate");
@@ -39,218 +36,181 @@ const homeScreen = document.getElementById("homeScreen");
 const installOrb = document.getElementById("installOrb");
 const logoutBtn = document.getElementById("logoutBtn");
 
-function goldenFlashThen(cb) {
+function goldenFlashThen(cb){
   flashOverlay.classList.add("flash-show");
-  setTimeout(() => {
+  setTimeout(()=>{
     flashOverlay.classList.remove("flash-show");
     cb && cb();
-  }, 700);
+  },700);
 }
 
-function showHome() {
-  goldenFlashThen(() => {
+function showHome(){
+  goldenFlashThen(()=>{
     document.getElementById("loginGate").classList.add("hidden");
     homeScreen.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
-    setTimeout(() => {
+    setTimeout(()=>{
       installOrb.classList.remove("hidden");
       installOrb.classList.add("show");
-    }, 1000);
+    },1000);
   });
 }
 
 guestBtn.onclick = showHome;
 googleBtn.onclick = showHome;
-logoutBtn.onclick = () => {
+
+logoutBtn.onclick = ()=>{
   homeScreen.classList.add("hidden");
   document.getElementById("loginGate").classList.remove("hidden");
 };
 
+
 // === AUDIO ===
-let musicOn = false, sfxOn = true;
-const audio = {
-  bg: new Audio("./sound/bg.mp3"),
-  click: new Audio("./sound/click.mp3"),
-  win: new Audio("./sound/win.mp3"),
-  lose: new Audio("./sound/lose.mp3"),
-  draw: new Audio("./sound/draw.mp3")
+let musicOn=false,sfxOn=true;
+const audio={
+  bg:new Audio("./sound/bg.mp3"),
+  click:new Audio("./sound/click.mp3"),
+  win:new Audio("./sound/win.mp3"),
+  lose:new Audio("./sound/lose.mp3"),
+  draw:new Audio("./sound/draw.mp3")
 };
-audio.bg.loop = true;
+audio.bg.loop=true;
+function playSfx(a){if(sfxOn){a.currentTime=0;a.play().catch(()=>{});}}
+function ensureBg(){if(musicOn && audio.bg.paused){audio.bg.volume=0.4;audio.bg.play().catch(()=>{});}}
+function stopBg(){audio.bg.pause();}
 
-function playSfx(a) { if (sfxOn) { a.currentTime = 0; a.play().catch(() => {}); } }
-function ensureBg() { if (musicOn && audio.bg.paused) { audio.bg.volume = 0.4; audio.bg.play().catch(() => {}); } }
-function stopBg() { audio.bg.pause(); }
 
-// === GAME SETUP ===
-const startBtn = document.getElementById("startBtn");
-const gameArea = document.getElementById("gameArea");
-const homeBtn = document.getElementById("homeBtn");
-const nextRoundBtn = document.getElementById("nextRoundBtn");
-const resetBtn = document.getElementById("resetBtn");
-const musicBtn = document.getElementById("musicBtn");
-const sfxBtn = document.getElementById("sfxBtn");
-const boardEl = document.getElementById("gameBoard");
-const cells = Array.from(boardEl.querySelectorAll(".cell"));
-const modeSel = document.getElementById("gameMode");
-const diffSel = document.getElementById("difficulty");
+// === GAME LOGIC ===
+const startBtn=document.getElementById("startBtn");
+const gameArea=document.getElementById("gameArea");
+const homeBtn=document.getElementById("homeBtn");
+const nextRoundBtn=document.getElementById("nextRoundBtn");
+const resetBtn=document.getElementById("resetBtn");
+const musicBtn=document.getElementById("musicBtn");
+const sfxBtn=document.getElementById("sfxBtn");
+const boardEl=document.getElementById("gameBoard");
+const cells=Array.from(boardEl.querySelectorAll(".cell"));
+const modeSel=document.getElementById("gameMode");
+const diffSel=document.getElementById("difficulty");
 
-let board = Array(9).fill("");
-let current = "P1";
-let running = false;
-let againstCPU = true;
+let board=[],current="P1",running=false,againstCPU=true;
 
-function initGame() {
-  board = Array(9).fill("");
-  current = "P1";
-  running = true;
-  againstCPU = (modeSel.value === "Player vs CPU");
-
-  cells.forEach(c => {
-    c.textContent = "";
-    c.onclick = () => handleCellClick(c);
+function initGame(){
+  board=Array(9).fill("");
+  current="P1";
+  running=true;
+  againstCPU=(modeSel.value==="Player vs CPU");
+  cells.forEach(c=>{
+    c.textContent="";
+    c.onclick=()=>handleCell(c);
   });
 }
 
-function handleCellClick(cell) {
-  if (!running) return;
-  const idx = Number(cell.dataset.index);
-  if (board[idx]) return;
-
-  board[idx] = current;
-  cell.textContent = current === "P1" ? "X" : "O";
+function handleCell(c){
+  if(!running) return;
+  const idx=Number(c.dataset.index);
+  if(board[idx]) return;
+  board[idx]=current;
+  c.textContent=current==="P1"?"X":"O";
   playSfx(audio.click);
 
-  if (checkWinner()) {
-    endGame(current);
-    return;
-  }
-
-  if (board.every(v => v)) {
-    playSfx(audio.draw);
-    alert("😎 It's a draw!");
-    running = false;
-    return;
-  }
-
-  current = current === "P1" ? "P2" : "P1";
-
-  if (againstCPU && current === "P2") {
-    setTimeout(cpuMove, 400);
-  }
+  const w=checkWinner();
+  if(w){endGame(w);return;}
+  if(board.every(Boolean)){drawGame();return;}
+  current=current==="P1"?"P2":"P1";
+  if(againstCPU && current==="P2"){setTimeout(cpuMove,400);}
 }
 
-function cpuMove() {
-  const empty = board.map((v, i) => (v ? null : i)).filter(i => i !== null);
-  if (empty.length === 0) return;
-
-  let move;
-  const diff = diffSel.value;
-  if (diff === "Easy") {
-    move = empty[Math.floor(Math.random() * empty.length)];
-  } else if (diff === "Normal") {
-    move = findBest("P2") ?? findBest("P1") ?? empty[Math.floor(Math.random() * empty.length)];
-  } else {
-    move = minimax(board.slice(), "P2").index;
-  }
-
-  const cell = cells[move];
-  board[move] = "P2";
-  cell.textContent = "O";
-  playSfx(audio.click);
-
-  if (checkWinner()) {
-    endGame("P2");
-    return;
-  }
-
-  if (board.every(v => v)) {
-    playSfx(audio.draw);
-    alert("😎 It's a draw!");
-    running = false;
-    return;
-  }
-
-  current = "P1";
+function drawGame(){playSfx(audio.draw);alert("😎 It's a draw!");running=false;}
+function endGame(winner){
+  running=false;
+  if(winner==="P1"){playSfx(audio.win);alert("🏆 You Win!");}
+  else{playSfx(audio.lose);alert("💀 CPU Wins!");}
 }
 
-function findBest(player) {
-  const empty = board.map((v, i) => (v ? null : i)).filter(i => i !== null);
-  for (const i of empty) {
-    board[i] = player;
-    if (checkWinner()) { board[i] = ""; return i; }
-    board[i] = "";
+function checkWinner(){
+  const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for(const [a,b,c] of L){
+    if(board[a] && board[a]===board[b] && board[a]===board[c]) return board[a];
   }
   return null;
 }
 
-function minimax(state, player) {
-  const empty = state.map((v, i) => (v ? null : i)).filter(i => i !== null);
-  if (checkStaticWinner(state) === "P1") return { score: -10 };
-  if (checkStaticWinner(state) === "P2") return { score: 10 };
-  if (empty.length === 0) return { score: 0 };
+function cpuMove(){
+  const diff=diffSel.value;
+  const empty=board.map((v,i)=>v?null:i).filter(v=>v!==null);
+  if(!empty.length) return;
+  let move;
+  if(diff==="Easy"){move=empty[Math.floor(Math.random()*empty.length)];}
+  else if(diff==="Normal"){move=findBest("P2")??findBest("P1")??empty[Math.floor(Math.random()*empty.length)];}
+  else{move=minimax(board.slice(),"P2").index;}
+  board[move]="P2";
+  cells[move].textContent="O";
+  playSfx(audio.click);
+  const w=checkWinner();
+  if(w){endGame(w);return;}
+  if(board.every(Boolean)){drawGame();return;}
+  current="P1";
+}
 
-  const moves = [];
-  for (const i of empty) {
-    const move = { index: i };
-    state[i] = player;
-    const result = minimax(state, player === "P2" ? "P1" : "P2");
-    move.score = result.score;
-    state[i] = "";
+function findBest(player){
+  const empty=board.map((v,i)=>v?null:i).filter(v=>v!==null);
+  for(const i of empty){
+    board[i]=player;
+    if(checkWinner()){board[i]="";return i;}
+    board[i]="";
+  }
+  return null;
+}
+
+function minimax(state,player){
+  const empty=state.map((v,i)=>v?null:i).filter(v=>v!==null);
+  const w=staticWinner(state);
+  if(w==="P1") return{score:-10};
+  if(w==="P2") return{score:10};
+  if(!empty.length) return{score:0};
+  const moves=[];
+  for(const i of empty){
+    const move={index:i};
+    state[i]=player;
+    const res=minimax(state,player==="P2"?"P1":"P2");
+    move.score=res.score;
+    state[i]="";
     moves.push(move);
   }
-
-  let best;
-  if (player === "P2") best = moves.reduce((a, b) => (a.score > b.score ? a : b));
-  else best = moves.reduce((a, b) => (a.score < b.score ? a : b));
-  return best;
+  return player==="P2"
+    ?moves.reduce((a,b)=>a.score>b.score?a:b)
+    :moves.reduce((a,b)=>a.score<b.score?a:b);
 }
 
-function checkStaticWinner(arr) {
-  const L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  for (const [a,b,c] of L) if (arr[a] && arr[a] === arr[b] && arr[a] === arr[c]) return arr[a];
+function staticWinner(arr){
+  const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for(const [a,b,c] of L) if(arr[a]&&arr[a]===arr[b]&&arr[a]===arr[c]) return arr[a];
   return null;
 }
 
-function checkWinner() {
-  return checkStaticWinner(board);
-}
 
-function endGame(winner) {
-  running = false;
-  if (winner === "P1") {
-    playSfx(audio.win);
-    alert("🏆 You Win!");
-  } else {
-    playSfx(audio.lose);
-    alert("💀 CPU Wins!");
-  }
-}
-
-// === BUTTONS ===
-document.addEventListener("DOMContentLoaded", () => {
-  startBtn.addEventListener("click", () => {
+// === BUTTON EVENTS ===
+document.addEventListener("DOMContentLoaded",()=>{
+  startBtn.onclick=()=>{
     homeScreen.classList.add("hidden");
     gameArea.classList.remove("hidden");
     initGame();
-  });
-
-  homeBtn.addEventListener("click", () => {
+  };
+  homeBtn.onclick=()=>{
     gameArea.classList.add("hidden");
     homeScreen.classList.remove("hidden");
     stopBg();
-  });
-
-  nextRoundBtn.addEventListener("click", initGame);
-  resetBtn.addEventListener("click", initGame);
-
-  musicBtn.addEventListener("click", () => {
-    musicOn = !musicOn;
-    musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-    if (musicOn) ensureBg(); else stopBg();
-  });
-
-  sfxBtn.addEventListener("click", () => {
-    sfxOn = !sfxOn;
-    sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
-  });
+  };
+  nextRoundBtn.onclick=initGame;
+  resetBtn.onclick=initGame;
+  musicBtn.onclick=()=>{
+    musicOn=!musicOn;
+    musicBtn.textContent=musicOn?"🔈 Music ON":"🔇 Music OFF";
+    if(musicOn)ensureBg();else stopBg();
+  };
+  sfxBtn.onclick=()=>{
+    sfxOn=!sfxOn;
+    sfxBtn.textContent=sfxOn?"🔊 SFX ON":"🔈 SFX OFF";
+  };
 });
