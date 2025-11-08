@@ -9,8 +9,10 @@ window.addEventListener("DOMContentLoaded", () => {
   const bell = document.getElementById("introBell");
 
   // Step 1: Only splash visible (hide all others)
-  [login, home, game].forEach(el => el.classList.add("hidden"));
-  game.style.display = "none"; // hide grid completely
+  [login, home, game].forEach(el => {
+    el.classList.add("hidden");
+    el.style.display = "none";
+  });
 
   // Step 2: Play intro bell
   setTimeout(() => {
@@ -51,7 +53,9 @@ function goldenFlashThen(cb){
 function showHome(){
   goldenFlashThen(()=>{
     document.getElementById("loginGate").classList.add("hidden");
+    document.getElementById("loginGate").style.display = "none";
     homeScreen.classList.remove("hidden");
+    homeScreen.style.display = "flex";
     logoutBtn.classList.remove("hidden");
     setTimeout(()=>{
       installOrb.classList.remove("hidden");
@@ -64,7 +68,9 @@ guestBtn.onclick = () => showHome();
 googleBtn.onclick = () => showHome();
 logoutBtn.onclick = () => {
   homeScreen.classList.add("hidden");
+  homeScreen.style.display = "none";
   document.getElementById("loginGate").classList.remove("hidden");
+  document.getElementById("loginGate").style.display = "flex";
 };
 
 
@@ -100,6 +106,7 @@ function stopBg(){ audio.bg.pause(); }
 
 startBtn.onclick = () => {
   homeScreen.classList.add("hidden");
+  homeScreen.style.display = "none";
   gameArea.classList.remove("hidden");
   gameArea.style.display = "flex";
   initGame();
@@ -107,7 +114,9 @@ startBtn.onclick = () => {
 
 homeBtn.onclick = () => {
   gameArea.classList.add("hidden");
+  gameArea.style.display = "none";
   homeScreen.classList.remove("hidden");
+  homeScreen.style.display = "flex";
   stopBg();
 };
 
