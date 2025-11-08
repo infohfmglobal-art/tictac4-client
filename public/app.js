@@ -1,133 +1,59 @@
-/* ----------------------------------------
-   RuneXO – Phase 1 (Stable)
-   - Splash → Login → Home → Game
-   - PvCPU & PvP working
-   - 4 skins
-   - Coins + Top-10 leaderboard
-   - Music/SFX toggles
------------------------------------------*/
+// =========================
+// RuneXO Phase-1 (Stable)
+// Splash → Login → Home → Game (CPU works)
+// =========================
 
-// ====== AUDIO ======
+// ---- ELEMENTS ----
+const splash      = document.getElementById("introSplash");
+const loginGate   = document.getElementById("loginGate");
+const flash       = document.getElementById("flashOverlay");
+const homeScreen  = document.getElementById("homeScreen");
+const gameArea    = document.getElementById("gameArea");
+const bell        = document.getElementById("introBell");
+
+const guestBtn    = document.getElementById("guestLoginGate");
+const googleBtn   = document.getElementById("googleLoginGate");
+const startBtn    = document.getElementById("startBtn");
+const logoutBtn   = document.getElementById("logoutBtn");
+const homeBtn     = document.getElementById("homeBtn");
+const nextRoundBtn= document.getElementById("nextRoundBtn");
+const resetBtn    = document.getElementById("resetBtn");
+const sfxBtn      = document.getElementById("sfxBtn");
+const musicBtn    = document.getElementById("musicBtn");
+
+const boardEl     = document.getElementById("gameBoard");
+const cells       = Array.from(boardEl.querySelectorAll(".cell"));
+const modeSel     = document.getElementById("gameMode");
+const diffSel     = document.getElementById("difficulty");
+const skinSel     = document.getElementById("skin");
+const themeSel    = document.getElementById("themeSelect");
+
+// ---- AUDIO (light) ----
 const audio = {
-  bg:    new Audio("./sound/bg.mp3"),
+  intro: bell,
   click: new Audio("./sound/click.mp3"),
-  win:   new Audio("./sound/win.mp3"),
-  lose:  new Audio("./sound/lose.mp3"),
-  draw:  new Audio("./sound/draw.mp3"),
-  intro: document.getElementById("introBell"),
+  win  : new Audio("./sound/win.mp3"),
+  lose : new Audio("./sound/lose.mp3"),
+  draw : new Audio("./sound/draw.mp3"),
+  bg   : new Audio("./sound/bg.mp3")
 };
 audio.bg.loop = true;
-[audio.click, audio.win, audio.lose, audio.draw].forEach(a => a.preload = "auto");
-
-let musicOn = false, sfxOn = true;
-function playSfx(a){ if(sfxOn){ a.currentTime = 0; a.play().catch(()=>{});} }
-function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume = 0.35; audio.bg.play().catch(()=>{});} }
+let sfxOn = true, musicOn = false;
+function playSfx(a){ if(sfxOn){ a.currentTime = 0; a.play().catch(()=>{}); } }
+function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume = .35; audio.bg.play().catch(()=>{}); } }
 function stopBg(){ audio.bg.pause(); }
 
-// ====== COINS & LEADERBOARD ======
-let coins = Number(localStorage.getItem("rxo_coins") || "0");
-function setCoins(v){
-  coins = Math.max(0, Number(v||0));
-  localStorage.setItem("rxo_coins", String(coins));
-  const badge = document.getElementById("playerCoins");
-  if (badge) badge.textContent = `💰 ${coins}`;
-}
-function addCoins(delta){ setCoins(coins + delta); }
-setCoins(coins);
-
-const LEADER_KEY = "rxo_leader";
-function addLeaderEntry(moves, skin, diff){
-  const list = JSON.parse(localStorage.getItem(LEADER_KEY)||"[]");
-  list.push({ t: Date.now(), moves, skin, diff });
-  list.sort((a,b)=> a.moves - b.moves);
-  localStorage.setItem(LEADER_KEY, JSON.stringify(list.slice(0,10)));
-  paintLeaderboard();
-}
-function paintLeaderboard(){
-  const ul = document.getElementById("leaderList");
-  if(!ul) return;
-  ul.innerHTML = "";
-  const list = JSON.parse(localStorage.getItem(LEADER_KEY)||"[]");
-  list.forEach((e,i)=>{
-    const li = document.createElement("li");
-    const d = new Date(e.t).toLocaleDateString();
-    li.textContent = `${i+1}. ${e.moves} moves · ${e.diff} · ${e.skin} · ${d}`;
-    ul.appendChild(li);
-  });
-}
-paintLeaderboard();
-
-// ====== GLOBAL EL REFS ======
-const splash     = document.getElementById("introSplash");
-const loginGate  = document.getElementById("loginGate");
-const homeScreen = document.getElementById("homeScreen");
-const gameArea   = document.getElementById("gameArea");
-
-const flashOverlay = document.getElementById("flashOverlay");
-const guestBtn = document.getElementById("guestLoginGate");
-const googleBtn= document.getElementById("googleLoginGate");
-const logoutBtn= document.getElementById("logoutBtn");
-
-const startBtn  = document.getElementById("startBtn");
-const homeBtn   = document.getElementById("homeBtn");
-const nextRoundBtn = document.getElementById("nextRoundBtn");
-const resetBtn  = document.getElementById("resetBtn");
-const musicBtn  = document.getElementById("musicBtn");
-const sfxBtn    = document.getElementById("sfxBtn");
-
-const themeSelect = document.getElementById("themeSelect");
-const modeSel  = document.getElementById("gameMode");
-const diffSel  = document.getElementById("difficulty");
-const skinSel  = document.getElementById("skin");
-
-const boardEl  = document.getElementById("gameBoard");
-const cells    = Array.from(boardEl.querySelectorAll(".cell"));
-
-// ====== SKINS ======
-const SKINS = {
-  "Runes":            { P1: "ᚱ",  P2: "ᛟ" },        // nordic runes
-  "Classic X / O":    { P1: "X",  P2: "O"  },
-  "Emoji":            { P1: "😎", P2: "🤖" },
-  "Phoenix":          { P1: "🐉", P2: "🕊️" }
-};
-function paintCellStyle(el, mark){
-  // subtle glow per type
-  el.style.color = "gold";
-  el.style.textShadow = "0 0 14px #ffcc33, 0 0 28px #ff9900";
-  if(mark === "X"){ el.style.color="#00ffff"; el.style.textShadow="0 0 12px #00ffff,0 0 24px #00cccc"; }
-  if(mark === "O"){ el.style.color="#ff66cc"; el.style.textShadow="0 0 12px #ff66cc,0 0 24px #ff3399"; }
-}
-
-// ====== GAME STATE ======
-let board   = Array(9).fill(null);
-let current = "P1";
-let running = false;
-let againstCPU = true;
-
-const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-function staticWinner(arr){
-  for(const [a,b,c] of LINES) if(arr[a] && arr[a]===arr[b] && arr[a]===arr[c]) return arr[a];
-  return null;
-}
-
-// ====== SPLASH → LOGIN ======
-// ====== SPLASH → LOGIN (FIXED SEQUENCE) ======
+// ---- SPLASH → LOGIN (no grid flash) ----
 window.addEventListener("DOMContentLoaded", () => {
-  // Step 1: hide everything except splash
+  // Only splash visible at start
   loginGate.classList.add("hidden");
   homeScreen.classList.add("hidden");
   gameArea.classList.add("hidden");
 
-  // Step 2: small delay + intro bell
   setTimeout(() => {
-    if (audio.intro) {
-      audio.intro.currentTime = 0;
-      audio.intro.volume = 0.4;
-      audio.intro.play().catch(() => {});
-    }
-  }, 250);
+    if (audio.intro) { audio.intro.volume = 0.45; audio.intro.currentTime = 0; audio.intro.play().catch(()=>{}); }
+  }, 200);
 
-  // Step 3: fade out splash after 2.5s, then show only login
   setTimeout(() => {
     splash.classList.add("fade-out");
     splash.style.pointerEvents = "none";
@@ -135,35 +61,31 @@ window.addEventListener("DOMContentLoaded", () => {
       splash.style.display = "none";
       loginGate.classList.remove("hidden");
       loginGate.style.display = "flex";
-      homeScreen.classList.add("hidden");
-      gameArea.classList.add("hidden");
     }, 900);
   }, 2500);
 });
 
-
-// ====== LOGIN → HOME ======
-function goldenFlashThen(cb){
-  flashOverlay.classList.add("flash-show");
-  setTimeout(()=>{ flashOverlay.classList.remove("flash-show"); cb && cb(); }, 650);
+// ---- LOGIN → HOME ----
+function flashOnce(cb){
+  flash.classList.add("show");
+  setTimeout(()=>{ flash.classList.remove("show"); cb && cb(); }, 550);
 }
 function showHome(){
-  goldenFlashThen(()=>{
+  flashOnce(()=>{
     loginGate.classList.add("hidden");
     homeScreen.classList.remove("hidden");
-    logoutBtn.classList.remove("hidden");
-    setCoins(localStorage.getItem("rxo_coins") || 0);
+    gameArea.classList.add("hidden");
   });
 }
 guestBtn.onclick  = showHome;
 googleBtn.onclick = showHome;
-
 logoutBtn.onclick = () => {
   homeScreen.classList.add("hidden");
+  gameArea.classList.add("hidden");
   loginGate.classList.remove("hidden");
 };
 
-// ====== HOME → GAME ======
+// ---- HOME → GAME ----
 startBtn.onclick = () => {
   homeScreen.classList.add("hidden");
   gameArea.classList.remove("hidden");
@@ -174,176 +96,162 @@ homeBtn.onclick = () => {
   homeScreen.classList.remove("hidden");
   stopBg();
 };
+
+// toggles
 musicBtn.onclick = () => {
   musicOn = !musicOn;
   musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-  if(musicOn) ensureBg(); else stopBg();
+  if (musicOn) ensureBg(); else stopBg();
 };
 sfxBtn.onclick = () => {
   sfxOn = !sfxOn;
   sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
 };
 
-// ====== GAME SETUP ======
+// ---- GAME LOGIC ----
+let board, running, current, againstCPU;
+
+const SKINS = {
+  "Runes":            { X:"🐉", O:"🕊️" },
+  "Classic X / O":    { X:"X",  O:"O"  },
+  "Fruit":            { X:"🍎", O:"🍊" },
+  "Emoji":            { X:"😎", O:"🤖" }
+};
+
+function markFor(player){
+  const set = SKINS[skinSel.value] || SKINS["Classic X / O"];
+  return player === "X" ? set.X : set.O;
+}
+
 function initGame(){
-  document.body.className = `theme-${themeSelect.value.toLowerCase()}`;
+  // theme hook (keep your CSS themes)
+  document.body.className = `theme-${(themeSel.value||"rune").toLowerCase()}`;
 
   board   = Array(9).fill(null);
-  current = "P1";
   running = true;
+  current = "X";
   againstCPU = (modeSel.value === "Player vs CPU");
 
-  cells.forEach(c=>{
+  cells.forEach(c => {
     c.textContent = "";
     c.classList.remove("win");
-    c.style.color = ""; c.style.textShadow = "";
-    c.onclick = ()=> handleMove(c);
+    c.onclick = () => handleMove(c);
   });
 
-  // buttons state
+  // reflect toggles
   musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
   sfxBtn.textContent   = sfxOn   ? "🔊 SFX ON"   : "🔈 SFX OFF";
 }
-nextRoundBtn.onclick = initGame;
-resetBtn.onclick = () => {
-  localStorage.removeItem(LEADER_KEY);
-  paintLeaderboard();
-  initGame();
-};
 
-// ====== MOVE HANDLERS ======
 function handleMove(cell){
   if(!running) return;
   const idx = Number(cell.dataset.index);
   if(board[idx]) return;
 
-  const mark = current === "P1" ? SKINS[skinSel.value].P1 : SKINS[skinSel.value].P2;
-  cell.textContent = mark;
-  paintCellStyle(cell, mark);
+  cell.textContent = markFor(current);
   board[idx] = current;
   playSfx(audio.click);
 
-  // check player result
-  const res = checkResult();
-  if(res) return endRound(res, idx);
+  const w = winner(board);
+  if(w){ endRound(w); return; }
+  if(board.every(Boolean)){ endRound("draw"); return; }
 
-  // switch
-  current = (current === "P1") ? "P2" : "P1";
+  current = (current === "X") ? "O" : "X";
 
-  // CPU turn?
-  if(running && againstCPU && current === "P2"){
+  if(running && againstCPU && current === "O"){
     setTimeout(cpuMove, 350);
   }
 }
 
 function cpuMove(){
-  // difficulty
-  const choice = diffSel.value;
+  if(!running) return;
+  const diff = diffSel.value;
   const empty = board.map((v,i)=> v? null : i).filter(v=>v!==null);
-  if(empty.length === 0) return;
+  if(empty.length===0) return;
 
   let move = null;
 
-  const tryWinOrBlock = (who)=>{
-    for(const i of empty){
-      board[i] = who;
-      const w = staticWinner(board);
-      board[i] = null;
-      if(w === who) return i;
-    }
-    return null;
-  };
-
-  if(choice === "Easy"){
+  if(diff === "Easy"){
     move = empty[Math.floor(Math.random()*empty.length)];
-  } else if(choice === "Normal"){
-    move = tryWinOrBlock("P2") ?? tryWinOrBlock("P1") ?? empty[Math.floor(Math.random()*empty.length)];
-  } else {
-    // Hard: simple minimax (depth-limited)
-    move = (function minimaxPick(){
-      function scoreState(state){
-        const w = staticWinner(state);
-        if(w==="P2") return 10;
-        if(w==="P1") return -10;
-        if(state.every(Boolean)) return 0;
-        return null;
-      }
-      function best(state, turn, depth){
-        const s = scoreState(state);
-        if(s!==null || depth>6) return {score: s ?? 0};
-        const avail = state.map((v,i)=> v? null : i).filter(v=>v!==null);
-        let bestMove=null;
-        if(turn==="P2"){
-          let mx=-Infinity;
-          for(const i of avail){
-            state[i]="P2";
-            const r=best(state,"P1",depth+1).score;
-            state[i]=null;
-            if(r>mx){mx=r; bestMove={index:i,score:r};}
-          }
-          return bestMove;
-        } else {
-          let mn=Infinity;
-          for(const i of avail){
-            state[i]="P1";
-            const r=best(state,"P2",depth+1).score;
-            state[i]=null;
-            if(r<mn){mn=r; bestMove={index:i,score:r};}
-          }
-          return bestMove;
-        }
-      }
-      return best(board.slice(),"P2",0).index ?? empty[0];
-    })();
+  } else if (diff === "Normal"){
+    move = findBest(board, "O") ?? findBest(board, "X") ?? empty[Math.floor(Math.random()*empty.length)];
+  } else { // Hard
+    move = minimax(board.slice(), "O").index;
   }
 
   const cell = cells[move];
-  const mark = SKINS[skinSel.value].P2;
-  cell.textContent = mark;
-  paintCellStyle(cell, mark);
-  board[move] = "P2";
+  cell.textContent = markFor("O");
+  board[move] = "O";
 
-  const res = checkResult();
-  if(res) return endRound(res, move);
+  const w = winner(board);
+  if(w){ endRound(w); return; }
+  if(board.every(Boolean)){ endRound("draw"); return; }
 
-  current = "P1";
+  current = "X";
 }
 
-function checkResult(){
-  const w = staticWinner(board);
-  if(w){ return { winner:w }; }
-  if(board.every(Boolean)) return { draw:true };
+const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function winner(b){
+  for(const [a,b1,c] of LINES){
+    if(b[a] && b[a]===b[b1] && b[a]===b[c]) return b[a];
+  }
   return null;
 }
-
-function endRound(result, lastIndex){
+function endRound(result){
   running = false;
 
-  // highlight line
-  if(result.winner){
-    for(const [a,b,c] of LINES){
-      if(board[a] && board[a]===board[b] && board[a]===board[c]){
-        [a,b,c].forEach(i=> cells[i].classList.add("win"));
+  // highlight winning line if any
+  if(result==="X" || result==="O"){
+    for(const [a,b1,c] of LINES){
+      if(board[a] && board[a]===board[b1] && board[a]===board[c]){
+        [a,b1,c].forEach(i=> cells[i].classList.add("win"));
       }
     }
-  }
-
-  // coins + leaderboard + alert
-  if(result.winner){
-    const winnerText = (result.winner==="P1") ? "You Win!" : (againstCPU ? "CPU Wins!" : "Player 2 Wins!");
-    if(result.winner==="P1"){ playSfx(audio.win); addCoins(10); addLeaderEntry(board.filter(Boolean).length, skinSel.value, diffSel.value); showAlert("Victory", `${winnerText} (+10 coins)`); }
-    else{ playSfx(audio.lose); showAlert("Defeat", winnerText); }
+    playSfx(result==="X" ? audio.win : audio.lose);
+    alert(result==="X" ? "You Win!" : (againstCPU ? "CPU Wins!" : "Player 2 Wins!"));
   } else {
     playSfx(audio.draw);
-    showAlert("Draw", "Well fought!");
+    alert("It's a draw!");
   }
 }
 
-// ====== RUNE ALERT ======
-function showAlert(title, text){
-  const box = document.getElementById("runeAlert");
-  document.getElementById("runeTitle").textContent = title;
-  document.getElementById("runeText").textContent  = text;
-  box.classList.remove("hidden");
-  document.getElementById("runeOk").onclick = ()=> box.classList.add("hidden");
+function findBest(b, player){
+  const empty = b.map((v,i)=> v? null : i).filter(v=>v!==null);
+  for(const i of empty){
+    b[i] = player;
+    const w = winner(b);
+    b[i] = null;
+    if(w === player) return i;
+  }
+  return null;
 }
+function minimax(state, player){
+  const avail = state.map((v,i)=> v? null : i).filter(v=>v!==null);
+  const w = winner(state);
+  if(w === "X") return { score:-10 };
+  if(w === "O") return { score:10 };
+  if(avail.length === 0) return { score:0 };
+
+  const moves = [];
+  for(const i of avail){
+    const move = { index:i };
+    state[i] = player;
+    const res = (player==="O") ? minimax(state, "X") : minimax(state, "O");
+    move.score = res.score;
+    state[i] = null;
+    moves.push(move);
+  }
+  let best = null;
+  if(player==="O"){ // maximize
+    let mx = -Infinity;
+    for(const m of moves){ if(m.score>mx){ mx=m.score; best=m; } }
+  } else {
+    let mn = Infinity;
+    for(const m of moves){ if(m.score<mn){ mn=m.score; best=m; } }
+  }
+  return best;
+}
+
+// buttons
+nextRoundBtn.onclick = initGame;
+resetBtn.onclick     = initGame;
