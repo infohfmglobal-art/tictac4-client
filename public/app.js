@@ -203,4 +203,4 @@ document.addEventListener("DOMContentLoaded", () => {
     sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
   });
 
-});
+}); // ← Make sure this closing bracket and semicolon exist!
