@@ -23,12 +23,12 @@ body{background:radial-gradient(circle at 50% 30%,#000 0%,#1a0f00 100%);color:#f
 .login-btn:hover{transform:scale(1.05);box-shadow:0 0 22px rgba(255,200,0,1)}
 
 /* ===== FLASH ===== */
-.flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fff8e1 0%,#ffd54f 30%,transparent 70%);opacity:0;transition:opacity .55s ease;pointer-events:none;z-index:15}
-.flash-show{opacity:1}
+.flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fff8e1 0%,#ffd54f 30%,transparent 70%);opacity:0;transition:opacity .5s ease-out;pointer-events:none;z-index:7}
+.flash-overlay.flash-show{opacity:1}
 
 /* ===== HOME ===== */
-.home-screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;z-index:1}
-.menu-box{background:rgba(20,10,0,.82);padding:18px;border-radius:16px;box-shadow:0 0 20px rgba(255,200,0,.6);width:min(340px,92vw);text-align:center}
+.home-screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;z-index:3}
+.menu-box{background:rgba(20,10,0,.8);padding:18px;border-radius:16px;box-shadow:0 0 20px rgba(255,200,0,.6);width:min(340px,92vw);text-align:center}
 .menu-logo{font-size:2.3rem;color:#ffd700;text-shadow:0 0 15px #ffcc33,0 0 35px #fff5b0;margin-bottom:14px}
 .menu-row{display:flex;justify-content:space-between;align-items:center;margin:8px 0;color:#ffd700}
 select{background:#111;color:gold;border:1px solid #ffcc33;border-radius:8px;padding:6px 10px}
@@ -46,7 +46,7 @@ select{background:#111;color:gold;border:1px solid #ffcc33;border-radius:8px;pad
 .leader-list li:last-child{border-bottom:none}
 
 /* ===== TOPBAR IN GAME ===== */
-.topbar{position:fixed;top:8px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:5}
+.topbar{position:fixed;top:8px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:6}
 .left-controls button,.right-controls button{margin:0 6px;padding:8px 12px;background:#2a1a00;color:#ffd700;border:1px solid #ffcc33;border-radius:10px;cursor:pointer;transition:.2s}
 .left-controls button:hover,.right-controls button:hover{transform:scale(1.05)}
 
@@ -58,12 +58,12 @@ select{background:#111;color:gold;border:1px solid #ffcc33;border-radius:8px;pad
 .win{box-shadow:0 0 18px 6px rgba(255,230,120,.9), inset 0 0 12px rgba(255,230,140,.9)}
 
 /* ===== INSTALL ORB ===== */
-.install-orb{position:fixed;bottom:20px;right:20px;background:radial-gradient(circle,gold 0%,#ff8800 60%,#ffbb33 100%);box-shadow:0 0 25px gold,0 0 60px #ffbb33;border-radius:50%;width:60px;height:60px;display:flex;justify-content:center;align-items:center;font-size:2rem;cursor:pointer;opacity:0;transform:scale(.5);transition:all .7s;z-index:30;animation:orbPulse 2.5s infinite}
+.install-orb{position:fixed;bottom:20px;right:20px;background:radial-gradient(circle,gold 0%,#ff8800 60%,#ffbb33 100%);box-shadow:0 0 25px gold,0 0 60px #ffbb33;border-radius:50%;width:60px;height:60px;display:flex;justify-content:center;align-items:center;font-size:2rem;cursor:pointer;opacity:0;transform:scale(.5);transition:all .7s;z-index:8;animation:orbPulse 2.5s infinite}
 .install-orb.show{opacity:1;transform:scale(1)}
 .install-orb:hover{transform:scale(1.1);box-shadow:0 0 40px #fff799,0 0 80px #ffd700}
 
 /* ===== RUNE ALERT ===== */
-.rune-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;justify-content:center;align-items:center;z-index:40}
+.rune-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;justify-content:center;align-items:center;z-index:9}
 .rune-alert.hidden{display:none}
 .rune-card{width:min(340px,90vw);background:rgba(24,16,0,.95);border:1px solid #ffcc33;border-radius:16px;box-shadow:0 0 24px rgba(255,200,0,.5);padding:16px;text-align:center}
 .rune-title{font-size:1.2rem;margin-bottom:6px;color:#ffd700;text-shadow:0 0 10px #ffcc33}
@@ -74,9 +74,3 @@ select{background:#111;color:gold;border:1px solid #ffcc33;border-radius:8px;pad
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes logoPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 15px gold)}50%{transform:scale(1.05);filter:drop-shadow(0 0 35px #ffd700)}}
 @keyframes orbPulse{0%,100%{box-shadow:0 0 25px gold,0 0 50px #ffbb33}50%{box-shadow:0 0 40px #fff799,0 0 90px #ffd700}}
-
-/* ===== THEMES (hook) ===== */
-body.theme-rune{--accent:#ffd700}
-body.theme-gold{--accent:#ffd700}
-body.theme-blue{--accent:#00aaff}
-body.theme-neon{--accent:#39ff14}
