@@ -4,7 +4,10 @@ body{background:radial-gradient(circle at 50% 30%,#000 0%,#1a0f00 100%);color:#f
 
 /* ===== VISIBILITY ===== */
 .hidden{display:none}
-.fade-out{opacity:0;transition:opacity .6s ease}
+.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
 
 /* ===== SPLASH ===== */
 .intro-splash{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(circle,#000 0%,#120800 80%);z-index:10;animation:fadeIn 1s}
