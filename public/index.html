@@ -160,5 +160,13 @@
     });
   }
 </script>
+  <script>
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    console.log("New version detected — refreshing...");
+    window.location.reload();
+  });
+}
+</script>
 </body>
 </html>
