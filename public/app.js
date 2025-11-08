@@ -111,6 +111,7 @@ function staticWinner(arr){
 }
 
 // ====== SPLASH → LOGIN ======
+// ====== SPLASH → LOGIN (FIXED SEQUENCE) ======
 window.addEventListener("DOMContentLoaded", () => {
   // Step 1: hide everything except splash
   loginGate.classList.add("hidden");
