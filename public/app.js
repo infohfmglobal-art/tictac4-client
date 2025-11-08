@@ -1,422 +1,87 @@
-/* ----------------------------------------
-   RuneXO – v1.3 Stable
-   - Short intro bell, 3s splash → login
-   - Login → home with golden flash
-   - 4 skins, unified size/glow
-   - Music OFF (player choice), SFX ON by default
-   - Rune Alert (no window.alert)
-   - Confetti + coin +X float
-   - Local coins + leaderboard
-   - Fix: buttons & grid always work, phoenix icon correct
------------------------------------------*/
+// === RuneXO Phase 1.2 Final Stable ===
+window.addEventListener("DOMContentLoaded", () => {
+  const intro = document.getElementById("introSplash");
+  const login = document.getElementById("loginGate");
+  const bell  = document.getElementById("introBell");
 
-// ===== AUDIO =====
-const audio = {
-  intro: document.getElementById("introBell"),
-  bg: new Audio("./sound/bg.mp3"),
-  click: new Audio("./sound/click.mp3"),
-  win: new Audio("./sound/win.mp3"),
-  lose: new Audio("./sound/lose.mp3"),
-  draw: new Audio("./sound/draw.mp3")
-};
-audio.bg.loop = true;
-[audio.click, audio.win, audio.lose, audio.draw].forEach(a => (a.preload = "auto"));
-
-// Fallback if draw sound not found
-fetch('./sound/draw.mp3', { cache: 'no-store' })
-  .then(r => { if (!r.ok) audio.draw = audio.win; })
-  .catch(() => { audio.draw = audio.win; });
-
-// Defaults
-let musicOn = false; // OFF by default (player choice)
-let sfxOn   = true;
-
-function playSfx(a){ if(sfxOn){ a.currentTime = 0; a.play().catch(()=>{}); } }
-function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume = 0.35; audio.bg.play().catch(()=>{}); } }
-function stopBg(){ audio.bg.pause(); }
-
-// ===== COINS (LOCAL) =====
-let coins = Number(localStorage.getItem("rxo_coins") || "0");
-function setCoins(v){
-  coins = Math.max(0, Number(v||0));
-  localStorage.setItem("rxo_coins", String(coins));
-  const badge = document.getElementById("playerCoins");
-  if (badge) badge.textContent = `💰 ${coins}`;
-}
-function addCoins(delta){
-  setCoins(coins + delta);
-  coinFloat(`+${delta}`);
-}
-setCoins(coins);
-
-// ===== CONFETTI CANVAS =====
-let fxCanvas, fxCtx, fxW, fxH, particles = [];
-function setupFxCanvas(){
-  fxCanvas = document.createElement("canvas");
-  fxCanvas.id = "fxCanvas";
-  Object.assign(fxCanvas.style, { position:"fixed", inset:"0", pointerEvents:"none", zIndex:"50" });
-  document.body.appendChild(fxCanvas);
-  fxCtx = fxCanvas.getContext("2d");
-  const resize = ()=>{ fxW = fxCanvas.width = window.innerWidth; fxH = fxCanvas.height = window.innerHeight; };
-  resize(); window.addEventListener("resize", resize);
-  requestAnimationFrame(tickParticles);
-}
-function spawnConfetti(x, y, count=120){
-  for(let i=0;i<count;i++){
-    particles.push({
-      x, y,
-      vx:(Math.random()*2-1)*6,
-      vy:-Math.random()*8-3,
-      g:0.18+Math.random()*0.12,
-      life:60+Math.random()*30,
-      size:4+Math.random()*4,
-      hue:Math.floor(30+Math.random()*60),
-      opacity:1
-    });
-  }
-}
-function tickParticles(){
-  if(!fxCtx){ requestAnimationFrame(tickParticles); return; }
-  fxCtx.clearRect(0,0,fxW,fxH);
-  particles.forEach(p=>{
-    p.life--; p.x+=p.vx; p.y+=p.vy; p.vy+=p.g;
-    p.opacity = Math.max(0, p.life/90);
-    fxCtx.fillStyle = `hsla(${p.hue},100%,60%,${p.opacity})`;
-    fxCtx.beginPath(); fxCtx.arc(p.x,p.y,p.size,0,Math.PI*2); fxCtx.fill();
-  });
-  particles = particles.filter(p=> p.life>0 && p.y<fxH+40);
-  requestAnimationFrame(tickParticles);
-}
-const centerXY = ()=> ({ x: window.innerWidth/2, y: window.innerHeight/2 });
-const elementCenter = (el)=>{ const r=el.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; };
-function confettiBurstAt(elOrXY){ let x,y; if(!elOrXY){({x,y}=centerXY());} else if(elOrXY.x!=null){x=elOrXY.x;y=elOrXY.y;} else {({x,y}=elementCenter(elOrXY));} spawnConfetti(x,y,140); }
-
-// ===== COIN FLOAT =====
-function coinFloat(text="+20"){
-  const badge = document.getElementById("playerCoins");
-  if(!badge) return;
-  const r = badge.getBoundingClientRect();
-  const fx = document.createElement("div");
-  fx.textContent = `💰 ${text}`;
-  Object.assign(fx.style, {
-    position:"fixed", left:(r.left + r.width/2 - 18) + "px", top:(r.top - 6) + "px",
-    color:"gold", textShadow:"0 0 12px #ffcc33", fontWeight:"700",
-    transition:"transform 1s ease, opacity 1s ease", zIndex:"60"
-  });
-  document.body.appendChild(fx);
-  requestAnimationFrame(()=>{ fx.style.transform="translateY(-40px)"; fx.style.opacity="0"; });
-  setTimeout(()=> fx.remove(), 1000);
-}
-
-// ===== RUNE ALERT =====
-const runeAlert = document.getElementById("runeAlert");
-const runeTitle = document.getElementById("runeTitle");
-const runeText  = document.getElementById("runeText");
-const runeOk    = document.getElementById("runeOk");
-function showAlert(title, text, onOk){
-  runeTitle.textContent = title;
-  runeText.textContent  = text;
-  runeAlert.classList.remove("hidden");
-  runeOk.onclick = ()=>{ runeAlert.classList.add("hidden"); onOk && onOk(); };
-}
-
-// === SPLASH → LOGIN (final) ===
-window.addEventListener("load", () => {
-  const splash = document.getElementById("introSplash");
-  const loginGate = document.getElementById("loginGate");
-
-  // play intro bell
+  // play short bell then fade splash
+  setTimeout(() => { bell.volume=0.5; bell.play().catch(()=>{}); }, 200);
   setTimeout(() => {
-    const introSound = document.getElementById("introBell");
-    if (introSound) {
-      introSound.volume = 0.6;
-      introSound.currentTime = 0;
-      introSound.play().catch(() => {});
-      setTimeout(() => introSound.pause(), 1500);
-    }
-  }, 200);
-
-  // splash → login gate
-  setTimeout(() => {
-    splash.classList.add("fade-out");
-    splash.style.pointerEvents = "none";
+    intro.classList.add("fade-out");
     setTimeout(() => {
-      splash.style.display = "none";
-      loginGate.classList.remove("hidden");
-      loginGate.style.display = "flex";
-      document.getElementById("gameArea").classList.add("hidden");
-      document.querySelector(".topbar").style.display = "none";
+      intro.style.display="none";
+      login.classList.remove("hidden");
     }, 800);
-  }, 3000);
+  }, 2000);
 });
 
-
-// ===== LOGIN → HOME =====
-const flashOverlay = document.getElementById("flashOverlay");
-const guestBtn     = document.getElementById("guestLoginGate");
-const googleBtn    = document.getElementById("googleLoginGate");
-const homeScreen   = document.getElementById("homeScreen");
-const installOrb   = document.getElementById("installOrb");
-const logoutBtn    = document.getElementById("logoutBtn");
+const flashOverlay=document.getElementById("flashOverlay"),
+      guestBtn=document.getElementById("guestLoginGate"),
+      googleBtn=document.getElementById("googleLoginGate"),
+      homeScreen=document.getElementById("homeScreen"),
+      installOrb=document.getElementById("installOrb"),
+      logoutBtn=document.getElementById("logoutBtn");
 
 function goldenFlashThen(cb){
   flashOverlay.classList.add("flash-show");
-  setTimeout(()=>{ flashOverlay.classList.remove("flash-show"); cb && cb(); }, 650);
+  setTimeout(()=>{flashOverlay.classList.remove("flash-show");cb&&cb();},700);
 }
 function showHome(){
   goldenFlashThen(()=>{
     document.getElementById("loginGate").classList.add("hidden");
     homeScreen.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
-    setTimeout(()=>{ installOrb.classList.remove("hidden"); installOrb.classList.add("show"); }, 900);
   });
 }
-
-guestBtn.addEventListener("click", () => {
-  if (coins === 0) setCoins(200); // welcome bonus once
-  showHome();
-});
-googleBtn.addEventListener("click", () => {
-  // Phase 2: plug real Google login
-  if (coins === 0) setCoins(200);
-  showHome();
-});
-logoutBtn.addEventListener("click", () => {
-  // back to login gate
+guestBtn.onclick=()=>{showHome();};
+googleBtn.onclick=()=>{showHome();};
+logoutBtn.onclick=()=>{
   homeScreen.classList.add("hidden");
   document.getElementById("loginGate").classList.remove("hidden");
-  stopBg();
-});
-
-// INSTALL ORB
-installOrb.addEventListener("click", async ()=>{
-  const p = window.deferredPrompt;
-  if(!p){ showAlert("Install", "Already installed or not supported yet."); return; }
-  p.prompt(); await p.userChoice; window.deferredPrompt = null;
-});
-
-// ===== HOME → GAME =====
-const startBtn    = document.getElementById("startBtn");
-const gameArea    = document.getElementById("gameArea");
-const themeSelect = document.getElementById("themeSelect");
-const modeSel     = document.getElementById("gameMode");
-const diffSel     = document.getElementById("difficulty");
-const skinSel     = document.getElementById("skin");
-
-startBtn.addEventListener("click", () => {
-  homeScreen.classList.add("hidden");
-  const gameArea = document.getElementById("gameArea");
-  const topbar = document.querySelector(".topbar");
-  if (gameArea) gameArea.classList.remove("hidden");
-  if (topbar) topbar.style.display = "flex";
-  initGame();
-});
-
-// ===== GAME STATE =====
-const boardEl      = document.getElementById("gameBoard");
-const cells        = Array.from(boardEl.querySelectorAll(".cell"));
-const nextRoundBtn = document.getElementById("nextRoundBtn");
-const resetBtn     = document.getElementById("resetBtn");
-const homeBtn      = document.getElementById("homeBtn");
-const musicBtn     = document.getElementById("musicBtn");
-const sfxBtn       = document.getElementById("sfxBtn");
-
-let board, current, running, againstCPU;
-
-// unified skins (same size look)
-const SKINS = {
-  "Runes":           { P1: "🐉", P2: "🕊️" },   // full phoenix bird
-  "Classic X / O":   { P1: "X",  P2: "O"  },
-  "Fruit":           { P1: "🍎", P2: "🍊" },
-  "Emoji":           { P1: "😎", P2: "🤖" }
 };
 
-// cell style per mark
-function paintCellStyle(el, mark){
-  el.style.textShadow = "0 0 14px #ffcc33, 0 0 28px #ff9900";
-  el.style.color = "gold";
-  if(mark === "X"){ el.style.color="#00ffff"; el.style.textShadow="0 0 12px #00ffff,0 0 24px #00cccc"; }
-  if(mark === "O"){ el.style.color="#ff66cc"; el.style.textShadow="0 0 12px #ff66cc,0 0 24px #ff3399"; }
-}
+// === GAME basic controls ===
+const homeBtn=document.getElementById("homeBtn"),
+      nextRoundBtn=document.getElementById("nextRoundBtn"),
+      resetBtn=document.getElementById("resetBtn"),
+      sfxBtn=document.getElementById("sfxBtn"),
+      musicBtn=document.getElementById("musicBtn"),
+      gameArea=document.getElementById("gameArea"),
+      startBtn=document.getElementById("startBtn"),
+      boardEl=document.getElementById("gameBoard"),
+      cells=Array.from(boardEl.querySelectorAll(".cell"));
 
-function initGame(){
-  document.body.className = `theme-${themeSelect.value.toLowerCase()}`;
+let musicOn=false,sfxOn=true;
+const audio={bg:new Audio("./sound/bg.mp3"),click:new Audio("./sound/click.mp3"),
+win:new Audio("./sound/win.mp3"),lose:new Audio("./sound/lose.mp3"),draw:new Audio("./sound/draw.mp3")};
+audio.bg.loop=true;
+function playSfx(a){if(sfxOn){a.currentTime=0;a.play().catch(()=>{});}}
+function ensureBg(){if(musicOn&&audio.bg.paused){audio.bg.volume=0.4;audio.bg.play().catch(()=>{});}}
+function stopBg(){audio.bg.pause();}
 
-  board  = Array(9).fill(null);
-  current= "P1";
-  running= true;
-  againstCPU = (modeSel.value === "Player vs CPU");
-
-  cells.forEach(c=>{
-    c.textContent=""; c.classList.remove("win");
-    c.style.color=""; c.style.textShadow="";
-    c.onclick = ()=> onCell(c);
-  });
-
-  // reflect toggles
-  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-  sfxBtn.textContent   = sfxOn   ? "🔊 SFX ON"   : "🔈 SFX OFF";
-}
-
-function onCell(cell){
-  if(!running) return;
-  const idx = Number(cell.dataset.index);
-  if(board[idx]) return;
-
-  const mark = current === "P1" ? SKINS[skinSel.value].P1 : SKINS[skinSel.value].P2;
-  cell.textContent = mark;
-  paintCellStyle(cell, mark);
-  board[idx] = current;
-  playSfx(audio.click);
-
-  const result = checkResult();
-  if(result) return endRound(result, cell);
-
-  current = (current === "P1") ? "P2" : "P1";
-
-  if(running && againstCPU && current === "P2"){
-    setTimeout(cpuMove, 350);
-  }
-}
-
-const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-function staticWinner(arr){
-  for(const [a,b,c] of LINES){ if(arr[a] && arr[a]===arr[b] && arr[a]===arr[c]) return arr[a]; }
-  return null;
-}
-function checkResult(){
-  const w = staticWinner(board);
-  if(w){ return { winner:w }; }
-  if(board.every(Boolean)) return { draw:true };
-  return null;
-}
-
-function endRound(res, lastCell){
-  running = false;
-  cells.forEach(c=> c.onclick = null);
-
-  if(res.winner){
-    // highlight win line
-    for(const [a,b,c] of LINES){
-      if(board[a] && board[a]===board[b] && board[a]===board[c]){
-        [a,b,c].forEach(i=> cells[i].classList.add("win"));
-      }
-    }
-    confettiBurstAt(lastCell || undefined);
-
-    const winnerText = (res.winner==="P1") ? "You Win!" : (againstCPU ? "CPU Wins!" : "Player 2 Wins!");
-    if(res.winner==="P1"){
-      playSfx(audio.win); addCoins(20); addToLeaderboard();
-      showAlert("Victory", `${winnerText}  (+20 coins)`);
-    } else {
-      playSfx(audio.lose);
-      showAlert("Defeat", `${winnerText}`);
-    }
-  } else {
-    confettiBurstAt(); playSfx(audio.draw); addCoins(5);
-    showAlert("Draw", "Well fought! (+5 coins)");
-  }
-}
-
-function addToLeaderboard(){
-  // proxy metric: fewer moves = "faster"
-  const moves = board.filter(Boolean).length;
-  const entry = { t: Date.now(), moves, skin: skinSel.value, diff: diffSel.value };
-  const key="rxo_leader";
-  const list = JSON.parse(localStorage.getItem(key)||"[]");
-  list.push(entry);
-  list.sort((a,b)=> a.moves - b.moves);
-  localStorage.setItem(key, JSON.stringify(list.slice(0,10)));
-  paintLeaderboard();
-}
-function paintLeaderboard(){
-  const key="rxo_leader";
-  const list = JSON.parse(localStorage.getItem(key)||"[]");
-  const ul = document.getElementById("leaderList");
-  if(!ul) return;
-  ul.innerHTML = "";
-  list.forEach((e,i)=>{
-    const li = document.createElement("li");
-    const d  = new Date(e.t).toLocaleDateString();
-    li.textContent = `${i+1}. ${e.moves} moves · ${e.diff} · ${e.skin} · ${d}`;
-    ul.appendChild(li);
-  });
-}
-paintLeaderboard();
-
-// ===== CPU (Easy/Normal/Hard) =====
-function cpuMove(){
-  const diff = diffSel.value;
-  const empty = board.map((v,i)=> v? null : i).filter(v=>v!==null);
-  if(empty.length === 0) return;
-
-  let move = null;
-  if(diff === "Easy"){
-    move = empty[Math.floor(Math.random()*empty.length)];
-  } else if (diff === "Normal"){
-    move = findBest("P2") ?? findBest("P1") ?? empty[Math.floor(Math.random()*empty.length)];
-  } else {
-    move = minimax(board.slice(), "P2").index;
-  }
-
-  const cell = cells[move];
-  const mark = SKINS[skinSel.value].P2;
-  cell.textContent = mark;
-  paintCellStyle(cell, mark);
-  board[move] = "P2";
-
-  const result = checkResult();
-  if(result) return endRound(result, cell);
-
-  current = "P1";
-}
-function findBest(player){
-  const empty = board.map((v,i)=> v? null : i).filter(v=>v!==null);
-  for(const i of empty){
-    board[i] = player;
-    const r = checkResult();
-    board[i] = null;
-    if(r && r.winner) return i;
-  }
-  return null;
-}
-function minimax(state, player){
-  const avail = state.map((v,i)=> v? null : i).filter(v=>v!==null);
-  const w = staticWinner(state);
-  if(w === "P1") return { score:-10 };
-  if(w === "P2") return { score:10 };
-  if(avail.length === 0) return { score:0 };
-
-  const moves = [];
-  for(const i of avail){
-    const move = { index:i };
-    state[i] = player;
-    const next = (player==="P2") ? minimax(state, "P1") : minimax(state, "P2");
-    move.score = next.score;
-    state[i] = null;
-    moves.push(move);
-  }
-  let best=null;
-  if(player==="P2"){ let mx=-Infinity; moves.forEach(m=>{ if(m.score>mx){mx=m.score;best=m;} }); }
-  else{ let mn= Infinity; moves.forEach(m=>{ if(m.score<mn){mn=m.score;best=m;} }); }
-  return best;
-}
-
-// ===== CONTROLS =====
-nextRoundBtn.onclick = () => { initGame(); };
-resetBtn.onclick     = () => { initGame(); };
-homeBtn.onclick      = () => {
+startBtn.onclick=()=>{
+  homeScreen.classList.add("hidden");
+  gameArea.classList.remove("hidden");
+  initGame();
+};
+homeBtn.onclick=()=>{
   gameArea.classList.add("hidden");
   homeScreen.classList.remove("hidden");
-  stopBg(); // optional stop when returning home
 };
 
-musicBtn.onclick = () => {
-  musicOn = !musicOn;
-  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-  if(musicOn) ensureBg(); else stopBg();
+musicBtn.onclick=()=>{
+  musicOn=!musicOn;
+  musicBtn.textContent=musicOn?"🔈 Music ON":"🔇 Music OFF";
+  if(musicOn)ensureBg();else stopBg();
 };
-sfxBtn.onclick = () => {
-  sfxOn = !sfxOn;
-  sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
+sfxBtn.onclick=()=>{
+  sfxOn=!sfxOn;
+  sfxBtn.textContent=sfxOn?"🔊 SFX ON":"🔈 SFX OFF";
 };
+
+function initGame(){
+  cells.forEach(c=>{
+    c.textContent="";
+    c.onclick=()=>{ if(!c.textContent){c.textContent="X"; playSfx(audio.click);} };
+  });
+}
