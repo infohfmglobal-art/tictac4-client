@@ -133,19 +133,30 @@ function showAlert(title, text, onOk){
   runeOk.onclick = ()=>{ runeAlert.classList.add("hidden"); onOk && onOk(); };
 }
 
-// ===== SPLASH → LOGIN =====
+// === SPLASH → LOGIN ===
 window.addEventListener("DOMContentLoaded", () => {
-  setupFxCanvas();
+  setupXCanvas(); // Keep this if already defined elsewhere
   const splash = document.getElementById("introSplash");
   const loginGate = document.getElementById("loginGate");
 
-  // short bell (2s file recommended)
-  setTimeout(()=>{ audio.intro && audio.intro.play().catch(()=>{}); }, 500);
+  // play intro bell (short file recommended)
+  setTimeout(() => {
+    if (audio.intro) {
+      audio.intro.currentTime = 0;
+      audio.intro.volume = 0.6;
+      audio.intro.play().catch(() => {});
+    }
+  }, 300);
 
-  setTimeout(()=>{
-    splash.classList.add("hide");
-    setTimeout(()=> loginGate.classList.remove("hidden"), 900);
-  }, 3000);
+  // fade out splash, show login
+  setTimeout(() => {
+    splash.classList.add("fade-out");
+    setTimeout(() => {
+      splash.style.display = "none";
+      loginGate.classList.remove("hidden");
+      loginGate.style.display = "flex";
+    }, 1000);
+  }, 3000); // 3 seconds visible before fade
 });
 
 // ===== LOGIN → HOME =====
