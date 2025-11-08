@@ -9,18 +9,9 @@
   <link rel="icon" href="./icon-512.png"/>
   <link rel="stylesheet" href="./style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
-
-  <script>
-    // Capture PWA install event
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      window.deferredPrompt = e;
-    });
-  </script>
 </head>
 
 <body class="theme-rune">
-
   <!-- 🐉 INTRO SPLASH -->
   <div id="introSplash" class="intro-splash">
     <img src="./logo-dragon.png" alt="FrameRift Studio" class="splash-logo"/>
@@ -30,7 +21,7 @@
     <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
   </div>
 
-  <!-- ✨ LOGIN GATE -->
+  <!-- ✨ LOGIN -->
   <div id="loginGate" class="login-gate hidden">
     <h1 class="login-logo"><span class="glow">Rune</span><span class="spark">XO</span></h1>
     <p class="login-tagline">Every Move Shapes Destiny.</p>
@@ -40,50 +31,20 @@
     </div>
   </div>
 
-  <!-- ⚡ GOLDEN FLASH -->
   <div id="flashOverlay" class="flash-overlay flash-hide"></div>
 
   <!-- 🏠 HOME -->
   <div id="homeScreen" class="home-screen hidden">
     <div class="menu-box">
       <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
-
-      <div class="menu-row">
-        <label>Game Mode</label>
-        <select id="gameMode">
-          <option>Player vs CPU</option>
-          <option>Player vs Player</option>
-        </select>
-      </div>
-
-      <div class="menu-row">
-        <label>Difficulty</label>
-        <select id="difficulty">
-          <option>Easy</option>
-          <option>Normal</option>
-          <option>Hard</option>
-        </select>
-      </div>
-
-      <div class="menu-row">
-        <label>Skin</label>
-        <select id="skin">
-          <option>Runes</option>
-          <option>Classic X / O</option>
-          <option>Fruit</option>
-          <option>Emoji</option>
-        </select>
-      </div>
-
-      <div class="menu-row">
-        <label>Theme</label>
-        <select id="themeSelect">
-          <option>Rune</option>
-          <option>Gold</option>
-          <option>Blue</option>
-          <option>Neon</option>
-        </select>
-      </div>
+      <div class="menu-row"><label>Game Mode</label>
+        <select id="gameMode"><option>Player vs CPU</option><option>Player vs Player</option></select></div>
+      <div class="menu-row"><label>Difficulty</label>
+        <select id="difficulty"><option>Easy</option><option>Normal</option><option>Hard</option></select></div>
+      <div class="menu-row"><label>Skin</label>
+        <select id="skin"><option>Runes</option><option>Classic X / O</option><option>Fruit</option><option>Emoji</option></select></div>
+      <div class="menu-row"><label>Theme</label>
+        <select id="themeSelect"><option>Rune</option><option>Gold</option><option>Blue</option><option>Neon</option></select></div>
 
       <button id="startBtn" class="menu-btn play-btn">Play</button>
 
@@ -105,30 +66,22 @@
       <div class="left-controls">
         <button id="homeBtn">🏠 Home</button>
         <button id="nextRoundBtn">Next Round</button>
-        <button id="resetBtn">Reset</button>
+        <button id="resetBtn">Reset All</button>
       </div>
       <div class="right-controls">
         <button id="sfxBtn">🔊 SFX ON</button>
         <button id="musicBtn">🔇 Music OFF</button>
       </div>
     </div>
-
     <div class="game-container">
       <div class="board" id="gameBoard">
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
+        <div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div>
       </div>
     </div>
   </div>
 
-  <!-- ⚙️ ALERT -->
   <div id="runeAlert" class="rune-alert hidden">
     <div class="rune-card">
       <div class="rune-title" id="runeTitle">Title</div>
