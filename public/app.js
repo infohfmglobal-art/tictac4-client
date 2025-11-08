@@ -14,7 +14,12 @@ window.addEventListener("DOMContentLoaded", () => {
   game.classList.add("hidden");
 
   // Play bell softly
-  setTimeout(() => { if (bell) { bell.volume = 0.4; bell.play().catch(()=>{}); }}, 200);
+  setTimeout(() => { 
+    if (bell) { 
+      bell.volume = 0.4; 
+      bell.play().catch(()=>{}); 
+    }
+  }, 200);
 
   // Fade out intro after 2.5s, show login only
   setTimeout(() => {
@@ -89,18 +94,25 @@ function playSfx(a){ if(sfxOn){ a.currentTime=0; a.play().catch(()=>{}); }}
 function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume=0.4; audio.bg.play().catch(()=>{});} }
 function stopBg(){ audio.bg.pause(); }
 
+// Play button → show game grid
 startBtn.onclick = () => {
   homeScreen.classList.add("hidden");
+  homeScreen.style.display = "none";
   gameArea.classList.remove("hidden");
+  gameArea.style.display = "flex";
   initGame();
 };
 
+// Back home
 homeBtn.onclick = () => {
   gameArea.classList.add("hidden");
+  gameArea.style.display = "none";
   homeScreen.classList.remove("hidden");
+  homeScreen.style.display = "flex";
   stopBg();
 };
 
+// Toggle music/SFX
 musicBtn.onclick = () => {
   musicOn = !musicOn;
   musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
