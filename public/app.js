@@ -139,7 +139,7 @@ function initGame(){
   running = true;
   cells.forEach(c=>{
     c.textContent = "";
-    c.onclick = ()=>handleMove(c);
+    
   });
 }
 
