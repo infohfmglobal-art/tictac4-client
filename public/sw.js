@@ -1,5 +1,5 @@
-// RuneXO SW – simple offline cache
-const CACHE_NAME = "runexo-v1.3";
+// RuneXO offline cache
+const CACHE_NAME = "runexo-v1.0.3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -18,7 +18,7 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
+  e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)));
 });
 
 self.addEventListener("activate", (e) => {
@@ -31,6 +31,6 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
+    caches.match(e.request).then(r => r || fetch(e.request).catch(() => r))
   );
 });
