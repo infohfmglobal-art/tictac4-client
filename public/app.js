@@ -110,6 +110,7 @@ function staticWinner(arr){
   return null;
 }
 
+// ====== SPLASH → LOGIN ======
 // ====== SPLASH → LOGIN (FIXED SEQUENCE) ======
 window.addEventListener("DOMContentLoaded", () => {
   // Step 1: hide everything except splash
