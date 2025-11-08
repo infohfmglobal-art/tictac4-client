@@ -1,7 +1,7 @@
 {
   "name": "RuneXO",
   "short_name": "RuneXO",
-  "description": "Every Move Shapes Destiny — the magical TicTacToe by FrameRift Studio LLC.",
+  "description": "Every Move Shapes Destiny — by FrameWeave Studio LLC.",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
