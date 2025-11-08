@@ -32,3 +32,9 @@ self.addEventListener("fetch", (e) => {
     caches.match(e.request).then((res) => res || fetch(e.request).catch(() => undefined))
   );
 });
+// === Auto-update detection ===
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
