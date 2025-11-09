@@ -385,3 +385,4 @@ sfxBtn.onclick = () => {
   sfxOn = !sfxOn;
   sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
 };
+ 
