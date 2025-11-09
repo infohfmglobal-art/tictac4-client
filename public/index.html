@@ -1,1 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RuneXO: Gold Edition</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./images/icon-512.png" />
+  <link rel="stylesheet" href="./style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+</head>
+
+<body class="theme-gold">
+  <!-- 🐉 INTRO SPLASH -->
+  <div id="introSplash" class="intro-splash">
+    <img src="./images/logo-dragon.png" alt="FrameWeave Studio" class="splash-logo" />
+    <h1 class="splash-title glow">RuneXO</h1>
+    <p class="splash-tagline">Every Move Shapes Destiny.</p>
+    <p class="studio-credit">© FrameWeave Studio LLC</p>
+    <audio id="introBell" src="./sound/intro.mp3" preload="auto"></audio>
+  </div>
+
+  <!-- ✨ LOGIN -->
+  <div id="loginGate" class="login-gate hidden">
+    <h1 class="login-logo"><span class="glow">Rune</span><span class="spark">XO</span></h1>
+    <p class="login-tagline">Every Move Shapes Destiny.</p>
+    <div class="gate-btns">
+      <button id="guestLoginGate" class="login-btn">🔥 Play as Guest</button>
+      <button id="googleLoginGate" class="login-btn">🔑 Login with Google</button>
+    </div>
+  </div>
+
+  <!-- ⚡ FLASH -->
+  <div id="flashOverlay" class="flash-overlay flash-hide"></div>
+
+  <!-- 🏠 HOME -->
+  <div id="homeScreen" class="home-screen hidden">
+    <div class="menu-box">
+      <h2 class="menu-logo"><span class="glow">Rune</span><span class="spark">XO</span></h2>
+
+      <div class="menu-row">
+        <label>Game Mode</label>
+        <select id="gameMode">
+          <option>Player vs CPU</option>
+          <option>Player vs Player</option>
+        </select>
+      </div>
+
+      <div class="menu-row">
+        <label>Difficulty</label>
+        <select id="difficulty">
+          <option>Easy</option>
+          <option>Normal</option>
+          <option>Hard</option>
+        </select>
+      </div>
+
+      <div class="menu-row">
+        <label>Skin</label>
+        <select id="skin">
+          <option>Runes</option>
+          <option>Classic X / O</option>
+          <option>Fruit</option>
+          <option>Emoji</option>
+        </select>
+      </div>
+
+      <div class="menu-row">
+        <label>Theme</label>
+        <select id="themeSelect">
+          <option>Gold</option>
+          <option>Blue</option>
+          <option>Neon</option>
+        </select>
+      </div>
+
+      <button id="startBtn" class="menu-btn play-btn">▶️ Play</button>
+
+      <div class="home-footer">
+        <span id="playerCoins" class="badge coin">💰 0</span>
+        <button id="logoutBtn" class="tiny-ghost hidden">Logout</button>
+      </div>
+
+      <div class="leader-wrap">
+        <h3 class="leader-title">🏆 Top 10 Fastest Wins</h3>
+        <ul id="leaderList" class="leader-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🎮 GAME -->
+  <div id="gameArea" class="hidden">
+    <div class="topbar">
+      <div class="left-controls">
+        <button id="homeBtn">🏠 Home</button>
+        <button id="nextRoundBtn">Next Round</button>
+        <button id="resetBtn">Reset All</button>
+      </div>
+      <div class="right-controls">
+        <button id="settingsBtn">⚙️ Settings</button>
+        <button id="sfxBtn">🔊 SFX ON</button>
+        <button id="musicBtn">🔇 Music OFF</button>
+      </div>
+    </div>
+
+    <div class="game-container">
+      <div class="board" id="gameBoard">
+        <div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💎 ALERT -->
+  <div id="runeAlert" class="rune-alert hidden">
+    <div class="rune-card">
+      <div class="rune-title" id="runeTitle">Title</div>
+      <div class="rune-text" id="runeText">Message</div>
+      <button id="runeOk" class="menu-btn small">Ok</button>
+    </div>
+  </div>
+
+  <!-- ⚙️ SETTINGS MODAL -->
+  <div id="settingsModal" class="rune-alert hidden">
+    <div class="rune-card">
+      <div class="rune-title">Settings</div>
+      <div class="rune-text">
+        <label>Music Volume <input type="range" id="musicVol" min="0" max="1" step="0.1" /></label><br />
+        <label>SFX Volume  <input type="range" id="sfxVol" min="0" max="1" step="0.1" /></label>
+      </div>
+      <button id="closeSettings" class="menu-btn small">Close</button>
+    </div>
+  </div>
+
+  <div id="installOrb" class="install-orb hidden" title="Install RuneXO">🔮</div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
 
