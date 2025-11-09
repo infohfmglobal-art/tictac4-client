@@ -1,1 +1,39 @@
+{
+  "name": "RuneXO: Gold Edition",
+  "short_name": "RuneXO",
+  "description": "RuneXO – Every Move Shapes Destiny. FrameWeave Studio LLC.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FFD700",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["games", "strategy", "puzzle"],
+  "shortcuts": [
+    {
+      "name": "Play RuneXO",
+      "short_name": "Play",
+      "description": "Jump straight into a match",
+      "url": "/index.html#play",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Leaderboard",
+      "short_name": "Leaders",
+      "url": "/index.html#leaderboard",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
 
