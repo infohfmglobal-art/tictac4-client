@@ -1,1 +1,106 @@
+/* RuneXO Gold Edition – Service Worker (v1.0.6)
+   - Safe, versioned caches
+   - Online-first for HTML (always gets your latest index)
+   - Cache-first for static assets (CSS/JS/images/sounds)
+   - Auto-updates clients on new deploy (no “stuck” old UI)
+*/
+
+const CACHE_VERSION = 'rxo-gold-v106';
+const APP_SHELL = [
+  '/',                   // Render root
+  '/index.html',
+  '/style.css',
+  '/app.js',
+  '/manifest.json',
+  // images/icons (adjust names if your files differ)
+  '/logo-dragon.png',
+  '/icon-192.png',
+  '/icon-512.png',
+  // sounds
+  '/sound/intro.mp3',
+  '/sound/bg.mp3',
+  '/sound/click.mp3',
+  '/sound/win.mp3',
+  '/sound/lose.mp3',
+  '/sound/draw.mp3',
+];
+
+// Install: pre-cache core assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_VERSION).then((cache) => cache.addAll(APP_SHELL))
+  );
+  self.skipWaiting(); // take control quickly on first load
+});
+
+// Activate: clear old caches and claim clients
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => (k !== CACHE_VERSION ? caches.delete(k) : null)));
+      await self.clients.claim();
+      // Force refresh of all open tabs so new code runs immediately
+      const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      clients.forEach((client) => client.navigate(client.url));
+    })()
+  );
+});
+
+// Helper: is HTML navigation request?
+function isNavigateRequest(request) {
+  return request.mode === 'navigate' || (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'));
+}
+
+// Fetch strategy:
+//  - HTML: network-first (fall back to cache if offline)
+//  - Static assets: cache-first (fall back to network, then cache)
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Only handle same-origin
+  if (url.origin !== self.location.origin) return;
+
+  // HTML (index / navigations) => network-first
+  if (isNavigateRequest(request)) {
+    event.respondWith(
+      (async () => {
+        try {
+          const fresh = await fetch(request, { cache: 'no-store' });
+          const cache = await caches.open(CACHE_VERSION);
+          cache.put('/', fresh.clone()); // keep root fresh
+          cache.put('/index.html', fresh.clone());
+          return fresh;
+        } catch (err) {
+          // offline: try cached index
+          const cache = await caches.open(CACHE_VERSION);
+          return (await cache.match('/index.html')) || (await cache.match('/')) || Response.error();
+        }
+      })()
+    );
+    return;
+  }
+
+  // For other static files => cache-first
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(CACHE_VERSION);
+      const cached = await cache.match(request);
+      if (cached) return cached;
+
+      try {
+        const response = await fetch(request);
+        // Cache successful GETs (avoid POST, etc.)
+        if (request.method === 'GET' && response.ok) {
+          cache.put(request, response.clone());
+        }
+        return response;
+      } catch (err) {
+        // Offline and not cached
+        return cached || Response.error();
+      }
+    })()
+  );
+});
 
