@@ -1,219 +1,387 @@
-// RuneXO — Stable Core (no Service Worker)
+/* ----------------------------------------
+   RuneXO – v1.0.6 (FrameWeave Classic)
+   Stable flow: Splash → Login → Home → Game
+   Features: 4 skins, CPU, SFX/Music toggles, coins, leaderboard, player name
+-----------------------------------------*/
 
-// ===== STARTUP (splash -> login) =====
+// ===== AUDIO =====
+const audio = {
+  intro: document.getElementById("introBell"),
+  bg: new Audio("./sound/bg.mp3"),
+  click: new Audio("./sound/click.mp3"),
+  win: new Audio("./sound/win.mp3"),
+  lose: new Audio("./sound/lose.mp3"),
+  draw: new Audio("./sound/draw.mp3")
+};
+audio.bg.loop = true;
+[audio.click, audio.win, audio.lose, audio.draw].forEach(a => (a.preload = "auto"));
+fetch("./sound/draw.mp3", {cache:"no-store"})
+  .then(r=>{ if(!r.ok) audio.draw = audio.win; })
+  .catch(()=>{ audio.draw = audio.win; });
+
+let musicOn = false; // player choice
+let sfxOn   = true;
+
+// ===== COINS & NAME =====
+let coins = Number(localStorage.getItem("rxo_coins") || "0");
+function setCoins(v){
+  coins = Math.max(0, Number(v||0));
+  localStorage.setItem("rxo_coins", String(coins));
+  const badge = document.getElementById("playerCoins");
+  if (badge) badge.textContent = `💰 ${coins}`;
+}
+setCoins(coins);
+
+let playerName = localStorage.getItem("rxo_name") || "Guest Player";
+function setPlayerName(name){
+  playerName = name || "Guest Player";
+  localStorage.setItem("rxo_name", playerName);
+  const n1 = document.getElementById("playerNameHome");
+  const n2 = document.getElementById("playerNameGame");
+  if(n1) n1.textContent = playerName;
+  if(n2) n2.textContent = playerName;
+}
+setPlayerName(playerName);
+
+// ===== CONFETTI (simple) =====
+let fxCanvas, fxCtx, fxW, fxH, particles=[];
+function setupFx(){
+  fxCanvas = document.createElement("canvas");
+  fxCanvas.style.position="fixed"; fxCanvas.style.inset="0";
+  fxCanvas.style.pointerEvents="none"; fxCanvas.style.zIndex="50";
+  document.body.appendChild(fxCanvas);
+  fxCtx = fxCanvas.getContext("2d");
+  const resize=()=>{ fxW=fxCanvas.width=innerWidth; fxH=fxCanvas.height=innerHeight; };
+  resize(); addEventListener("resize", resize);
+  requestAnimationFrame(tick);
+}
+function spawn(x,y,count=120){
+  for(let i=0;i<count;i++){
+    particles.push({x,y,vx:(Math.random()*2-1)*6,vy:-Math.random()*8-3,g:0.18+Math.random()*0.12,life:60+Math.random()*30,size:4+Math.random()*4,h:30+Math.random()*60,o:1});
+  }
+}
+function tick(){
+  fxCtx.clearRect(0,0,fxW,fxH);
+  particles.forEach(p=>{p.life--;p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.o=Math.max(0,p.life/90);
+    fxCtx.fillStyle=`hsla(${p.h},100%,60%,${p.o})`;fxCtx.beginPath();fxCtx.arc(p.x,p.y,p.size,0,Math.PI*2);fxCtx.fill();
+  });
+  particles=particles.filter(p=>p.life>0 && p.y<fxH+40);
+  requestAnimationFrame(tick);
+}
+function confettiCenter(){ spawn(innerWidth/2, innerHeight/2, 140); }
+
+// ===== RUNE ALERT =====
+const runeAlert = document.getElementById("runeAlert");
+const runeTitle = document.getElementById("runeTitle");
+const runeText  = document.getElementById("runeText");
+const runeOk    = document.getElementById("runeOk");
+function showAlert(title, text, onOk){
+  runeTitle.textContent = title;
+  runeText.textContent  = text;
+  runeAlert.classList.remove("hidden");
+  runeOk.onclick = ()=>{ runeAlert.classList.add("hidden"); onOk && onOk(); };
+}
+
+// ===== ELEMENTS =====
+const splash = document.getElementById("introSplash");
+const loginGate = document.getElementById("loginGate");
+const flashOverlay = document.getElementById("flashOverlay");
+const guestBtn = document.getElementById("guestLoginGate");
+const googleBtn = document.getElementById("googleLoginGate");
+const homeScreen = document.getElementById("homeScreen");
+const installOrb = document.getElementById("installOrb");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const startBtn = document.getElementById("startBtn");
+const gameArea = document.getElementById("gameArea");
+const boardEl  = document.getElementById("gameBoard");
+const cells    = Array.from(boardEl.querySelectorAll(".cell"));
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+const resetBtn     = document.getElementById("resetBtn");
+const homeBtn      = document.getElementById("homeBtn");
+const musicBtn     = document.getElementById("musicBtn");
+const sfxBtn       = document.getElementById("sfxBtn");
+
+const modeSel  = document.getElementById("gameMode");
+const diffSel  = document.getElementById("difficulty");
+const skinSel  = document.getElementById("skin");
+const themeSel = document.getElementById("themeSelect");
+
+// ===== SAFE INITIAL STATE =====
 window.addEventListener("DOMContentLoaded", () => {
-  const splash = document.getElementById("introSplash");
-  const login  = document.getElementById("loginGate");
-  const home   = document.getElementById("homeScreen");
-  const game   = document.getElementById("gameArea");
-  const bell   = document.getElementById("introBell");
+  setupFx();
 
-  // Ensure home & game are hidden at boot
-  home.classList.add("hidden");
-  game.classList.add("hidden");
-  login.classList.add("hidden");
+  // always start with: splash visible, ONLY login hidden (others hidden)
+  loginGate.classList.add("hidden");
+  homeScreen.classList.add("hidden");
+  gameArea.classList.add("hidden");
 
-  // play the intro bell softly
-  setTimeout(() => {
-    if (bell) { bell.volume = 0.45; bell.play().catch(()=>{}); }
-  }, 200);
+  // small intro bell
+  setTimeout(()=>{ if(audio.intro){ audio.intro.volume=0.5; audio.intro.currentTime=0; audio.intro.play().catch(()=>{});} }, 200);
 
-  // after ~2.5s fade splash, then show login
-  setTimeout(() => {
+  // splash → login
+  setTimeout(()=>{
     splash.classList.add("fade-out");
-    setTimeout(() => {
-      splash.style.display = "none";
-      login.classList.remove("hidden");
-      login.style.display = "flex";
+    setTimeout(()=>{
+      splash.style.display="none";
+      loginGate.classList.remove("hidden");
     }, 900);
   }, 2500);
 });
 
-// ===== LOGIN -> HOME =====
-const flashOverlay = document.getElementById("flashOverlay");
-const guestBtn     = document.getElementById("guestLoginGate");
-const googleBtn    = document.getElementById("googleLoginGate");
-const homeScreen   = document.getElementById("homeScreen");
-const logoutBtn    = document.getElementById("logoutBtn");
-
-function goldenFlashThen(cb){
-  if(!flashOverlay) return cb && cb();
+// ===== LOGIN → HOME =====
+function goldenFlash(cb){
   flashOverlay.classList.add("flash-show");
-  setTimeout(() => {
-    flashOverlay.classList.remove("flash-show");
-    cb && cb();
-  }, 650);
+  setTimeout(()=>{ flashOverlay.classList.remove("flash-show"); cb && cb(); }, 650);
 }
 
-function showHome(){
-  goldenFlashThen(() => {
-    document.getElementById("loginGate").classList.add("hidden");
+guestBtn.addEventListener("click", () => {
+  if (!localStorage.getItem("rxo_name")) setPlayerName("Guest Player");
+  if (Number(localStorage.getItem("rxo_coins")||"0") === 0) setCoins(200);
+  goldenFlash(()=>{
+    loginGate.classList.add("hidden");
     homeScreen.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
+    // show install orb a bit later
+    setTimeout(()=>{ installOrb.classList.remove("hidden"); installOrb.classList.add("show"); }, 800);
   });
-}
-guestBtn && (guestBtn.onclick  = showHome);
-googleBtn && (googleBtn.onclick = showHome);
+});
 
-logoutBtn && (logoutBtn.onclick = () => {
+googleBtn.addEventListener("click", () => {
+  // Phase 2: real Google login; for now, let user type a name
+  const name = prompt("Enter your name (Phase 2 will use Google):", playerName) || "Guest Player";
+  setPlayerName(name);
+  if (Number(localStorage.getItem("rxo_coins")||"0") === 0) setCoins(200);
+  goldenFlash(()=>{
+    loginGate.classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    logoutBtn.classList.remove("hidden");
+    setTimeout(()=>{ installOrb.classList.remove("hidden"); installOrb.classList.add("show"); }, 800);
+  });
+});
+
+logoutBtn.addEventListener("click", () => {
   homeScreen.classList.add("hidden");
-  document.getElementById("loginGate").classList.remove("hidden");
+  gameArea.classList.add("hidden");
+  loginGate.classList.remove("hidden");
 });
 
-// ===== HOME -> GAME =====
-const startBtn     = document.getElementById("startBtn");
-const gameArea     = document.getElementById("gameArea");
-const homeBtn      = document.getElementById("homeBtn");
-const nextRoundBtn = document.getElementById("nextRoundBtn");
-const resetBtn     = document.getElementById("resetBtn");
-const musicBtn     = document.getElementById("musicBtn");
-const sfxBtn       = document.getElementById("sfxBtn");
-const boardEl      = document.getElementById("gameBoard");
-const cells        = Array.from(boardEl.querySelectorAll(".cell"));
-const modeSelect   = document.getElementById("gameMode");
-const skinSelect   = document.getElementById("skin");
-const themeSelect  = document.getElementById("themeSelect");
-
-let musicOn=false, sfxOn=true, running=false, board, current, mode="pvc";
-
-const audio = {
-  bg:   new Audio("./sound/bg.mp3"),
-  click:new Audio("./sound/click.mp3"),
-  win:  new Audio("./sound/win.mp3"),
-  lose: new Audio("./sound/lose.mp3"),
-  draw: new Audio("./sound/draw.mp3"),
-};
-audio.bg.loop = true;
-
-function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume=0.35; audio.bg.play().catch(()=>{}); } }
-function stopBg(){ audio.bg.pause(); }
-function playSfx(a){ if(sfxOn) { try{ a.currentTime=0; a.play(); }catch(_){} } }
-
-modeSelect && (modeSelect.onchange = (e)=>{ mode = e.target.value; });
-themeSelect && (themeSelect.onchange = (e)=>{
-  document.body.className = "theme-"+e.target.value;
+// Install orb
+document.getElementById("installOrb").addEventListener("click", async ()=>{
+  const p = window.deferredPrompt;
+  if(!p){ showAlert("Install", "Already installed or not supported yet."); return; }
+  p.prompt(); await p.userChoice; window.deferredPrompt = null;
 });
 
-startBtn && (startBtn.onclick = () => {
-  // hide home, show game
-  document.getElementById("homeScreen").classList.add("hidden");
+// ===== HOME → GAME =====
+startBtn.addEventListener("click", () => {
+  homeScreen.classList.add("hidden");
   gameArea.classList.remove("hidden");
   initGame();
 });
 
-homeBtn && (homeBtn.onclick = () => {
-  gameArea.classList.add("hidden");
-  homeScreen.classList.remove("hidden");
-  stopBg();
-});
-
-musicBtn && (musicBtn.onclick = () => {
-  musicOn = !musicOn;
-  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
-  musicOn ? ensureBg() : stopBg();
-});
-
-sfxBtn && (sfxBtn.onclick = () => {
-  sfxOn = !sfxOn;
-  sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
-});
-
 // ===== GAME LOGIC =====
+const SKINS = {
+  "Runes":           { P1: "🐉", P2: "🕊️" },    // dragon vs phoenix
+  "Classic X / O":   { P1: "X",   P2: "O"   },
+  "Fruit":           { P1: "🍎", P2: "🍊" },
+  "Emoji":           { P1: "😎", P2: "🤖" }
+};
+
+let board = Array(9).fill(null);
+let current = "P1";
+let running = false;
+let vsCPU   = true;
+
+function paintCellStyle(el, mark){
+  el.style.textShadow = "0 0 14px #ffcc33, 0 0 28px #ff9900";
+  el.style.color = "gold";
+  if(mark === "X"){ el.style.color="#00ffff"; el.style.textShadow="0 0 12px #00ffff,0 0 24px #00cccc"; }
+  if(mark === "O"){ el.style.color="#ff66cc"; el.style.textShadow="0 0 12px #ff66cc,0 0 24px #ff3399"; }
+}
+
 function initGame(){
-  ensureBg();
+  // theme hook
+  document.body.className = `theme-${themeSel.value.toLowerCase()}`;
+
+  board = Array(9).fill(null);
+  current = "P1";
   running = true;
-  current = "X";
-  board   = Array(9).fill(null);
+  vsCPU = (modeSel.value === "Player vs CPU");
+
+  // keep names visible
+  document.getElementById("playerNameHome").textContent = playerName;
+  document.getElementById("playerNameGame").textContent = playerName;
+
+  // reset cells
   cells.forEach(c=>{
-    c.textContent = "";
-    c.classList.remove("win");
-    c.onclick = () => handleMove(c);
+    c.textContent=""; c.classList.remove("win");
+    c.style.color=""; c.style.textShadow="";
+    c.onclick = ()=>handleMove(c);
   });
+
+  // reflect toggle states
+  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
+  sfxBtn.textContent   = sfxOn   ? "🔊 SFX ON"   : "🔈 SFX OFF";
 }
 
-// Simple win-check
-function checkWinner(){
-  const L = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-  return L.some(([a,b,c]) => board[a] && board[a]===board[b] && board[a]===board[c]);
-}
-
-function showRuneAlert(title, text){
-  const alertBox = document.getElementById("runeAlert");
-  const t1 = document.getElementById("runeTitle");
-  const t2 = document.getElementById("runeText");
-  const ok = document.getElementById("runeOk");
-  t1.textContent = title;
-  t2.textContent = text;
-  alertBox.classList.remove("hidden");
-  ok.onclick = () => {
-    alertBox.classList.add("hidden");
-    initGame();
-  };
-}
+function playSfx(a){ if(sfxOn){ a.currentTime=0; a.play().catch(()=>{});} }
+function ensureBg(){ if(musicOn && audio.bg.paused){ audio.bg.volume=0.4; audio.bg.play().catch(()=>{});} }
+function stopBg(){ audio.bg.pause(); }
 
 function handleMove(cell){
   if(!running) return;
   const idx = Number(cell.dataset.index);
   if(board[idx]) return;
 
+  const mark = current==="P1" ? SKINS[skinSel.value].P1 : SKINS[skinSel.value].P2;
+  cell.textContent = mark; paintCellStyle(cell, mark);
   board[idx] = current;
-  cell.textContent = current;
   playSfx(audio.click);
 
-  if(checkWinner()){
-    running=false;
-    if(current==="X"){ playSfx(audio.win); showRuneAlert("Victory!", "🌀 You win!"); }
-    else { playSfx(audio.lose); showRuneAlert("Defeat", "🧠 CPU wins!"); }
-    return;
-  }
-  if(board.every(v=>v!==null)){
-    running=false;
-    playSfx(audio.draw);
-    showRuneAlert("Draw", "No more moves.");
-    return;
-  }
+  const res = checkWinner();
+  if(res) return endRound(res, cell);
 
-  // switch turn
-  current = (current==="X") ? "O" : "X";
+  current = (current==="P1") ? "P2" : "P1";
 
-  // CPU move when mode is pvc and it's CPU's turn
-  if(mode==="pvc" && current==="O"){
+  if(running && vsCPU && current==="P2"){
     setTimeout(cpuMove, 350);
   }
 }
 
-function cpuMove(){
-  if(!running) return;
-  const empties = board.map((v,i)=>v===null?i:null).filter(i=>i!==null);
-  if(empties.length===0) return;
-
-  // basic CPU: random empty
-  const pick = empties[Math.floor(Math.random()*empties.length)];
-  board[pick] = "O";
-  const cell = cells[pick];
-  cell.textContent = "O";
-  playSfx(audio.click);
-
-  if(checkWinner()){
-    running=false;
-    playSfx(audio.lose);
-    showRuneAlert("Defeat", "🧠 CPU wins!");
-    return;
-  }
-  if(board.every(v=>v!==null)){
-    running=false;
-    playSfx(audio.draw);
-    showRuneAlert("Draw", "No more moves.");
-    return;
-  }
-
-  current = "X";
+const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function staticWinner(arr){
+  for(const [a,b,c] of LINES){ if(arr[a] && arr[a]===arr[b] && arr[a]===arr[c]) return arr[a]; }
+  return null;
+}
+function checkWinner(){
+  const w = staticWinner(board);
+  if(w) return { winner:w };
+  if(board.every(Boolean)) return { draw:true };
+  return null;
 }
 
-// top buttons
-nextRoundBtn && (nextRoundBtn.onclick = initGame);
-resetBtn     && (resetBtn.onclick     = initGame);
+function cpuMove(){
+  const diff = diffSel.value;
+  const empty = board.map((v,i)=> v? null : i).filter(v=>v!==null);
+  if(empty.length===0) return;
+
+  let move=null;
+  if(diff==="Easy"){
+    move = empty[Math.floor(Math.random()*empty.length)];
+  } else if (diff==="Normal"){
+    move = findBest("P2") ?? findBest("P1") ?? empty[Math.floor(Math.random()*empty.length)];
+  } else {
+    move = minimax(board.slice(), "P2").index;
+  }
+
+  const cell = cells[move];
+  const mark = SKINS[skinSel.value].P2;
+  cell.textContent = mark; paintCellStyle(cell, mark);
+  board[move] = "P2";
+
+  const res = checkWinner();
+  if(res) return endRound(res, cell);
+
+  current = "P1";
+}
+function findBest(player){
+  const empty = board.map((v,i)=> v? null : i).filter(v=>v!==null);
+  for(const i of empty){
+    board[i]=player;
+    const r=checkWinner();
+    board[i]=null;
+    if(r && r.winner) return i;
+  }
+  return null;
+}
+function minimax(state, player){
+  const avail = state.map((v,i)=> v? null : i).filter(v=>v!==null);
+  const w = staticWinner(state);
+  if(w==="P1") return {score:-10};
+  if(w==="P2") return {score:10};
+  if(avail.length===0) return {score:0};
+  const moves=[];
+  for(const i of avail){
+    const mv={index:i};
+    state[i]=player;
+    const next=(player==="P2")?minimax(state,"P1"):minimax(state,"P2");
+    mv.score=next.score; state[i]=null; moves.push(mv);
+  }
+  let best=null;
+  if(player==="P2"){ let mx=-Infinity; moves.forEach(m=>{if(m.score>mx){mx=m.score;best=m;}}); }
+  else{ let mn= Infinity; moves.forEach(m=>{if(m.score<mn){mn=m.score;best=m;}}); }
+  return best;
+}
+
+function endRound(res, lastCell){
+  running=false;
+  cells.forEach(c=> c.onclick=null);
+
+  if(res.winner){
+    // highlight win line
+    for(const [a,b,c] of LINES){ if(board[a] && board[a]===board[b] && board[a]===board[c]){ [a,b,c].forEach(i=>cells[i].classList.add("win")); } }
+    confettiCenter();
+    if(res.winner==="P1"){
+      playSfx(audio.win);
+      addCoins(20);
+      addToLeaderboard();
+      showAlert("Victory", `${playerName} wins! (+20 coins)`);
+    } else {
+      playSfx(audio.lose);
+      showAlert("Defeat", `${vsCPU ? "CPU" : "Player 2"} wins!`);
+    }
+  } else {
+    confettiCenter();
+    playSfx(audio.draw);
+    addCoins(5);
+    showAlert("Draw", "Well fought! (+5 coins)");
+  }
+}
+function addCoins(delta){
+  const v = coins + delta;
+  setCoins(v);
+}
+
+function addToLeaderboard(){
+  const moves = board.filter(Boolean).length;
+  const entry = { t: Date.now(), moves, diff: diffSel.value, skin: skinSel.value, name: playerName };
+  const key="rxo_leader";
+  const list = JSON.parse(localStorage.getItem(key)||"[]");
+  list.push(entry);
+  list.sort((a,b)=> a.moves - b.moves);
+  localStorage.setItem(key, JSON.stringify(list.slice(0,10)));
+  paintLeaderboard();
+}
+function paintLeaderboard(){
+  const key="rxo_leader";
+  const list = JSON.parse(localStorage.getItem(key)||"[]");
+  const ul = document.getElementById("leaderList");
+  if(!ul) return;
+  ul.innerHTML = "";
+  list.forEach((e,i)=>{
+    const li=document.createElement("li");
+    const d=new Date(e.t).toLocaleDateString();
+    li.textContent = `${i+1}. ${e.name} · ${e.moves} moves · ${e.diff} · ${e.skin} · ${d}`;
+    ul.appendChild(li);
+  });
+}
+paintLeaderboard();
+
+// ===== CONTROLS =====
+nextRoundBtn.onclick = initGame;
+resetBtn.onclick     = initGame;
+homeBtn.onclick      = () => {
+  gameArea.classList.add("hidden");
+  homeScreen.classList.remove("hidden");
+  stopBg();
+};
+musicBtn.onclick = () => {
+  musicOn = !musicOn;
+  musicBtn.textContent = musicOn ? "🔈 Music ON" : "🔇 Music OFF";
+  if(musicOn) ensureBg(); else stopBg();
+};
+sfxBtn.onclick = () => {
+  sfxOn = !sfxOn;
+  sfxBtn.textContent = sfxOn ? "🔊 SFX ON" : "🔈 SFX OFF";
+};
