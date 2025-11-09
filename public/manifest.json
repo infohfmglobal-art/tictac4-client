@@ -2,7 +2,7 @@
   "name": "RuneXO",
   "short_name": "RuneXO",
   "description": "Every Move Shapes Destiny — by FrameWeave Studio LLC.",
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=106",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
